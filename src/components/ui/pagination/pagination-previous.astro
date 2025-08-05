@@ -16,7 +16,6 @@ const { class: className, ...attrs } = Astro.props
   class={cn("gap-1 pl-2.5", className)}
   {...attrs}
 >
-  <!-- @ts-expect-error TODO: svg import is still experimental and not yet support typescript -->
   <ChevronLeftIcon class="size-4" />
   <span>Sebelumnya</span>
 </PaginationLink>

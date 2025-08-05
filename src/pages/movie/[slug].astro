@@ -48,7 +48,6 @@ const relatedMovies = await api.movie.related({
           />
         </div>
       ) : (
-        // @ts-expect-error TODO: svg import is still experimental and not yet support typescript
         <ImageOffIcon class="aspect-[2/3] h-auto w-full" />
       )
     }

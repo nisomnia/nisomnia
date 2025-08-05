@@ -34,6 +34,7 @@ export default defineConfig({
   }),
 
   vite: {
+    //@ts-ignore - tailwindcss is not typed correctly
     plugins: [tailwindcss()],
     ssr: {
       noExternal: ["path-to-regexp"],
@@ -48,10 +49,6 @@ export default defineConfig({
   redirects: redirects,
 
   trailingSlash: "never",
-
-  experimental: {
-    svg: true,
-  },
 
   integrations: [],
 })
