@@ -58,11 +58,11 @@ export const movieGenresTable = pgTable(
       .notNull()
       .references(() => genresTable.id),
   },
-  (t) => ({
-    compoundKey: primaryKey({
+  (t) => [
+    primaryKey({
       columns: [t.movieId, t.genreId],
     }),
-  }),
+  ],
 )
 
 export const movieGenresRelations = relations(movieGenresTable, ({ one }) => ({
@@ -86,11 +86,11 @@ export const movieOverviewsTable = pgTable(
       .notNull()
       .references(() => overviewsTable.id),
   },
-  (t) => ({
-    compoundKey: primaryKey({
+  (t) => [
+    primaryKey({
       columns: [t.movieId, t.overviewId],
     }),
-  }),
+  ],
 )
 
 export const movieOverviewsRelations = relations(
@@ -117,11 +117,11 @@ export const movieProductionCompaniesTable = pgTable(
       .notNull()
       .references(() => productionCompaniesTable.id),
   },
-  (t) => ({
-    compoundKey: primaryKey({
+  (t) => [
+    primaryKey({
       columns: [t.movieId, t.productionCompanyId],
     }),
-  }),
+  ],
 )
 
 export const movieProductionCompaniesRelations = relations(

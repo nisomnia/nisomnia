@@ -43,6 +43,19 @@ export default defineConfig({
       port: port ? parseInt(port) : 4321,
       host: true,
     },
+    build: {
+      minify: "esbuild",
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ["astro", "@astrojs/node"],
+            utils: ["@yopem-ui/utils", "@yopem/try-catch", "nanoid"],
+            db: ["drizzle-orm", "drizzle-zod"],
+            trpc: ["@trpc/client", "@trpc/server", "superjson"],
+          },
+        },
+      },
+    },
   },
 
   // @ts-expect-error - we need to define the type of the redirects if astro support config in typescript

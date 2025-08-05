@@ -50,11 +50,11 @@ export const feedTopicsTable = pgTable(
       .notNull()
       .references(() => topicsTable.id),
   },
-  (t) => ({
-    compoundKey: primaryKey({
+  (t) => [
+    primaryKey({
       columns: [t.feedId, t.topicId],
     }),
-  }),
+  ],
 )
 
 export const feedTopicsRelations = relations(feedTopicsTable, ({ one }) => ({

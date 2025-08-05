@@ -4,6 +4,7 @@ import PaginationItem from "@/components/ui/pagination/pagination-item.astro"
 import PaginationNext from "@/components/ui/pagination/pagination-next.astro"
 import PaginationPrevious from "@/components/ui/pagination/pagination-previous.astro"
 import Pagination from "@/components/ui/pagination/pagination.astro"
+import type { SelectArticle } from "@/server/db/schema"
 import { api } from "@/trpc/server"
 import ArticleCard from "./article-card.astro"
 
@@ -14,7 +15,7 @@ interface Props {
 
 const { page = 1, perPage = 10 } = Astro.props
 
-const articles = await api.article.byLanguage({
+const articles: SelectArticle[] = await api.article.byLanguage({
   language: "id",
   page,
   perPage,
@@ -27,7 +28,7 @@ const currentPage = page
 ---
 
 <div class="space-y-3">
-  {articles.map((article) => <ArticleCard article={article} />)}
+  {articles.map((article: SelectArticle) => <ArticleCard article={article} />)}
 </div>
 
 {

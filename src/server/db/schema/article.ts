@@ -80,11 +80,11 @@ export const articleAuthorsTable = pgTable(
       .notNull()
       .references(() => usersTable.id),
   },
-  (t) => ({
-    compoundKey: primaryKey({
+  (t) => [
+    primaryKey({
       columns: [t.articleId, t.userId],
     }),
-  }),
+  ],
 )
 
 export const articleAuthorsRelations = relations(
@@ -111,11 +111,11 @@ export const articleEditorsTable = pgTable(
       .notNull()
       .references(() => usersTable.id),
   },
-  (t) => ({
-    compoundKey: primaryKey({
+  (t) => [
+    primaryKey({
       columns: [t.articleId, t.userId],
     }),
-  }),
+  ],
 )
 
 export const articleEditorsRelations = relations(
@@ -142,11 +142,11 @@ export const articleTopicsTable = pgTable(
       .notNull()
       .references(() => topicsTable.id),
   },
-  (t) => ({
-    compoundKey: primaryKey({
+  (t) => [
+    primaryKey({
       columns: [t.articleId, t.topicId],
     }),
-  }),
+  ],
 )
 
 export const articleTopicsRelations = relations(
@@ -172,5 +172,11 @@ export const insertArticleTranslationSchema = createInsertSchema(
 export type SelectArticle = typeof articlesTable.$inferSelect
 export type SelectArticleTranslation =
   typeof articleTranslationsTable.$inferSelect
+
+export type ArticleWithRelations = SelectArticle & {
+  topics: { id: string | null; title: string | null; slug: string | null }[]
+  authors: { id: string | null; name: string | null; username: string | null }[]
+  editors: { id: string | null; name: string | null }[]
+}
 
 export type articleVisibility = z.infer<typeof articleVisibility>

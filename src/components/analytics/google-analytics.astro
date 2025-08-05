@@ -8,6 +8,8 @@ const { measurementId } = Astro.props
 
 <script
   is:inline
+  async
+  defer
   src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}></script>
 
 <script is:inline>

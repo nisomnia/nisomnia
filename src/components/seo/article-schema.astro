@@ -20,13 +20,37 @@ interface Props {
 const { article } = Astro.props
 const { createdAt, updatedAt, title, excerpt, featuredImage, slug, authors } =
   article
+
+// Helper function to safely format dates
+const formatDate = (
+  date: Date | string | null | undefined,
+): string | undefined => {
+  if (!date) return undefined
+
+  try {
+    if (date instanceof Date) {
+      return date.toISOString()
+    }
+    if (typeof date === "string") {
+      // Try to parse as ISO string or create new Date
+      const parsed = new Date(date)
+      if (!isNaN(parsed.getTime())) {
+        return parsed.toISOString()
+      }
+    }
+  } catch (error) {
+    console.warn("Failed to format date:", error)
+  }
+
+  return undefined
+}
 ---
 
 <Schema
   item={{
     "@context": "https://schema.org",
     "@type": "Article",
-    datePublished: createdAt?.toISOString(),
+    datePublished: formatDate(createdAt),
     description: excerpt,
     mainEntityOfPage: {
       "@type": "WebPage",
@@ -39,7 +63,7 @@ const { createdAt, updatedAt, title, excerpt, featuredImage, slug, authors } =
         url: featuredImage,
       },
     ],
-    dateModified: updatedAt?.toISOString(),
+    dateModified: formatDate(updatedAt),
     author: [
       {
         "@type": "Person",

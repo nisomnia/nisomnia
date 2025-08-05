@@ -7,12 +7,18 @@ import ArticleSchema from "@/components/seo/article-schema.astro"
 import BreadcrumbSchema from "@/components/seo/breadcrumb-schema.astro"
 import TopicListSingleArticle from "@/components/topic/topic-list-single-article.astro"
 import MainLayout from "@/layouts/main-layout.astro"
-import type { SelectTopic } from "@/server/db/schema"
+import type {
+  ArticleWithRelations,
+  SelectArticle,
+  SelectTopic,
+} from "@/server/db/schema"
 import { api } from "@/trpc/server"
 
 const { slug } = Astro.params
 
-const article = await api.article.bySlug(slug!)
+const article: ArticleWithRelations | undefined = await api.article.bySlug(
+  slug!,
+)
 
 if (!article) {
   return Astro.redirect("/404")
@@ -20,7 +26,7 @@ if (!article) {
 
 const topics = article.topics as Pick<SelectTopic, "id" | "slug" | "title">[]
 
-const relatedArticles = await api.article.related({
+const relatedArticles: SelectArticle[] = await api.article.related({
   currentArticleId: article.id,
   language: "id",
   topicId: topics[0].id,

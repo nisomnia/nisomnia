@@ -1,9 +1,10 @@
 ---
 import Button from "@/components/ui/button.astro"
+import type { SelectArticle } from "@/server/db/schema"
 import { api } from "@/trpc/server"
 import ArticleCard from "./article-card.astro"
 
-const articles = await api.article.byLanguage({
+const articles: SelectArticle[] = await api.article.byLanguage({
   language: "id",
   page: 1,
   perPage: 5,
@@ -12,7 +13,7 @@ const articles = await api.article.byLanguage({
 
 <h1 class="mb-6 text-2xl font-bold md:text-3xl">Artikel Terbaru</h1>
 <div class="space-y-3">
-  {articles.map((article) => <ArticleCard article={article} />)}
+  {articles.map((article: SelectArticle) => <ArticleCard article={article} />)}
 </div>
 <div class="mt-4 flex items-center justify-center">
   <a href="/article">

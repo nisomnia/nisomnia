@@ -8,10 +8,23 @@ import {
   articleTopicsTable,
   topicsTable,
   usersTable,
+  type ArticleWithRelations,
   type LanguageType,
+  type SelectArticle,
 } from "@/server/db/schema"
+import { getCache, setCache } from "@/utils/redis"
 
-export const getArticleBySlug = async (slug: string) => {
+export const getArticleBySlug = async (
+  slug: string,
+): Promise<ArticleWithRelations | undefined> => {
+  const cacheKey = `article:slug:${slug}`
+
+  // Try to get from cache first
+  const cached = await getCache<ArticleWithRelations>(cacheKey)
+  if (cached) {
+    return cached
+  }
+
   const articleData = await db.query.articlesTable.findFirst({
     where: (articles, { eq }) => eq(articles.slug, slug),
   })
@@ -62,6 +75,9 @@ export const getArticleBySlug = async (slug: string) => {
       editors: articleEditorsData,
     }
 
+    // Cache the result for 1 hour
+    await setCache(cacheKey, data, 3600)
+
     return data
   }
 }
@@ -74,14 +90,27 @@ export const getArticlesByLanguage = async ({
   language: LanguageType
   page: number
   perPage: number
-}) => {
-  return await db.query.articlesTable.findMany({
+}): Promise<SelectArticle[]> => {
+  const cacheKey = `articles:lang:${language}:page:${page}:per:${perPage}`
+
+  // Try to get from cache first
+  const cached = await getCache<SelectArticle[]>(cacheKey)
+  if (cached) {
+    return cached
+  }
+
+  const articles = await db.query.articlesTable.findMany({
     where: (articles, { eq, and }) =>
       and(eq(articles.language, language), eq(articles.status, "published")),
     limit: perPage,
     offset: (page - 1) * perPage,
     orderBy: (articles, { desc }) => [desc(articles.updatedAt)],
   })
+
+  // Cache for 30 minutes
+  await setCache(cacheKey, articles, 1800)
+
+  return articles
 }
 
 export const getRelatedArticles = async ({
@@ -94,7 +123,7 @@ export const getRelatedArticles = async ({
   topicId: string
   language: LanguageType
   limit: number
-}) => {
+}): Promise<SelectArticle[]> => {
   const articles = await db.query.articlesTable.findMany({
     where: (articles, { eq, and, not, inArray }) =>
       and(
