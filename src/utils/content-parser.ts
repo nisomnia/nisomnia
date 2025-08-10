@@ -1,7 +1,5 @@
 import { parse } from "node-html-parser"
 
-import { publicAdsenseClientId } from "./constant"
-
 export interface HtmlContentPart {
   type: "html"
   content: string
@@ -130,7 +128,7 @@ export function parseContent(
     content: `<ins 
       class="adsbygoogle manual-adsense h-auto w-screen min-w-full sm:w-full"
       style="display:block"
-      data-ad-client="ca-${publicAdsenseClientId}"
+      data-ad-client="ca-pub-4946821479056257"
       data-ad-slot="6709218890"
       data-ad-format="auto"
       data-full-width-responsive="true"></ins>`,
