@@ -1,17 +1,12 @@
 ---
-interface Props {
-  measurementId: string
-}
 
-const { measurementId } = Astro.props
 ---
 
 <script
   is:inline
   async
   defer
-  src={`https://www.googletagmanager.com/gtag/js?id=${measurementId || "G-1234567890"}`}
-></script>
+  src='https://www.googletagmanager.com/gtag/js?id="G-1234567890"'></script>
 
 <script is:inline>
   window.dataLayer = window.dataLayer || []
@@ -19,5 +14,5 @@ const { measurementId } = Astro.props
     dataLayer.push(arguments)
   }
   gtag("js", new Date())
-  gtag("config", measurementId || "G-1234567890")
+  gtag("config", "G-1234567890")
 </script>
