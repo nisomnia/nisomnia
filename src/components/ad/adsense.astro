@@ -10,13 +10,11 @@ const { adSlot } = Astro.props
 
 <ins
   class="adsbygoogle manual-adsense h-auto w-screen min-w-full sm:w-full"
-  style="display:block"
+  style="display:inline-block;"
   data-ad-client={`ca-${publicAdsenseClientId || "pub-4946821479056257"}`}
   data-ad-slot={adSlot}
   data-ad-format="auto"
   data-full-width-responsive="true"></ins>
 <script is:inline>
-  ;(function () {
-    ;(adsbygoogle = window.adsbygoogle || []).push({})
-  })()
+  ;(adsbygoogle = window.adsbygoogle || []).push({})
 </script>
