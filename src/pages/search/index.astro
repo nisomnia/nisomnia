@@ -5,26 +5,31 @@ import SearchForm from "@/components/search/search-form.astro"
 import BreadcrumbSchema from "@/components/seo/breadcrumb-schema.astro"
 import TopicCard from "@/components/topic/topic-card.astro"
 import MainLayout from "@/layouts/main-layout.astro"
+import type {
+  SelectArticle,
+  SelectMovie,
+  SelectTopic,
+} from "@/server/db/schema"
 import { api } from "@/trpc/server"
 
 const searchQuery = Astro.url.searchParams.get("query") ?? ""
 
-const articles = await api.article.search({
+const articles = (await api.article.search({
   language: "id",
   searchQuery,
   limit: 10,
-})
+})) as SelectArticle[]
 
-const movies = await api.movie.search({
+const movies = (await api.movie.search({
   searchQuery,
   limit: 12,
-})
+})) as SelectMovie[]
 
-const topics = await api.topic.search({
+const topics = (await api.topic.search({
   language: "id",
   searchQuery,
   limit: 5,
-})
+})) as SelectTopic[]
 ---
 
 <MainLayout

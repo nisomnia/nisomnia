@@ -4,6 +4,7 @@ import PaginationItem from "@/components/ui/pagination/pagination-item.astro"
 import PaginationNext from "@/components/ui/pagination/pagination-next.astro"
 import PaginationPrevious from "@/components/ui/pagination/pagination-previous.astro"
 import Pagination from "@/components/ui/pagination/pagination.astro"
+import type { SelectMovie } from "@/server/db/schema"
 import { api } from "@/trpc/server"
 import MovieCard from "./movie-card.astro"
 
@@ -20,11 +21,16 @@ const { genre, page = 1, perPage = 10 } = Astro.props
 
 const { id, slug } = genre
 
-const movies = await api.movie.byGenreId({
+const movies = (await api.movie.byGenreId({
   genreId: id,
   page,
   perPage,
-})
+})) as (SelectMovie & {
+  genres: {
+    movieId: string
+    genreId: string
+  }[]
+})[]
 
 const totalMovies = await api.movie.countByGenreId(id)
 

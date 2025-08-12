@@ -4,6 +4,7 @@ import PaginationItem from "@/components/ui/pagination/pagination-item.astro"
 import PaginationNext from "@/components/ui/pagination/pagination-next.astro"
 import PaginationPrevious from "@/components/ui/pagination/pagination-previous.astro"
 import Pagination from "@/components/ui/pagination/pagination.astro"
+import type { SelectMovie } from "@/server/db/schema"
 import { api } from "@/trpc/server"
 import MovieCard from "./movie-card.astro"
 
@@ -14,10 +15,10 @@ interface Props {
 
 const { page = 1, perPage = 12 } = Astro.props
 
-const movies = await api.movie.latest({
+const movies = (await api.movie.latest({
   page,
   perPage,
-})
+})) as SelectMovie[]
 
 const totalMovies = await api.movie.count()
 const totalPages = Math.ceil(totalMovies / perPage)

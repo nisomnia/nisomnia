@@ -7,28 +7,47 @@ import ProductionCompanyListSingleMovie from "@/components/production-company/pr
 import BreadcrumbSchema from "@/components/seo/breadcrumb-schema.astro"
 import MovieSchema from "@/components/seo/movie-schema.astro"
 import MainLayout from "@/layouts/main-layout.astro"
-import type { SelectGenre, SelectProductionCompany } from "@/server/db/schema"
+import type {
+  SelectGenre,
+  SelectMovie,
+  SelectProductionCompany,
+} from "@/server/db/schema"
 import { api } from "@/trpc/server"
 
 const { slug } = Astro.params
 
-const movie = await api.movie.bySlug(slug!)
+const movieData = await api.movie.bySlug(slug!)
 
-if (!movie) {
+if (!movieData) {
   return Astro.redirect("/404")
 }
 
-const genres = movie.genres as Pick<SelectGenre, "id" | "slug" | "title">[]
-const productionCompanies = movie.productionCompanies as Pick<
-  SelectProductionCompany,
-  "id" | "slug" | "name"
->[]
+const movie = movieData as SelectMovie & {
+  overview?: string
+  genres: Pick<SelectGenre, "id" | "slug" | "title">[]
+  productionCompanies: Pick<SelectProductionCompany, "id" | "slug" | "name">[]
+}
 
-const relatedMovies = await api.movie.related({
+const genres = movie.genres
+const productionCompanies = movie.productionCompanies
+
+const relatedMovies = (await api.movie.related({
   currentMovieId: movie.id,
-  genreId: movie.genres[0].id!,
+  genreId: movie.genres[0].id,
   limit: 6,
-})
+})) as (SelectMovie & {
+  genres: {
+    movieId: string
+    genreId: string
+  }[]
+})[]
+
+// Prepare movie data for schema
+const movieForSchema = {
+  ...movie,
+  overview: movie.overview ?? null,
+  genres: movie.genres.map((g) => ({ title: g.title })),
+}
 ---
 
 <MainLayout title={movie.title} description={movie.overview ?? movie.title}>
@@ -62,7 +81,7 @@ const relatedMovies = await api.movie.related({
     <GenreListSingleMovie genres={genres} />
     <RelatedMovies movies={relatedMovies} />
   </div>
-  <MovieSchema movie={movie} />
+  <MovieSchema movie={movieForSchema} />
   <BreadcrumbSchema
     listItems={[
       {

@@ -1,12 +1,13 @@
 ---
 import Button from "@/components/ui/button.astro"
+import type { SelectMovie } from "@/server/db/schema"
 import { api } from "@/trpc/server"
 import MovieCard from "./movie-card.astro"
 
-const movies = await api.movie.latest({
+const movies = (await api.movie.latest({
   page: 1,
   perPage: 6,
-})
+})) as SelectMovie[]
 ---
 
 <h1 class="mb-6 text-2xl font-bold md:text-3xl">Film Terbaru</h1>
