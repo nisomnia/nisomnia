@@ -15,7 +15,6 @@ import { getCache, setCache } from "@/utils/redis"
 export const getMovieBySlug = async (slug: string) => {
   const cacheKey = `movie:slug:${slug}`
 
-  // Try to get from cache first
   const cached = await getCache(cacheKey)
   if (cached) {
     return cached
@@ -93,23 +92,12 @@ export const getLatestMovies = async ({
   page: number
   perPage: number
 }) => {
-  const cacheKey = `movies:latest:page:${page}:per:${perPage}`
-
-  // Try to get from cache first
-  const cached = await getCache(cacheKey)
-  if (cached) {
-    return cached
-  }
-
   const movies = await db.query.moviesTable.findMany({
     where: (movies, { eq }) => eq(movies.status, "published"),
     limit: perPage,
     offset: (page - 1) * perPage,
     orderBy: (movies, { desc }) => [desc(movies.updatedAt)],
   })
-
-  // Cache for 30 minutes
-  await setCache(cacheKey, movies, 1800)
 
   return movies
 }
@@ -123,14 +111,6 @@ export const getRelatedMovies = async ({
   genreId: string
   limit: number
 }) => {
-  const cacheKey = `movies:related:${currentMovieId}:genre:${genreId}:limit:${limit}`
-
-  // Try to get from cache first
-  const cached = await getCache(cacheKey)
-  if (cached) {
-    return cached
-  }
-
   const movies = await db.query.moviesTable.findMany({
     where: (movies, { eq, and, not, inArray }) =>
       and(
@@ -155,9 +135,6 @@ export const getRelatedMovies = async ({
     movie.genres.some((genre) => genre.genreId === genreId),
   )
 
-  // Cache for 30 minutes
-  await setCache(cacheKey, result, 1800)
-
   return result
 }
 
@@ -170,14 +147,6 @@ export const getMoviesByGenreId = async ({
   page: number
   perPage: number
 }) => {
-  const cacheKey = `movies:genre:${genreId}:page:${page}:per:${perPage}`
-
-  // Try to get from cache first
-  const cached = await getCache(cacheKey)
-  if (cached) {
-    return cached
-  }
-
   const movies = await db.query.moviesTable.findMany({
     where: (movies, { eq, and, inArray }) =>
       and(
@@ -202,9 +171,6 @@ export const getMoviesByGenreId = async ({
     movie.genres.some((genre) => genre.genreId === genreId),
   )
 
-  // Cache for 30 minutes
-  await setCache(cacheKey, result, 1800)
-
   return result
 }
 
@@ -217,14 +183,6 @@ export const getMoviesByProductionCompanyId = async ({
   page: number
   perPage: number
 }) => {
-  const cacheKey = `movies:production-company:${productionCompanyId}:page:${page}:per:${perPage}`
-
-  // Try to get from cache first
-  const cached = await getCache(cacheKey)
-  if (cached) {
-    return cached
-  }
-
   const movies = await db.query.moviesTable.findMany({
     where: (movies, { eq, and, inArray }) =>
       and(
@@ -257,9 +215,6 @@ export const getMoviesByProductionCompanyId = async ({
     ),
   )
 
-  // Cache for 30 minutes
-  await setCache(cacheKey, result, 1800)
-
   return result
 }
 
@@ -270,15 +225,6 @@ export const getMoviesSitemap = async ({
   page: number
   perPage: number
 }) => {
-  const cacheKey = `movies:sitemap:page:${page}:per:${perPage}`
-
-  // Try to get from cache first
-  const cached =
-    await getCache<{ slug: string; updatedAt: Date | null }[]>(cacheKey)
-  if (cached) {
-    return cached
-  }
-
   const movies = await db.query.moviesTable.findMany({
     where: (movies, { eq }) => eq(movies.status, "published"),
     columns: {
@@ -290,21 +236,10 @@ export const getMoviesSitemap = async ({
     orderBy: (movies, { desc }) => [desc(movies.updatedAt)],
   })
 
-  // Cache for 1 hour
-  await setCache(cacheKey, movies, 3600)
-
   return movies
 }
 
 export const getMoviesCount = async () => {
-  const cacheKey = `movies:count`
-
-  // Try to get from cache first
-  const cached = await getCache<number>(cacheKey)
-  if (cached) {
-    return cached
-  }
-
   const data = await db
     .select({ count: count() })
     .from(moviesTable)
@@ -312,21 +247,10 @@ export const getMoviesCount = async () => {
 
   const result = data[0].count
 
-  // Cache for 30 minutes
-  await setCache(cacheKey, result, 1800)
-
   return result
 }
 
 export const getMoviesCountByGenreId = async (genreId: string) => {
-  const cacheKey = `movies:count:genre:${genreId}`
-
-  // Try to get from cache first
-  const cached = await getCache<number>(cacheKey)
-  if (cached) {
-    return cached
-  }
-
   const data = await db
     .select({ count: count() })
     .from(moviesTable)
@@ -340,23 +264,12 @@ export const getMoviesCountByGenreId = async (genreId: string) => {
 
   const result = data[0].count
 
-  // Cache for 30 minutes
-  await setCache(cacheKey, result, 1800)
-
   return result
 }
 
 export const getMoviesCountByProductionCompanyId = async (
   productionCompanyId: string,
 ) => {
-  const cacheKey = `movies:count:production-company:${productionCompanyId}`
-
-  // Try to get from cache first
-  const cached = await getCache<number>(cacheKey)
-  if (cached) {
-    return cached
-  }
-
   const data = await db
     .select({ count: count() })
     .from(moviesTable)
@@ -376,9 +289,6 @@ export const getMoviesCountByProductionCompanyId = async (
 
   const result = data[0].count
 
-  // Cache for 30 minutes
-  await setCache(cacheKey, result, 1800)
-
   return result
 }
 
@@ -389,14 +299,6 @@ export const searchMovies = async ({
   searchQuery: string
   limit: number
 }) => {
-  const cacheKey = `movies:search:${searchQuery}:limit:${limit}`
-
-  // Try to get from cache first
-  const cached = await getCache(cacheKey)
-  if (cached) {
-    return cached
-  }
-
   const movies = await db.query.moviesTable.findMany({
     where: (movies, { eq, and, or, ilike }) =>
       and(
@@ -409,9 +311,6 @@ export const searchMovies = async ({
     orderBy: (movies, { desc }) => [desc(movies.updatedAt)],
     limit: limit,
   })
-
-  // Cache for 15 minutes
-  await setCache(cacheKey, movies, 900)
 
   return movies
 }

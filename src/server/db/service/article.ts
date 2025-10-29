@@ -19,7 +19,6 @@ export const getArticleBySlug = async (
 ): Promise<ArticleWithRelations | undefined> => {
   const cacheKey = `article:slug:${slug}`
 
-  // Try to get from cache first
   const cached = await getCache<ArticleWithRelations>(cacheKey)
   if (cached) {
     return cached
@@ -91,14 +90,6 @@ export const getArticlesByLanguage = async ({
   page: number
   perPage: number
 }): Promise<SelectArticle[]> => {
-  const cacheKey = `articles:lang:${language}:page:${page}:per:${perPage}`
-
-  // Try to get from cache first
-  const cached = await getCache<SelectArticle[]>(cacheKey)
-  if (cached) {
-    return cached
-  }
-
   const articles = await db.query.articlesTable.findMany({
     where: (articles, { eq, and }) =>
       and(eq(articles.language, language), eq(articles.status, "published")),
@@ -106,9 +97,6 @@ export const getArticlesByLanguage = async ({
     offset: (page - 1) * perPage,
     orderBy: (articles, { desc }) => [desc(articles.updatedAt)],
   })
-
-  // Cache for 30 minutes
-  await setCache(cacheKey, articles, 1800)
 
   return articles
 }
