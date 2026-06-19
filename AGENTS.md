@@ -64,7 +64,8 @@ https://viteplus.dev/guide/.
   components, plain objects. Type helpers via interfaces/types, not class
   inheritance.
 - **No comments.** Code should be self-documenting. No JSDoc, no inline
-  comments, no file headers.
+  comments, no file headers. **Avoid `useEffect`.** Use React events, TanStack
+  Query, or React 19 patterns (`use`, Suspense) instead of side-effect hooks.
 - `no-console` lint rule is `error` — only `console.error`, `console.warn`,
   `console.info` allowed. No `console.log`.
 - Imports sorted: builtin → external → type-workspace → value-workspace →
