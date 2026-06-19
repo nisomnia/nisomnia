@@ -1,33 +1,16 @@
-# AGENTS.md
+<!--VITE PLUS START-->
 
-## Build, Lint, and Test Commands
+# Using Vite+, the Unified Toolchain for the Web
 
-- **Build:** `bunx --bun astro build`
-- **Dev server:** `bunx --bun astro dev`
-- **Preview:** `bunx --bun astro preview --host 0.0.0.0`
-- **Lint:** `eslint --ext .astro,.ts,.tsx,.js,.mjs ./src`
-- **Lint (fix):** `eslint --ext .astro,.ts,.tsx,.js,.mjs ./src --fix`
-- **Format check:**
-  `prettier --check "**/*.{astro,ts,tsx,mts,js,jsx,mjs,json,md}"`
-- **Format write:**
-  `prettier --write "**/*.{astro,ts,tsx,mts,js,jsx,mjs,json,md}"`
-- **Typecheck:** `tsc --noEmit`
-- **Astro check:** `bunx --bun astro check`
-- **Run a single test:** _(No test script found; add one if needed)_
+This project is using Vite+, a unified toolchain built on top of Vite, Rolldown, Vitest, tsdown, Oxlint, Oxfmt, and Vite Task. Vite+ wraps runtime management, package management, and frontend tooling in a single global CLI called `vp`. Vite+ is distinct from Vite, and it invokes Vite through `vp dev` and `vp build`. Run `vp help` to print a list of commands and `vp <command> --help` for information about a specific command.
 
-## Code Style Guidelines
+Docs are local at `node_modules/vite-plus/docs` or online at https://viteplus.dev/guide/.
 
-- **Formatting:** Use Prettier (see config: 2-space indent, 80-char line,
-  trailing commas, bracket spacing).
-- **Imports:** Use sorted imports; avoid relative imports like `../`, prefer
-  `@/`.
-- **TypeScript:** Prefer type-only imports, separate type imports.
-- **Naming:** Use descriptive names; unused vars prefixed with `_` are allowed.
-- **Error Handling:** Use explicit error handling; avoid unnecessary non-null
-  assertions.
-- **Linting:** Follow ESLint and TypeScript recommended rules.
-- **Astro:** Astro files use Prettier and ESLint plugins.
-- **Accessibility:** JSX/TSX files follow a11y lint rules.
-- **Prose:** Markdown and docs should wrap prose at 80 chars.
+## Review Checklist
 
-_For more details, see `prettier.config.mjs` and `eslint.config.js`._
+- [ ] Run `vp install` after pulling remote changes and before getting started.
+- [ ] Run `vp check` and `vp test` to format, lint, type check and test changes.
+- [ ] Check if there are `vite.config.ts` tasks or `package.json` scripts necessary for validation, run via `vp run <script>`.
+- [ ] If setup, runtime, or package-manager behavior looks wrong, run `vp env doctor` and include its output when asking for help.
+
+<!--VITE PLUS END-->
