@@ -39,6 +39,13 @@ Docs are local at `node_modules/vite-plus/docs` or online at https://viteplus.de
 - **kebab-case** filenames (e.g. `pagination-button.tsx`). Exceptions:
   `routeTree.gen.ts`, `__root.tsx`, `index.tsx`
 
+## Components (shadcn / COSS UI)
+
+- `src/components/ui/` — reusable UI components. Check existing components first before creating new ones.
+- shadcn registry — primary source for new components (`shadcn` CLI, `https://ui.shadcn.com/r`).
+- COSS UI — `https://coss.com/ui/llms.txt` for component references, use only after checking shadcn.
+- Prefer COSS components over shadcn by default. New components go in `src/components/ui/`.
+
 ## Style
 
 - **Functional programming only.** No classes. Use functions, function
