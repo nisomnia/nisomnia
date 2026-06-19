@@ -9,6 +9,7 @@ export const env = createEnv({
   clientPrefix: "PUBLIC_",
 
   client: {
+    PUBLIC_API_URL: z.string(),
     PUBLIC_APP_TITLE: z.string(),
   },
 

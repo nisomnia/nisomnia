@@ -6,6 +6,7 @@ import { nitro } from "nitro/vite"
 import { defineConfig, lazyPlugins } from "vite-plus"
 
 const config = defineConfig({
+  envPrefix: ["VITE_", "PUBLIC_"],
   staged: {
     "*": "vp check --fix",
     "*.{ts,tsx}": "vp lint --fix",
