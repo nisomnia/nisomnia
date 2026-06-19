@@ -30,7 +30,7 @@ export function AutocompleteInput({
   triggerProps?: AutocompletePrimitive.Trigger.Props
   clearProps?: AutocompletePrimitive.Clear.Props
 }): React.ReactElement {
-  const sizeValue = (size ?? "default")
+  const sizeValue = size ?? "default"
 
   return (
     <AutocompletePrimitive.InputGroup

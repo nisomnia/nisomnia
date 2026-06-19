@@ -9,8 +9,7 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 
 import TanStackQueryDevtools from "@/lib/query/devtools"
-
-import appCss from "../styles.css?url"
+import appCss from "@/styles.css?url"
 
 interface MyRouterContext {
   queryClient: QueryClient

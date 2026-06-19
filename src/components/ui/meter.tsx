@@ -16,9 +16,7 @@ export function Meter({
       className={cn("flex w-full flex-col gap-2", className)}
       {...props}
     >
-      {children ? (
-        children
-      ) : (
+      {children ?? (
         <MeterTrack>
           <MeterIndicator />
         </MeterTrack>

@@ -38,7 +38,7 @@ export function ComboboxChipsInput({
   size?: "sm" | "default" | "lg" | number
   ref?: React.Ref<HTMLInputElement>
 }): React.ReactElement {
-  const sizeValue = (size ?? "default")
+  const sizeValue = size ?? "default"
 
   return (
     <ComboboxPrimitive.Input
@@ -73,7 +73,7 @@ export function ComboboxInput({
   triggerProps?: ComboboxPrimitive.Trigger.Props
   clearProps?: ComboboxPrimitive.Clear.Props
 }): React.ReactElement {
-  const sizeValue = (size ?? "default")
+  const sizeValue = size ?? "default"
 
   return (
     <ComboboxPrimitive.InputGroup
