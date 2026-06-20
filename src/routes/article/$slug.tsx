@@ -6,6 +6,7 @@ import { ArticleShareBar } from "@/components/article/article-share-bar"
 import { ArticleTableOfContents } from "@/components/article/article-table-of-contents"
 import { RelatedInfiniteScroll } from "@/components/article/related-infinite-scroll"
 import { Button } from "@/components/ui/button"
+import { useIsMobile } from "@/hooks/use-media-query"
 
 interface Author {
   id: string
@@ -68,6 +69,7 @@ export const Route = createFileRoute("/article/$slug")({
 function ArticlePage() {
   const { slug } = Route.useParams()
   const article = Route.useLoaderData()
+  const isMobile = useIsMobile()
 
   const { html, headings } = useMemo(() => {
     if (!article?.content) return { html: "", headings: [] }
@@ -89,6 +91,13 @@ function ArticlePage() {
   }
 
   const articleUrl = `https://nisomnia.com/article/${slug}`
+
+  const toc = headings.length > 0 && (
+    <ArticleTableOfContents
+      headings={headings}
+      variant={isMobile ? "collapsible" : "sidebar"}
+    />
+  )
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
@@ -124,12 +133,7 @@ function ArticlePage() {
                 </span>
               )}
             </div>
-            <div className="lg:hidden">
-              <ArticleTableOfContents
-                headings={headings}
-                variant="collapsible"
-              />
-            </div>
+            {isMobile && toc}
             <div
               className="prose max-w-none space-y-4"
               dangerouslySetInnerHTML={{ __html: html }}
@@ -142,7 +146,7 @@ function ArticlePage() {
         <aside className="hidden lg:sticky lg:top-24 lg:block lg:self-start">
           <div className="rounded-lg border p-4">
             <p className="mb-3 text-sm font-semibold">Table of Contents</p>
-            <ArticleTableOfContents headings={headings} />
+            {!isMobile && toc}
           </div>
         </aside>
       </div>
