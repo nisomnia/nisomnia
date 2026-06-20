@@ -1,3 +1,5 @@
+"use client"
+
 import type { QueryClient } from "@tanstack/react-query"
 
 import { TanStackDevtools } from "@tanstack/react-devtools"
@@ -7,9 +9,11 @@ import {
   createRootRouteWithContext,
 } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
+import * as React from "react"
 
 import { fetchClient } from "@/api/client"
 import { Header } from "@/components/layout/header"
+import { Sidebar } from "@/components/layout/sidebar"
 import TanStackQueryDevtools from "@/lib/query/devtools"
 import { TanstackQueryProvider } from "@/lib/query/root-provider"
 import appCss from "@/styles.css?url"
@@ -60,6 +64,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   const { queryClient } = Route.useRouteContext()
+  const [sidebarOpen, setSidebarOpen] = React.useState(false)
 
   return (
     <html lang="en">
@@ -68,8 +73,16 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <TanstackQueryProvider queryClient={queryClient}>
-          <Header />
-          {children}
+          <div className="flex min-h-screen flex-col">
+            <Header onMenuClick={() => setSidebarOpen(true)} />
+            <div className="flex flex-1">
+              <Sidebar
+                mobileOpen={sidebarOpen}
+                onMobileOpenChange={setSidebarOpen}
+              />
+              <main className="min-w-0 flex-1">{children}</main>
+            </div>
+          </div>
           <TanStackDevtools
             config={{
               position: "bottom-right",
