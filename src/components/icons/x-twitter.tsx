@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils/style"
 export const XTwitterIcon = ({
   size,
   className,
-  color = "#000000",
+  color = "currentColor",
   strokeWidth = 1,
   background = "transparent",
   opacity = 1,
