@@ -11,9 +11,14 @@ import { Button } from "@/components/ui/button"
 export interface ArticleShareBarProps {
   url: string
   title: string
+  className?: string
 }
 
-export function ArticleShareBar({ url, title }: ArticleShareBarProps) {
+export function ArticleShareBar({
+  url,
+  title,
+  className,
+}: ArticleShareBarProps) {
   const encodedUrl = encodeURIComponent(url)
   const encodedTitle = encodeURIComponent(title)
   const [copied, setCopied] = useState(false)
@@ -26,7 +31,9 @@ export function ArticleShareBar({ url, title }: ArticleShareBarProps) {
   }
 
   return (
-    <div className="flex flex-row items-center gap-3 lg:flex-col lg:items-end lg:justify-start">
+    <div
+      className={`flex flex-row items-center gap-3 lg:flex-col lg:items-center lg:justify-start ${className ?? ""}`}
+    >
       <Button
         variant="outline"
         size="icon"

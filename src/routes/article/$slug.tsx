@@ -103,7 +103,11 @@ function ArticlePage() {
     <div className="mx-auto max-w-7xl px-6 py-8 md:px-12 md:py-12 lg:px-16 lg:py-16">
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-[auto_1fr_280px]">
         <aside className="hidden lg:sticky lg:top-24 lg:flex lg:flex-col lg:items-end lg:self-start">
-          <ArticleShareBar url={articleUrl} title={article.title} />
+          <ArticleShareBar
+            url={articleUrl}
+            title={article.title}
+            className="bg-background/80 rounded-2xl border p-2 shadow-lg backdrop-blur-md"
+          />
         </aside>
         <main className="min-w-0">
           <article>
@@ -151,9 +155,11 @@ function ArticlePage() {
         </aside>
       </div>
       <div className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 lg:hidden">
-        <div className="bg-background/80 flex items-center justify-center rounded-full border p-2 shadow-lg backdrop-blur-md">
-          <ArticleShareBar url={articleUrl} title={article.title} />
-        </div>
+        <ArticleShareBar
+          url={articleUrl}
+          title={article.title}
+          className="bg-background/80 rounded-2xl border p-2 shadow-lg backdrop-blur-md"
+        />
       </div>
     </div>
   )
