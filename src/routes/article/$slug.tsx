@@ -124,7 +124,12 @@ function ArticlePage() {
                 </span>
               )}
             </div>
-            {/* biome-ignore lint/security/noDangerouslySetInnerHtml: Content sanitized server-side */}
+            <div className="lg:hidden">
+              <ArticleTableOfContents
+                headings={headings}
+                variant="collapsible"
+              />
+            </div>
             <div
               className="prose max-w-none space-y-4"
               dangerouslySetInnerHTML={{ __html: html }}

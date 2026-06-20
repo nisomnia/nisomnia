@@ -1,5 +1,6 @@
 "use client"
 
+import { ChevronDownIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 
 import { cn } from "@/lib/utils/style"
@@ -10,12 +11,15 @@ interface ArticleTableOfContentsProps {
     text: string
     level: number
   }[]
+  variant?: "sidebar" | "collapsible"
 }
 
 export function ArticleTableOfContents({
   headings,
+  variant = "sidebar",
 }: ArticleTableOfContentsProps) {
   const [activeId, setActiveId] = useState<string | null>(null)
+  const [open, setOpen] = useState(false)
 
   useEffect(() => {
     const elements = headings
@@ -61,29 +65,49 @@ export function ArticleTableOfContents({
 
   if (headings.length === 0) return null
 
-  return (
-    <nav aria-label="Table of contents">
-      <ul className="flex flex-col gap-1">
-        {headings.map((heading) => (
-          <li
-            key={heading.id}
-            style={{ paddingLeft: `${Math.max(0, heading.level - 1)}rem` }}
+  const list = (
+    <ul className="flex flex-col gap-1">
+      {headings.map((heading) => (
+        <li
+          key={heading.id}
+          style={{ paddingLeft: `${Math.max(0, heading.level - 1)}rem` }}
+        >
+          <a
+            href={`#${heading.id}`}
+            aria-current={activeId === heading.id ? "true" : undefined}
+            className={cn(
+              "block rounded-md px-2 py-1 text-sm transition-colors",
+              activeId === heading.id
+                ? "bg-accent text-foreground font-medium"
+                : "text-muted-foreground hover:text-foreground",
+            )}
+            onClick={() => setOpen(false)}
           >
-            <a
-              href={`#${heading.id}`}
-              aria-current={activeId === heading.id ? "true" : undefined}
-              className={cn(
-                "block rounded-md px-2 py-1 text-sm transition-colors",
-                activeId === heading.id
-                  ? "bg-accent text-foreground font-medium"
-                  : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              {heading.text}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </nav>
+            {heading.text}
+          </a>
+        </li>
+      ))}
+    </ul>
   )
+
+  if (variant === "collapsible") {
+    return (
+      <details
+        className="mb-6 rounded-lg border"
+        onToggle={(e) => setOpen(e.currentTarget.open)}
+      >
+        <summary className="flex cursor-pointer items-center justify-between p-3 text-sm font-semibold select-none">
+          Table of Contents
+          <ChevronDownIcon
+            className={cn("size-4 transition-transform", open && "rotate-180")}
+          />
+        </summary>
+        <nav aria-label="Table of contents" className="border-t p-3 pt-2">
+          {list}
+        </nav>
+      </details>
+    )
+  }
+
+  return <nav aria-label="Table of contents">{list}</nav>
 }
