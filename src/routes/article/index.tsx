@@ -137,15 +137,19 @@ function ArticleListPage() {
               key={article.id}
               className="rounded-lg border p-6 transition-shadow hover:shadow-md"
             >
-              {article.featuredImage && (
-                <img
-                  alt={article.metaTitle ?? article.title}
-                  className="mb-4 w-full rounded-lg object-cover"
-                  src={article.featuredImage}
-                />
-              )}
-              <h2 className="text-2xl font-semibold">{article.title}</h2>
-              <p className="text-muted-foreground mt-2">{article.excerpt}</p>
+              <a href={`/article/${article.slug}`}>
+                {article.featuredImage && (
+                  <img
+                    alt={article.metaTitle ?? article.title}
+                    className="mb-4 w-full rounded-lg object-cover"
+                    src={article.featuredImage}
+                  />
+                )}
+                <h2 className="text-2xl font-semibold hover:underline">
+                  {article.title}
+                </h2>
+                <p className="text-muted-foreground mt-2">{article.excerpt}</p>
+              </a>
               {article.createdAt && (
                 <time className="text-muted-foreground mt-4 block text-sm">
                   {new Date(article.createdAt).toLocaleDateString("id-ID", {

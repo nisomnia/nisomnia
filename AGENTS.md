@@ -73,6 +73,8 @@ https://viteplus.dev/guide/.
   `no-relative-parent-imports` enforced.
 - Use `import type { ... }` for type-only imports (separate-type-imports
   enforced).
+- When importing icons from `lucide-react`, always append `Icon` to the name
+  (e.g., `import { StarIcon } from 'lucide-react'`).
 
 ## Commands
 
