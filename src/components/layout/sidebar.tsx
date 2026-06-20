@@ -1,84 +1,116 @@
 "use client"
 
-import { Link } from "@tanstack/react-router"
-import { XIcon } from "lucide-react"
+import { Link, useRouterState } from "@tanstack/react-router"
+import { FileTextIcon, HomeIcon, SearchIcon } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import {
-  Sheet,
-  SheetClose,
-  SheetPopup,
-  SheetTitle,
-} from "@/components/ui/sheet"
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar"
 import { usePopularTopics } from "@/hooks/use-popular-topics"
 
-function TopicLinks() {
+const APP_TITLE =
+  (import.meta.env.PUBLIC_APP_TITLE as string | undefined) ?? "Nisomnia"
+
+function useActiveTopicSlug(): string | undefined {
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  })
+  const match = pathname.match(/^\/topic\/([^/]+)\/?/)
+  return match?.[1]
+}
+
+function TopicMenu() {
   const topicsQuery = usePopularTopics()
   const topics = topicsQuery.data ?? []
+  const activeSlug = useActiveTopicSlug()
 
   if (topics.length === 0) {
     return (
-      <p className="text-muted-foreground px-3 text-sm">No topics found.</p>
+      <p className="text-muted-foreground px-2 text-sm">No topics found.</p>
     )
   }
 
   return (
-    <nav aria-label="Topics" className="flex flex-col gap-1">
+    <>
       {topics.map((topic) => (
-        <Button
-          key={topic.slug}
-          className="justify-start"
-          render={<Link params={{ slug: topic.slug }} to="/topic/$slug" />}
-          variant="ghost"
-        >
-          {topic.title}
-        </Button>
+        <SidebarMenuItem key={topic.slug}>
+          <SidebarMenuButton
+            isActive={topic.slug === activeSlug}
+            render={<Link params={{ slug: topic.slug }} to="/topic/$slug" />}
+          >
+            {topic.title}
+          </SidebarMenuButton>
+        </SidebarMenuItem>
       ))}
-    </nav>
+    </>
   )
 }
 
-export function Sidebar({
-  mobileOpen,
-  onMobileOpenChange,
-}: {
-  mobileOpen: boolean
-  onMobileOpenChange: (open: boolean) => void
-}) {
-  return (
-    <>
-      {/* Desktop sidebar */}
-      <aside className="bg-background sticky top-16 hidden h-[calc(100vh-4rem)] w-60 flex-col border-e md:flex">
-        <ScrollArea className="flex-1 px-3 py-4">
-          <p className="text-muted-foreground mb-2 px-3 text-xs font-semibold tracking-wider uppercase">
-            Popular topics
-          </p>
-          <TopicLinks />
-        </ScrollArea>
-      </aside>
+function MainNav() {
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  })
 
-      {/* Mobile sidebar sheet */}
-      <Sheet onOpenChange={onMobileOpenChange} open={mobileOpen}>
-        <SheetPopup
-          className="w-[calc(100%-(--spacing(12)))] max-w-xs border-e"
-          showCloseButton={false}
-          side="left"
+  return (
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <SidebarMenuButton isActive={pathname === "/"} render={<Link to="/" />}>
+          <HomeIcon />
+          <span>Home</span>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+      <SidebarMenuItem>
+        <SidebarMenuButton
+          isActive={pathname.startsWith("/article")}
+          render={<Link to="/article" />}
         >
-          <div className="flex items-center justify-between p-4">
-            <SheetTitle className="font-heading text-lg font-semibold">
-              Topics
-            </SheetTitle>
-            <SheetClose render={<Button size="icon" variant="ghost" />}>
-              <XIcon />
-              <span className="sr-only">Close topics</span>
-            </SheetClose>
-          </div>
-          <ScrollArea className="h-[calc(100%-3.5rem)] px-3 py-2">
-            <TopicLinks />
-          </ScrollArea>
-        </SheetPopup>
-      </Sheet>
-    </>
+          <FileTextIcon />
+          <span>Articles</span>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+      <SidebarMenuItem>
+        <SidebarMenuButton render={<Link to="/article" search={{ q: "" }} />}>
+          <SearchIcon />
+          <span>Search</span>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    </SidebarMenu>
+  )
+}
+
+export function AppSidebar() {
+  return (
+    <Sidebar collapsible="offcanvas" side="left">
+      <SidebarHeader>
+        <Link className="flex items-center gap-2 px-2" to="/">
+          <img
+            alt={APP_TITLE}
+            className="size-8 rounded-md"
+            src="/icons/android-icon-192x192.png"
+          />
+          <span className="font-heading text-lg font-semibold group-data-[collapsible=icon]:hidden">
+            {APP_TITLE}
+          </span>
+        </Link>
+      </SidebarHeader>
+      <SidebarContent>
+        <SidebarGroup>
+          <MainNav />
+        </SidebarGroup>
+        <SidebarGroup className="flex-1">
+          <SidebarGroupLabel>Popular topics</SidebarGroupLabel>
+          <SidebarMenu>
+            <TopicMenu />
+          </SidebarMenu>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
   )
 }

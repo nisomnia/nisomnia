@@ -1,10 +1,11 @@
 "use client"
 
-import { Link, useNavigate } from "@tanstack/react-router"
-import { MenuIcon, SearchIcon, XIcon } from "lucide-react"
+import { useNavigate } from "@tanstack/react-router"
+import { SearchIcon, XIcon } from "lucide-react"
 import * as React from "react"
 
 import { Button } from "@/components/ui/button"
+import { Group } from "@/components/ui/group"
 import {
   InputGroup,
   InputGroupAddon,
@@ -16,10 +17,8 @@ import {
   SheetPopup,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { SidebarTrigger } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils/style"
-
-const APP_TITLE =
-  (import.meta.env.PUBLIC_APP_TITLE as string | undefined) ?? "Nisomnia"
 
 function SearchForm({
   className,
@@ -100,34 +99,23 @@ function MobileSearchSheet() {
   )
 }
 
-export function Header({ onMenuClick }: { onMenuClick?: () => void }) {
+export function Header() {
   return (
-    <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-b backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4">
-        <Link className="flex shrink-0 items-center gap-2" to="/">
-          <img
-            alt={APP_TITLE}
-            className="size-8 rounded-md"
-            src="/icons/android-icon-192x192.png"
-          />
-          <span className="font-heading hidden text-lg font-semibold sm:inline">
-            {APP_TITLE}
-          </span>
-        </Link>
-
-        <div className="hidden flex-1 justify-center lg:flex">
-          <div className="w-full max-w-md">
-            <SearchForm />
-          </div>
+    <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40 border-b backdrop-blur">
+      <div className="flex h-16 items-center gap-4 px-4">
+        <div className="flex w-10 items-center">
+          <SidebarTrigger />
         </div>
 
-        <div className="flex flex-1 items-center justify-end gap-1 lg:flex-none">
-          <div className="flex items-center lg:hidden">
+        <div className="flex flex-1 justify-center">
+          <Group className="hidden w-full max-w-md lg:flex">
+            <SearchForm className="flex-1" />
+          </Group>
+        </div>
+
+        <div className="flex w-10 items-center justify-end">
+          <div className="lg:hidden">
             <MobileSearchSheet />
-            <Button onClick={onMenuClick} size="icon" variant="ghost">
-              <MenuIcon />
-              <span className="sr-only">Open topics</span>
-            </Button>
           </div>
         </div>
       </div>
