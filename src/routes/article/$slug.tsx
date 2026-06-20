@@ -101,8 +101,8 @@ function ArticlePage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[200px_1fr_280px] xl:grid-cols-[280px_1fr_280px]">
-        <aside className="hidden lg:sticky lg:top-24 lg:flex lg:flex-col lg:items-end lg:self-start">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[280px_1fr_280px]">
+        <aside className="hidden lg:sticky lg:top-24 lg:flex lg:flex-col lg:items-center lg:self-start">
           <ArticleShareBar url={articleUrl} title={article.title} />
         </aside>
         <main className="min-w-0">

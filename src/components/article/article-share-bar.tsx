@@ -26,7 +26,7 @@ export function ArticleShareBar({ url, title }: ArticleShareBarProps) {
   }
 
   return (
-    <div className="flex flex-row items-center gap-3 lg:flex-col lg:justify-end">
+    <div className="flex flex-row items-center gap-3 lg:flex-col lg:items-center lg:justify-start">
       <Button
         variant="outline"
         size="icon"
