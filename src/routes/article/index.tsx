@@ -1,6 +1,7 @@
-import { useInfiniteQuery } from "@tanstack/react-query"
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 import { useEffect, useState } from "react"
+import { z } from "zod"
 
 import { fetchClient } from "@/api/client"
 import { Button } from "@/components/ui/button"
@@ -9,11 +10,16 @@ import { Spinner } from "@/components/ui/spinner"
 const PAGE_SIZE = 20
 const LANGUAGE = "id"
 
+const articleSearchSchema = z.object({
+  q: z.string().optional(),
+})
+
 export const Route = createFileRoute("/article/")({
   head: () => ({
     title: "Articles",
     meta: [{ name: "description", content: "Read all articles on Nisomnia" }],
   }),
+  validateSearch: articleSearchSchema,
   loader: async ({ context: { queryClient } }) => {
     await queryClient.prefetchInfiniteQuery({
       queryKey: ["articles", "by-language", LANGUAGE, PAGE_SIZE],
@@ -37,7 +43,26 @@ export const Route = createFileRoute("/article/")({
 })
 
 function ArticleListPage() {
-  const query = useInfiniteQuery({
+  const { q } = Route.useSearch()
+
+  const searchQuery = useQuery({
+    enabled: Boolean(q),
+    queryKey: ["articles", "search", LANGUAGE, q],
+    queryFn: () =>
+      fetchClient
+        .POST("/article/search", {
+          body: { language: LANGUAGE, limit: PAGE_SIZE, searchQuery: q ?? "" },
+        })
+        .then(({ data, error }) => {
+          if (error) throw error
+          return data ?? []
+        }),
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
+  })
+
+  const infiniteQuery = useInfiniteQuery({
+    enabled: !q,
     queryKey: ["articles", "by-language", LANGUAGE, PAGE_SIZE],
     queryFn: ({ pageParam }) =>
       fetchClient
@@ -60,25 +85,28 @@ function ArticleListPage() {
 
   const [autoLoad, setAutoLoad] = useState(false)
 
-  const articles =
-    query.data?.pages.flatMap((page) => page?.articles ?? []) ?? []
-  const hasNextPage = query.hasNextPage && !query.isError
-  const isFetchingNextPage = query.isFetchingNextPage
+  const articles = q
+    ? (searchQuery.data ?? [])
+    : (infiniteQuery.data?.pages.flatMap((page) => page?.articles ?? []) ?? [])
+  const isLoading = q ? searchQuery.isLoading : infiniteQuery.isLoading
+  const isError = q ? searchQuery.isError : infiniteQuery.isError
+  const hasNextPage = !q && infiniteQuery.hasNextPage && !infiniteQuery.isError
+  const isFetchingNextPage = !q && infiniteQuery.isFetchingNextPage
 
   useEffect(() => {
     if (autoLoad && hasNextPage && !isFetchingNextPage) {
-      query.fetchNextPage()
+      infiniteQuery.fetchNextPage()
     }
-  }, [autoLoad, hasNextPage, isFetchingNextPage, query.fetchNextPage])
+  }, [autoLoad, hasNextPage, isFetchingNextPage, infiniteQuery.fetchNextPage])
 
   function handleLoadMore() {
     setAutoLoad(true)
     if (!isFetchingNextPage) {
-      query.fetchNextPage()
+      infiniteQuery.fetchNextPage()
     }
   }
 
-  if (query.isLoading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8">
         <Spinner className="text-muted-foreground" />
@@ -86,7 +114,7 @@ function ArticleListPage() {
     )
   }
 
-  if (query.isError) {
+  if (isError) {
     return (
       <div className="p-8 text-center">
         <h1 className="text-4xl font-bold">Articles</h1>
@@ -97,7 +125,9 @@ function ArticleListPage() {
 
   return (
     <div className="mx-auto max-w-3xl p-8">
-      <h1 className="mb-8 text-4xl font-bold">Articles</h1>
+      <h1 className="mb-8 text-4xl font-bold">
+        {q ? `Search results for “${q}”` : "Articles"}
+      </h1>
       {articles.length === 0 ? (
         <p className="text-muted-foreground">No articles found.</p>
       ) : (

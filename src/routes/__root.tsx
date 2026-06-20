@@ -8,9 +8,14 @@ import {
 } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 
+import { fetchClient } from "@/api/client"
+import { Header } from "@/components/layout/header"
 import TanStackQueryDevtools from "@/lib/query/devtools"
 import { TanstackQueryProvider } from "@/lib/query/root-provider"
 import appCss from "@/styles.css?url"
+
+const LANGUAGE = "id"
+const POPULAR_LIMIT = 8
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -35,6 +40,21 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       },
     ],
   }),
+  loader: async ({ context: { queryClient } }) => {
+    await queryClient.prefetchQuery({
+      queryKey: ["topics", "popular", LANGUAGE, POPULAR_LIMIT],
+      queryFn: () =>
+        fetchClient
+          .POST("/topic/by-article-count", {
+            body: { language: LANGUAGE, perPage: POPULAR_LIMIT },
+          })
+          .then(({ data, error }) => {
+            if (error) throw error
+            return data ?? []
+          }),
+      staleTime: 5 * 60 * 1000,
+    })
+  },
   shellComponent: RootDocument,
 })
 
@@ -48,6 +68,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <TanstackQueryProvider queryClient={queryClient}>
+          <Header />
           {children}
           <TanStackDevtools
             config={{
