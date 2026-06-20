@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils/style"
 export const WhatsAppIcon = ({
   size,
   className,
-  color = "#000000",
+  color = "currentColor",
   background = "transparent",
   opacity = 1,
   rotation = 0,
