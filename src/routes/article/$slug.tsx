@@ -95,7 +95,7 @@ function ArticlePage() {
   const toc = headings.length > 0 && (
     <ArticleTableOfContents
       headings={headings}
-      variant={isMobile ? "collapsible" : "sidebar"}
+      variant={isMobile ? "collapsible" : "desktop-collapsible"}
     />
   )
 
@@ -148,10 +148,7 @@ function ArticlePage() {
           </div>
         </main>
         <aside className="hidden lg:sticky lg:top-24 lg:block lg:self-start">
-          <div className="rounded-lg border p-4">
-            <p className="mb-3 text-sm font-semibold">Table of Contents</p>
-            {!isMobile && toc}
-          </div>
+          {!isMobile && toc}
         </aside>
       </div>
       <div className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 lg:hidden">

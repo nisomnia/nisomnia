@@ -11,7 +11,7 @@ interface ArticleTableOfContentsProps {
     text: string
     level: number
   }[]
-  variant?: "sidebar" | "collapsible"
+  variant?: "sidebar" | "collapsible" | "desktop-collapsible"
 }
 
 export function ArticleTableOfContents({
@@ -19,7 +19,7 @@ export function ArticleTableOfContents({
   variant = "sidebar",
 }: ArticleTableOfContentsProps) {
   const [activeId, setActiveId] = useState<string | null>(null)
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(variant !== "collapsible")
 
   useEffect(() => {
     const elements = headings
@@ -90,18 +90,49 @@ export function ArticleTableOfContents({
     </ul>
   )
 
+  const mobileSummary = (
+    <summary className="flex cursor-pointer items-center justify-between p-3 text-sm font-semibold select-none">
+      Table of Contents
+      <ChevronDownIcon
+        className={cn("size-4 transition-transform", open && "rotate-180")}
+      />
+    </summary>
+  )
+
+  const desktopSummary = (
+    <summary className="relative flex cursor-pointer items-center justify-center p-3 text-sm font-semibold select-none">
+      <span className="px-6">Table of Contents</span>
+      <ChevronDownIcon
+        className={cn(
+          "absolute right-3 size-4 transition-transform",
+          open && "rotate-180",
+        )}
+      />
+    </summary>
+  )
+
   if (variant === "collapsible") {
     return (
       <details
         className="mb-6 rounded-lg border"
         onToggle={(e) => setOpen(e.currentTarget.open)}
       >
-        <summary className="flex cursor-pointer items-center justify-between p-3 text-sm font-semibold select-none">
-          Table of Contents
-          <ChevronDownIcon
-            className={cn("size-4 transition-transform", open && "rotate-180")}
-          />
-        </summary>
+        {mobileSummary}
+        <nav aria-label="Table of contents" className="border-t p-3 pt-2">
+          {list}
+        </nav>
+      </details>
+    )
+  }
+
+  if (variant === "desktop-collapsible") {
+    return (
+      <details
+        className="rounded-lg border"
+        open={open}
+        onToggle={(e) => setOpen(e.currentTarget.open)}
+      >
+        {desktopSummary}
         <nav aria-label="Table of contents" className="border-t p-3 pt-2">
           {list}
         </nav>
