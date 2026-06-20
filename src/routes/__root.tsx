@@ -17,6 +17,7 @@ import { AppSidebar } from "@/components/layout/sidebar"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import TanStackQueryDevtools from "@/lib/query/devtools"
 import { TanstackQueryProvider } from "@/lib/query/root-provider"
+import { ThemeProvider } from "@/lib/theme/provider"
 import appCss from "@/styles.css?url"
 
 const LANGUAGE = "id"
@@ -70,16 +71,24 @@ function RootDocument({ children }: { children: React.ReactNode }) {
     <html lang="en">
       <head>
         <HeadContent />
+        <link rel="stylesheet" href={appCss} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var k="theme",s=null,t="light";try{s=localStorage.getItem(k)}catch(e){}if(s==="light"||s==="dark"){t=s}else if(window.matchMedia("(prefers-color-scheme: dark)").matches){t="dark"}document.documentElement.classList.add(t)})();`,
+          }}
+        />
       </head>
       <body>
         <TanstackQueryProvider queryClient={queryClient}>
-          <SidebarProvider defaultOpen>
-            <AppSidebar />
-            <SidebarInset>
-              <Header />
-              {children}
-            </SidebarInset>
-          </SidebarProvider>
+          <ThemeProvider>
+            <SidebarProvider defaultOpen>
+              <AppSidebar />
+              <SidebarInset>
+                <Header />
+                {children}
+              </SidebarInset>
+            </SidebarProvider>
+          </ThemeProvider>
           <TanStackDevtools
             config={{
               position: "bottom-right",

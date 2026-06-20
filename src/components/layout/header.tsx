@@ -4,6 +4,7 @@ import { useNavigate } from "@tanstack/react-router"
 import { SearchIcon, XIcon } from "lucide-react"
 import * as React from "react"
 
+import { ThemeSwitcher } from "@/components/layout/theme-switcher"
 import { Button } from "@/components/ui/button"
 import { Group } from "@/components/ui/group"
 import {
@@ -113,7 +114,8 @@ export function Header() {
           </Group>
         </div>
 
-        <div className="flex w-10 items-center justify-end">
+        <div className="flex w-fit items-center justify-end gap-2">
+          <ThemeSwitcher />
           <div className="lg:hidden">
             <MobileSearchSheet />
           </div>
