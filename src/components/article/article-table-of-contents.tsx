@@ -14,6 +14,49 @@ interface ArticleTableOfContentsProps {
   variant?: "sidebar" | "collapsible" | "desktop-collapsible"
 }
 
+interface CollapsibleCardProps {
+  open: boolean
+  centeredTitle: boolean
+  className?: string
+  onToggle: (open: boolean) => void
+  children: React.ReactNode
+}
+
+function CollapsibleCard({
+  open,
+  centeredTitle,
+  className,
+  onToggle,
+  children,
+}: CollapsibleCardProps) {
+  return (
+    <details
+      className={cn("rounded-lg border", className)}
+      open={open}
+      onToggle={(e) => onToggle(e.currentTarget.open)}
+    >
+      <summary
+        className={cn(
+          "relative flex cursor-pointer items-center p-3 text-sm font-semibold select-none",
+          centeredTitle ? "justify-center" : "justify-between",
+        )}
+      >
+        <span className={cn(centeredTitle && "px-6")}>Table of Contents</span>
+        <ChevronDownIcon
+          className={cn(
+            "size-4 transition-transform",
+            centeredTitle ? "absolute right-3" : "relative",
+            open && "rotate-180",
+          )}
+        />
+      </summary>
+      <nav aria-label="Table of contents" className="border-t p-3 pt-2">
+        {children}
+      </nav>
+    </details>
+  )
+}
+
 export function ArticleTableOfContents({
   headings,
   variant = "sidebar",
@@ -90,53 +133,24 @@ export function ArticleTableOfContents({
     </ul>
   )
 
-  const mobileSummary = (
-    <summary className="flex cursor-pointer items-center justify-between p-3 text-sm font-semibold select-none">
-      Table of Contents
-      <ChevronDownIcon
-        className={cn("size-4 transition-transform", open && "rotate-180")}
-      />
-    </summary>
-  )
-
-  const desktopSummary = (
-    <summary className="relative flex cursor-pointer items-center justify-center p-3 text-sm font-semibold select-none">
-      <span className="px-6">Table of Contents</span>
-      <ChevronDownIcon
-        className={cn(
-          "absolute right-3 size-4 transition-transform",
-          open && "rotate-180",
-        )}
-      />
-    </summary>
-  )
-
   if (variant === "collapsible") {
     return (
-      <details
-        className="mb-6 rounded-lg border"
-        onToggle={(e) => setOpen(e.currentTarget.open)}
+      <CollapsibleCard
+        open={open}
+        centeredTitle={false}
+        className="mb-6"
+        onToggle={setOpen}
       >
-        {mobileSummary}
-        <nav aria-label="Table of contents" className="border-t p-3 pt-2">
-          {list}
-        </nav>
-      </details>
+        {list}
+      </CollapsibleCard>
     )
   }
 
   if (variant === "desktop-collapsible") {
     return (
-      <details
-        className="rounded-lg border"
-        open={open}
-        onToggle={(e) => setOpen(e.currentTarget.open)}
-      >
-        {desktopSummary}
-        <nav aria-label="Table of contents" className="border-t p-3 pt-2">
-          {list}
-        </nav>
-      </details>
+      <CollapsibleCard open={open} centeredTitle onToggle={setOpen}>
+        {list}
+      </CollapsibleCard>
     )
   }
 
