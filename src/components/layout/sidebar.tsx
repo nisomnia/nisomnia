@@ -1,7 +1,7 @@
 "use client"
 
 import { Link, useRouterState } from "@tanstack/react-router"
-import { FileTextIcon, HomeIcon, SearchIcon } from "lucide-react"
+import { FileTextIcon, HashIcon, HomeIcon, SearchIcon } from "lucide-react"
 
 import { Logo } from "@/components/layout/logo"
 import {
@@ -79,15 +79,20 @@ function MainNav() {
           <span>Search</span>
         </SidebarMenuButton>
       </SidebarMenuItem>
+      <SidebarMenuItem>
+        <SidebarMenuButton
+          isActive={pathname.startsWith("/topic")}
+          render={<Link to="/topic" />}
+        >
+          <HashIcon />
+          <span>Topics</span>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
     </SidebarMenu>
   )
 }
 
 export function AppSidebar() {
-  const pathname = useRouterState({
-    select: (state) => state.location.pathname,
-  })
-
   return (
     <Sidebar collapsible="offcanvas" side="left">
       <SidebarHeader>
@@ -101,14 +106,6 @@ export function AppSidebar() {
           <SidebarGroupLabel>Popular topics</SidebarGroupLabel>
           <SidebarMenu>
             <TopicMenu />
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                isActive={pathname === "/topic"}
-                render={<Link to="/topic" />}
-              >
-                <span className="text-muted-foreground">All topics</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
