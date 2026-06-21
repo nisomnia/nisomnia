@@ -152,6 +152,22 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       jsonLdScript(
         buildGraph([placeJsonLd(), organizationJsonLd(), websiteJsonLd()]),
       ),
+      {
+        src: "https://www.googletagmanager.com/gtag/js?id=G-0JB3NXP0QW",
+        async: true,
+        defer: true,
+      },
+      {
+        children: `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments)}
+gtag("js", new Date())
+gtag("config", "G-0JB3NXP0QW")`,
+      },
+      {
+        src: "https://analytics.yopem.com/script.js",
+        async: true,
+        "data-website-id": "dc9d1fa0-9691-48c7-83cd-1c79e16a80ca",
+      },
     ],
   }),
   shellComponent: RootDocument,
@@ -174,7 +190,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         <a
           href="#main-content"
-          className="bg-primary text-primary-foreground sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-md focus:px-4 focus:py-2 focus:text-sm focus:font-medium"
+          className="bg-primary text-primary-foreground sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-100 focus:rounded-md focus:px-4 focus:py-2 focus:text-sm focus:font-medium"
         >
           Lewati ke konten utama
         </a>
