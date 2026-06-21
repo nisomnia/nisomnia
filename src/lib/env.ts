@@ -9,7 +9,7 @@ export const env = createEnv({
     PUBLIC_APP_TITLE: z.string(),
   },
 
-  runtimeEnv: import.meta.env,
+  runtimeEnv: typeof process !== "undefined" ? process.env : import.meta.env,
   emptyStringAsUndefined: true,
 })
 
