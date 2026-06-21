@@ -84,6 +84,10 @@ function MainNav() {
 }
 
 export function AppSidebar() {
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  })
+
   return (
     <Sidebar collapsible="offcanvas" side="left">
       <SidebarHeader>
@@ -97,6 +101,14 @@ export function AppSidebar() {
           <SidebarGroupLabel>Popular topics</SidebarGroupLabel>
           <SidebarMenu>
             <TopicMenu />
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                isActive={pathname === "/topic"}
+                render={<Link to="/topic" />}
+              >
+                <span className="text-muted-foreground">View all topics</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
