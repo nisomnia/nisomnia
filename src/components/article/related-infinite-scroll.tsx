@@ -114,32 +114,36 @@ export function RelatedInfiniteScroll({
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold">Related Articles</h2>
-      <div className="grid gap-6 sm:grid-cols-2">
+      <div className="flex flex-col gap-4">
         {articles.map((article) => (
           <article
             key={article.id}
-            className="rounded-lg border p-4 transition-shadow hover:shadow-md"
+            className="flex gap-4 rounded-lg border p-4 transition-shadow hover:shadow-md"
           >
             {article.featuredImage && (
               <img
                 alt={article.metaTitle ?? article.title}
-                className="mb-3 aspect-video w-full rounded-lg object-cover"
+                className="aspect-[4/3] w-32 shrink-0 rounded-lg object-cover"
                 src={article.featuredImage}
               />
             )}
-            <h3 className="text-lg font-semibold">{article.title}</h3>
-            <p className="text-muted-foreground mt-1 text-sm">
-              {article.excerpt}
-            </p>
-            {article.createdAt && (
-              <time className="text-muted-foreground mt-2 block text-xs">
-                {new Date(article.createdAt).toLocaleDateString("id-ID", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </time>
-            )}
+            <div className="min-w-0 flex-1">
+              <h3 className="text-sm font-semibold sm:text-lg">
+                {article.title}
+              </h3>
+              <p className="text-muted-foreground mt-1 line-clamp-2 text-xs sm:text-sm">
+                {article.excerpt}
+              </p>
+              {article.createdAt && (
+                <time className="text-muted-foreground mt-2 block text-xs">
+                  {new Date(article.createdAt).toLocaleDateString("id-ID", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </time>
+              )}
+            </div>
           </article>
         ))}
       </div>
