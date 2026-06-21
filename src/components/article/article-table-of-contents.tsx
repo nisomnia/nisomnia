@@ -1,7 +1,7 @@
 "use client"
 
 import { ChevronDownIcon } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import { cn } from "@/lib/utils/style"
 
@@ -63,6 +63,18 @@ export function ArticleTableOfContents({
 }: ArticleTableOfContentsProps) {
   const [activeId, setActiveId] = useState<string | null>(null)
   const [open, setOpen] = useState(variant !== "collapsible")
+  const listRef = useRef<HTMLUListElement>(null)
+
+  useEffect(() => {
+    if (!activeId || !listRef.current) return
+
+    const activeLink = listRef.current.querySelector(
+      `a[href="#${CSS.escape(activeId)}"]`,
+    )
+    if (!(activeLink instanceof HTMLElement)) return
+
+    activeLink.scrollIntoView({ behavior: "smooth", block: "nearest" })
+  }, [activeId])
 
   useEffect(() => {
     const elements = headings.reduce<HTMLElement[]>((acc, heading) => {
@@ -112,7 +124,10 @@ export function ArticleTableOfContents({
   if (headings.length === 0) return null
 
   const list = (
-    <ul className="flex flex-col gap-1">
+    <ul
+      ref={listRef}
+      className="flex max-h-[calc(100dvh-8rem)] flex-col gap-1 overflow-y-auto pr-1"
+    >
       {headings.map((heading) => (
         <li
           key={heading.id}
