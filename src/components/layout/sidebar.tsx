@@ -91,7 +91,7 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="offcanvas" side="left">
       <SidebarHeader>
-        <Logo showText className="px-2" />
+        <Logo showText className="text-primary px-2" />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
