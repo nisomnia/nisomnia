@@ -27,14 +27,15 @@ export function ArticleCard({
       className={cn("block rounded-lg p-2 transition-shadow", className)}
     >
       {featuredImage && (
-        <Image
-          src={featuredImage}
-          alt={title}
-          layout="fullWidth"
-          aspectRatio={16 / 9}
-          objectFit="cover"
-          className="mb-4 rounded-lg"
-        />
+        <div className="mb-4 aspect-video w-full overflow-hidden rounded-lg">
+          <Image
+            src={featuredImage}
+            alt={title}
+            layout="fullWidth"
+            aspectRatio={16 / 9}
+            className="h-full w-full object-cover"
+          />
+        </div>
       )}
       <h2
         className={cn(
