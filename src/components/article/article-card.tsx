@@ -39,7 +39,7 @@ export function ArticleCard({
       )}
       <h2
         className={cn(
-          "line-clamp-2 text-sm font-semibold hover:underline sm:text-base md:text-lg",
+          "line-clamp-3 text-lg font-semibold hover:underline",
           titleClassName,
         )}
       >
