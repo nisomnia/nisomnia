@@ -16,7 +16,7 @@ export function TopicsList({ topics }: { topics: Topic[] }) {
           render={<Link params={{ slug: topic.slug }} to="/topic/$slug" />}
           variant="outline"
           size="lg"
-          className="h-auto min-h-[4.5rem] justify-start px-5 py-4 text-left text-base font-normal"
+          className="h-auto min-h-18 justify-start px-5 py-4 text-left text-base font-normal"
         >
           <span className="line-clamp-2">{topic.title}</span>
         </Button>
