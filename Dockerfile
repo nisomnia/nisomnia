@@ -29,6 +29,8 @@ ARG PUBLIC_APP_TITLE
 ENV PUBLIC_API_URL=$PUBLIC_API_URL
 ENV PUBLIC_APP_TITLE=$PUBLIC_APP_TITLE
 
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
 COPY --from=build /app/.output ./.output
 EXPOSE 3000
 
