@@ -23,7 +23,13 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=3000
+
+ARG PUBLIC_API_URL
+ARG PUBLIC_APP_TITLE
+ENV PUBLIC_API_URL=$PUBLIC_API_URL
+ENV PUBLIC_APP_TITLE=$PUBLIC_APP_TITLE
+
 COPY --from=build /app/.output ./.output
 EXPOSE 3000
 
-CMD ["bun", "run", "--env-file=.env", "./.output/server/index.mjs"]
+CMD ["bun", "run", "./.output/server/index.mjs"]
