@@ -1,7 +1,5 @@
 import { Link } from "@tanstack/react-router"
 
-import { Card, CardHeader, CardPanel, CardTitle } from "@/components/ui/card"
-
 export function ArticleCard({
   title,
   slug,
@@ -14,32 +12,26 @@ export function ArticleCard({
   excerpt?: string
 }) {
   return (
-    <Link to="/article/$slug" params={{ slug }} className="group block">
-      <Card className="h-full overflow-hidden transition-shadow hover:shadow-md">
-        {featuredImage ? (
-          <div className="aspect-video w-full overflow-hidden">
-            <img
-              src={featuredImage}
-              alt={title}
-              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-            />
-          </div>
-        ) : (
-          <div className="bg-muted aspect-video w-full" />
-        )}
-        <CardHeader>
-          <CardTitle className="line-clamp-2 text-sm leading-snug">
-            {title}
-          </CardTitle>
-        </CardHeader>
-        {excerpt && (
-          <CardPanel className="pt-0">
-            <p className="text-muted-foreground line-clamp-2 text-xs">
-              {excerpt}
-            </p>
-          </CardPanel>
-        )}
-      </Card>
+    <Link
+      to="/article/$slug"
+      params={{ slug }}
+      className="block rounded-lg border p-6 transition-shadow hover:shadow-md"
+    >
+      {featuredImage && (
+        <img
+          src={featuredImage}
+          alt={title}
+          className="mb-4 aspect-video w-full rounded-lg object-cover"
+        />
+      )}
+      <h2 className="line-clamp-2 text-sm font-semibold hover:underline sm:text-base md:text-lg">
+        {title}
+      </h2>
+      {excerpt && (
+        <p className="text-muted-foreground mt-2 line-clamp-3 text-xs sm:text-sm">
+          {excerpt}
+        </p>
+      )}
     </Link>
   )
 }

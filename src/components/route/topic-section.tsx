@@ -10,7 +10,7 @@ import { Spinner } from "@/components/ui/spinner"
 import { fetchClient } from "@/lib/api/client"
 
 const LANGUAGE = "id"
-const ARTICLES_PER_TOPIC = 5
+const ARTICLES_PER_TOPIC = 4
 
 type ArticleResponse =
   operations["articleByTopicId"]["responses"][200]["content"]["application/json"]
@@ -80,7 +80,7 @@ export function TopicSection({ label, slug }: { label: string; slug: string }) {
           </Button>
         </div>
       )}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {isLoading ? (
           <div className="col-span-full flex h-64 items-center justify-center">
             <Spinner />
