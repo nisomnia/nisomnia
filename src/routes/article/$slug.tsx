@@ -147,6 +147,20 @@ function ArticlePage() {
               className="prose max-w-none space-y-4"
               dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(html) }}
             />
+            {article.topics.length > 0 && (
+              <div className="mt-8 flex flex-wrap gap-2">
+                {article.topics.map((topic) => (
+                  <Link
+                    key={topic.id}
+                    to="/topic/$slug"
+                    params={{ slug: topic.slug }}
+                    className="bg-muted text-muted-foreground hover:bg-muted/80 rounded-full px-3 py-1 text-xs font-medium"
+                  >
+                    {topic.title}
+                  </Link>
+                ))}
+              </div>
+            )}
           </article>
           <div className="mt-12">
             <RelatedInfiniteScroll currentSlug={slug} />
