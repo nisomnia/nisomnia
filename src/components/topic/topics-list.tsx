@@ -9,7 +9,7 @@ type Topic =
 
 export function TopicsList({ topics }: { topics: Topic[] }) {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
       {topics.map((topic) => (
         <Button
           key={topic.id}
