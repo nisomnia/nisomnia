@@ -7,6 +7,12 @@ COPY package.json bun.lock bunfig.toml ./
 RUN bun install --frozen-lockfile
 
 FROM base AS build
+
+ARG PUBLIC_API_URL
+ARG PUBLIC_APP_TITLE
+ENV PUBLIC_API_URL=$PUBLIC_API_URL
+ENV PUBLIC_APP_TITLE=$PUBLIC_APP_TITLE
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN bun run generate-routes
