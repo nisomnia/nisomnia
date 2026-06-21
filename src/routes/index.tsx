@@ -1,6 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { Link, createFileRoute } from "@tanstack/react-router"
 
 import { TopicSection } from "@/components/route/topic-section"
+import { Button } from "@/components/ui/button"
 
 export const Route = createFileRoute("/")({
   ssr: "data-only",
@@ -21,6 +22,10 @@ function Home() {
       {TOPIC_SLUGS.map(({ label, slug }) => (
         <TopicSection key={slug} label={label} slug={slug} />
       ))}
+
+      <div className="flex justify-center pt-4">
+        <Button render={<Link to="/article" />}>Lihat semua artikel</Button>
+      </div>
     </div>
   )
 }

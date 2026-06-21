@@ -28,20 +28,33 @@ export const Route = createFileRoute("/article/")({
       initialPageParam: null as string | null,
     })
   },
-  head: () => ({
-    title: "Articles",
-    meta: [{ name: "description", content: "Read all articles on Nisomnia" }],
-  }),
+  head: ({ match }) => {
+    const q = (match.search as { q?: string }).q?.trim()
+    return {
+      title: q ? `Search: ${q}` : "Articles",
+      meta: [
+        {
+          name: "description",
+          content: q
+            ? `Search results for "${q}" on Nisomnia`
+            : "Read all articles on Nisomnia",
+        },
+      ],
+    }
+  },
   component: ArticleListPage,
 })
 
 function ArticleListPage() {
   const { q } = Route.useSearch()
+  const searchQuery = q?.trim()
+  const isSearching = Boolean(searchQuery)
+
   const {
     data: searchData,
     isLoading: searchIsLoading,
     isError: searchIsError,
-  } = useArticleSearch(q, PAGE_SIZE)
+  } = useArticleSearch(searchQuery, PAGE_SIZE)
   const {
     data: infiniteData,
     isLoading: infiniteIsLoading,
@@ -51,23 +64,39 @@ function ArticleListPage() {
     fetchNextPage: infiniteFetchNextPage,
   } = useArticlesByLanguageInfinite(PAGE_SIZE)
 
-  const articles = (searchData ?? []).concat(
-    infiniteData?.pages.flatMap((page) => page?.articles ?? []) ?? [],
-  )
-  const isLoading = searchIsLoading || infiniteIsLoading
-  const isError = searchIsError || infiniteIsError
-  const hasNextPage = infiniteHasNextPage && !infiniteIsError
-  const isFetchingNextPage = infiniteIsFetchingNextPage
+  const searchResults = searchData ?? []
+  const listArticles =
+    infiniteData?.pages.flatMap((page) => page?.articles ?? []) ?? []
+  const articles = isSearching ? searchResults : listArticles
+
+  const isLoading = isSearching ? searchIsLoading : infiniteIsLoading
+  const isError = isSearching ? searchIsError : infiniteIsError
+
+  const hasNextPage = !isSearching && infiniteHasNextPage && !infiniteIsError
+  const isFetchingNextPage = !isSearching && infiniteIsFetchingNextPage
 
   function handleLoadMore() {
-    if (!isFetchingNextPage) {
+    if (!infiniteIsFetchingNextPage) {
       infiniteFetchNextPage()
     }
   }
 
   return (
     <div className="mx-auto max-w-3xl p-8">
-      <h1 className="text-3xl font-bold">Articles</h1>
+      {isSearching ? (
+        <div className="space-y-1">
+          <h1 className="text-3xl font-bold">Search results</h1>
+          <p className="text-muted-foreground">
+            {isLoading
+              ? "Searching..."
+              : `Found ${articles.length} ${
+                  articles.length === 1 ? "article" : "articles"
+                } for "${searchQuery}"`}
+          </p>
+        </div>
+      ) : (
+        <h1 className="text-3xl font-bold">Articles</h1>
+      )}
 
       {isLoading && (
         <div className="mt-8 flex justify-center">
@@ -80,7 +109,11 @@ function ArticleListPage() {
       )}
 
       {!isLoading && !isError && articles.length === 0 && (
-        <p className="text-muted-foreground">No articles found.</p>
+        <p className="text-muted-foreground mt-8">
+          {isSearching
+            ? `No articles found for "${searchQuery}".`
+            : "No articles found."}
+        </p>
       )}
 
       <div className="space-y-6">
