@@ -10,6 +10,7 @@ import { Card, CardHeader, CardPanel, CardTitle } from "@/components/ui/card"
 import { Spinner } from "@/components/ui/spinner"
 
 export const Route = createFileRoute("/")({
+  ssr: "data-only",
   component: Home,
 })
 
