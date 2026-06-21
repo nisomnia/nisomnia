@@ -1,6 +1,7 @@
 "use client"
 
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
+import { Link } from "@tanstack/react-router"
 import { useEffect, useRef } from "react"
 
 import { Spinner } from "@/components/ui/spinner"
@@ -116,14 +117,16 @@ export function RelatedInfiniteScroll({
       <h2 className="text-2xl font-bold">Related Articles</h2>
       <div className="flex flex-col gap-4">
         {articles.map((article) => (
-          <article
+          <Link
             key={article.id}
+            to="/article/$slug"
+            params={{ slug: article.slug }}
             className="flex gap-4 rounded-lg border p-4 transition-shadow hover:shadow-md"
           >
             {article.featuredImage && (
               <img
                 alt={article.metaTitle ?? article.title}
-                className="aspect-[4/3] w-32 shrink-0 rounded-lg object-cover"
+                className="aspect-[4/3] w-20 shrink-0 rounded-lg object-cover sm:w-32"
                 src={article.featuredImage}
               />
             )}
@@ -144,7 +147,7 @@ export function RelatedInfiniteScroll({
                 </time>
               )}
             </div>
-          </article>
+          </Link>
         ))}
       </div>
       <div ref={sentinelRef} className="h-4" />
