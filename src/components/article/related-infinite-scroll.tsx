@@ -1,6 +1,7 @@
 "use client"
 
 import { Link } from "@tanstack/react-router"
+import { Image } from "@unpic/react"
 import { useEffect, useRef } from "react"
 
 import { Spinner } from "@/components/ui/spinner"
@@ -96,11 +97,15 @@ export function RelatedInfiniteScroll({
             className="flex gap-4 rounded-lg p-2 transition-shadow"
           >
             {article.featuredImage && (
-              <img
-                alt={article.metaTitle ?? article.title}
-                className="aspect-4/3 w-20 shrink-0 rounded-lg object-cover sm:w-32"
-                src={article.featuredImage}
-              />
+              <div className="aspect-4/3 w-20 shrink-0 overflow-hidden rounded-lg sm:w-32">
+                <Image
+                  src={article.featuredImage}
+                  alt={article.metaTitle ?? article.title}
+                  layout="fullWidth"
+                  aspectRatio={16 / 9}
+                  className="h-full w-full object-cover"
+                />
+              </div>
             )}
             <div className="min-w-0 flex-1">
               <h3 className="text-sm font-semibold hover:underline sm:text-lg">

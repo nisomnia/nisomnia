@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router"
+import { Image } from "@unpic/react"
 
 import { cn } from "@/lib/utils/style"
 
@@ -26,10 +27,13 @@ export function ArticleCard({
       className={cn("block rounded-lg p-2 transition-shadow", className)}
     >
       {featuredImage && (
-        <img
+        <Image
           src={featuredImage}
           alt={title}
-          className="mb-4 aspect-video w-full rounded-lg object-cover"
+          layout="fullWidth"
+          aspectRatio={16 / 9}
+          objectFit="cover"
+          className="mb-4 rounded-lg"
         />
       )}
       <h2

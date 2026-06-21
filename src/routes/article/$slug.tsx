@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
+import { Image } from "@unpic/react"
 import DOMPurify from "isomorphic-dompurify"
 import { useMemo } from "react"
 
@@ -117,10 +118,14 @@ function ArticlePage() {
         <main className="min-w-0">
           <article>
             {article.featuredImage && (
-              <img
-                alt={article.metaTitle ?? article.title}
-                className="mb-6 aspect-video w-full rounded-lg object-cover"
+              <Image
                 src={article.featuredImage}
+                alt={article.metaTitle ?? article.title}
+                layout="fullWidth"
+                aspectRatio={16 / 9}
+                objectFit="cover"
+                priority
+                className="mb-6 rounded-lg"
               />
             )}
             <h1 className="mb-4 text-3xl font-bold md:text-4xl">
