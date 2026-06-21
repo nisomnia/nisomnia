@@ -1,14 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { Image } from "@unpic/react"
-import DOMPurify from "isomorphic-dompurify"
 import { useMemo } from "react"
 
+import { ArticleContent } from "@/components/article/article-content"
 import { ArticleShareBar } from "@/components/article/article-share-bar"
 import { ArticleTableOfContents } from "@/components/article/article-table-of-contents"
 import { RelatedInfiniteScroll } from "@/components/article/related-infinite-scroll"
 import { Button } from "@/components/ui/button"
 import { useIsMobile } from "@/hooks/use-media-query"
 import { fetchClient } from "@/lib/api/client"
+import { parseContent } from "@/lib/parse-content"
 
 interface Author {
   id: string
@@ -77,10 +78,14 @@ function ArticlePage() {
   const article = Route.useLoaderData()
   const isMobile = useIsMobile()
 
-  const { html, headings } = useMemo(() => {
-    if (!article?.content) return { html: "", headings: [] }
-    return extractHeadings(article.content)
-  }, [article?.content])
+  const { parts, headings } = useMemo(() => {
+    if (!article?.content) return { parts: [], headings: [] }
+    const withHeadings = extractHeadings(article.content)
+    return {
+      parts: parseContent(withHeadings.html, article.title),
+      headings: withHeadings.headings,
+    }
+  }, [article?.content, article?.title])
 
   if (!article) {
     return (
@@ -148,10 +153,7 @@ function ArticlePage() {
               )}
             </div>
             {isMobile && toc}
-            <div
-              className="prose max-w-none space-y-4"
-              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(html) }}
-            />
+            <ArticleContent parts={parts} />
             {article.topics.length > 0 && (
               <div className="mt-8 flex flex-wrap gap-2">
                 {article.topics.map((topic) => (

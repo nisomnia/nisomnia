@@ -89,11 +89,13 @@ body {
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
   @keyframes skeleton {
     to {
       background-position: -200% 0;
     }
   }
+
   @keyframes caret-blink {
     0%,
     70%,
@@ -105,6 +107,7 @@ body {
       opacity: 0;
     }
   }
+
   @keyframes toast-success-odd {
     0% {
       scale: 1;
@@ -119,6 +122,7 @@ body {
       scale: 1;
     }
   }
+
   @keyframes toast-error-odd {
     0% {
       translate: 0 0;
@@ -136,6 +140,7 @@ body {
       translate: 0 0;
     }
   }
+
   @keyframes toast-success-even {
     0% {
       scale: 1;
@@ -150,6 +155,7 @@ body {
       scale: 1;
     }
   }
+
   @keyframes toast-error-even {
     0% {
       translate: 0 0;
@@ -290,18 +296,22 @@ body {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   code,
   kbd,
   samp,
   pre {
     font-family: var(--font-mono);
   }
+
   html {
-    @apply font-mono font-sans;
+    @apply font-sans;
   }
+
   :target {
     scroll-margin-top: 5rem;
   }
@@ -312,6 +322,122 @@ body {
   h5,
   h6 {
     scroll-margin-top: 5rem;
+  }
+
+  ins.adsbygoogle[data-ad-status="unfilled"] {
+    display: none !important;
+  }
+
+  .article-content,
+  .tiptap {
+    @apply space-y-2 wrap-break-word;
+  }
+
+  .article-content p,
+  .tiptap p {
+    @apply text-base md:text-lg;
+  }
+
+  .article-content h1 {
+    @apply text-2xl font-bold md:text-4xl;
+  }
+
+  .article-content h2 {
+    @apply text-xl font-bold md:text-3xl;
+  }
+
+  .article-content h3 {
+    @apply text-lg font-bold md:text-2xl;
+  }
+
+  .article-content h4 {
+    @apply text-base font-bold md:text-xl;
+  }
+
+  .article-content h5 {
+    @apply text-base font-bold md:text-lg;
+  }
+
+  .article-content h1,
+  .article-content h2,
+  .article-content h3,
+  .article-content h4,
+  .article-content h5,
+  .article-content p,
+  .tiptap h1,
+  .tiptap h2,
+  .tiptap h3,
+  .tiptap h4,
+  .tiptap h5,
+  .tiptap p {
+    @apply py-2;
+  }
+
+  .article-content a {
+    @apply font-semibold text-sky-900 underline duration-200 hover:text-sky-950;
+  }
+
+  .tiptap a {
+    @apply font-semibold text-red-500 underline duration-200 hover:text-red-400;
+  }
+
+  .article-content ul li,
+  .tiptap ul li {
+    @apply ml-12 list-disc;
+  }
+
+  .article-content ol li,
+  .tiptap ol li {
+    @apply ml-12 list-decimal;
+  }
+
+  .article-content blockquote,
+  .tiptap blockquote {
+    @apply border-border my-4 rounded-sm border-l-4 p-4 italic;
+  }
+
+  .article-content img,
+  .tiptap img {
+    @apply relative! h-auto! w-auto! max-w-full rounded-md object-cover;
+  }
+
+  .article-content pre,
+  .tiptap pre {
+    @apply rounded-lg bg-black px-3 py-2 font-mono text-white;
+  }
+
+  .article-content code,
+  .tiptap code {
+    @apply bg-[none] p-0 text-xs text-inherit;
+  }
+
+  .article-content table th,
+  .tiptap table th {
+    @apply bg-[#f1f3f5] text-left font-bold;
+  }
+
+  .article-content table td,
+  .article-content table th,
+  .tiptap table td,
+  .tiptap table th {
+    @apply relative box-border min-w-[1em] border-2 border-[#ced4da] px-1.25 py-0.75 align-top;
+  }
+
+  .article-content table .selectedCell:after {
+    @apply pointer-events-none absolute top-0 right-0 bottom-0 left-0 z-20 bg-[#c8c8ff66];
+  }
+
+  .article-content table .column-resize-handle {
+    @apply pointer-events-none absolute top-0 -right-0.5 -bottom-0.5 w-1 bg-[#adf];
+  }
+
+  .article-content table,
+  .tiptap table {
+    @apply m-0 w-full max-w-[calc(100%-10px)] table-fixed border-collapse overflow-hidden;
+  }
+
+  .article-content iframe {
+    @apply relative mx-auto my-0 aspect-video h-auto w-full rounded-md align-baseline;
   }
 }
 
