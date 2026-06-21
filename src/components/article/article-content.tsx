@@ -6,7 +6,7 @@ import type { ContentPart } from "@/lib/parse-content"
 
 function YouTubeEmbed({ videoId }: { videoId: string }) {
   return (
-    <div className="relative my-6 aspect-video w-full overflow-hidden rounded-lg">
+    <div className="relative my-2 aspect-video w-full overflow-hidden rounded-lg">
       <iframe
         className="absolute inset-0 h-full w-full"
         src={`https://www.youtube-nocookie.com/embed/${videoId}`}
@@ -26,7 +26,7 @@ function ContentPartView({ part }: { part: ContentPart }) {
         src={part.src}
         alt={part.alt}
         layout="fullWidth"
-        className="my-6 rounded-lg"
+        className="my-2 rounded-lg"
       />
     )
   }
@@ -36,7 +36,7 @@ function ContentPartView({ part }: { part: ContentPart }) {
   if (part.type === "ad") {
     return (
       <div
-        className="my-6"
+        className="my-2"
         dangerouslySetInnerHTML={{ __html: part.content }}
       />
     )
