@@ -34,4 +34,4 @@ User-agent: magpie-crawler
 User-agent: meta-externalagent
 Disallow: /
 
-Sitemap: https://nisomnia.com/sitemap-index.xml
+Sitemap: https://nisomnia.com/sitemap.xml
