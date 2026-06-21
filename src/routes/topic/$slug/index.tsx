@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { ArticleCard } from "@/components/route/article-card"
+import { ArticleCard } from "@/components/article/article-card"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import {

@@ -2,7 +2,7 @@
 
 import { createFileRoute } from "@tanstack/react-router"
 
-import { TopicsList } from "@/components/route/topics-list"
+import { TopicsList } from "@/components/topic/topics-list"
 import { Spinner } from "@/components/ui/spinner"
 import {
   prefetchTopicsByArticleCount,

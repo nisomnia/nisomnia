@@ -1,6 +1,6 @@
 import { Link, createFileRoute } from "@tanstack/react-router"
 
-import { TopicSection } from "@/components/route/topic-section"
+import { TopicSection } from "@/components/topic/topic-section"
 import { Button } from "@/components/ui/button"
 
 export const Route = createFileRoute("/")({

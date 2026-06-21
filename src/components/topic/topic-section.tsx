@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router"
 import { ChevronRightIcon } from "lucide-react"
 
-import { ArticleCard } from "@/components/route/article-card"
+import { ArticleCard } from "@/components/article/article-card"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import {
