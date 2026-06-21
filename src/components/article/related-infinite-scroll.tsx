@@ -91,17 +91,17 @@ export function RelatedInfiniteScroll({
             key={article.id}
             to="/article/$slug"
             params={{ slug: article.slug }}
-            className="flex gap-4 rounded-lg border p-4 transition-shadow hover:shadow-md"
+            className="flex gap-4 rounded-lg p-2 transition-shadow"
           >
             {article.featuredImage && (
               <img
                 alt={article.metaTitle ?? article.title}
-                className="aspect-[4/3] w-20 shrink-0 rounded-lg object-cover sm:w-32"
+                className="aspect-4/3 w-20 shrink-0 rounded-lg object-cover sm:w-32"
                 src={article.featuredImage}
               />
             )}
             <div className="min-w-0 flex-1">
-              <h3 className="text-sm font-semibold sm:text-lg">
+              <h3 className="text-sm font-semibold hover:underline sm:text-lg">
                 {article.title}
               </h3>
               <p className="text-muted-foreground mt-1 line-clamp-2 text-xs sm:text-sm">
