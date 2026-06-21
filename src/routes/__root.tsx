@@ -47,9 +47,79 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "theme-color", content: "#ffffff" },
+      { name: "msapplication-config", content: "/icons/Browserconfig.xml" },
       { title: "TanStack Start Starter" },
     ],
-    links: [{ rel: "stylesheet", href: appCss }],
+    links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "icon", type: "image/x-icon", href: "/icons/Favicon.ico" },
+      {
+        rel: "icon",
+        type: "image/png",
+        sizes: "16x16",
+        href: "/icons/Favicon-16x16.png",
+      },
+      {
+        rel: "icon",
+        type: "image/png",
+        sizes: "32x32",
+        href: "/icons/Favicon-32x32.png",
+      },
+      {
+        rel: "icon",
+        type: "image/png",
+        sizes: "96x96",
+        href: "/icons/Favicon-96x96.png",
+      },
+      {
+        rel: "apple-touch-icon",
+        sizes: "57x57",
+        href: "/icons/Apple-icon-57x57.png",
+      },
+      {
+        rel: "apple-touch-icon",
+        sizes: "60x60",
+        href: "/icons/Apple-icon-60x60.png",
+      },
+      {
+        rel: "apple-touch-icon",
+        sizes: "72x72",
+        href: "/icons/Apple-icon-72x72.png",
+      },
+      {
+        rel: "apple-touch-icon",
+        sizes: "76x76",
+        href: "/icons/Apple-icon-76x76.png",
+      },
+      {
+        rel: "apple-touch-icon",
+        sizes: "114x114",
+        href: "/icons/Apple-icon-114x114.png",
+      },
+      {
+        rel: "apple-touch-icon",
+        sizes: "120x120",
+        href: "/icons/Apple-icon-120x120.png",
+      },
+      {
+        rel: "apple-touch-icon",
+        sizes: "144x144",
+        href: "/icons/Apple-icon-144x144.png",
+      },
+      {
+        rel: "apple-touch-icon",
+        sizes: "152x152",
+        href: "/icons/Apple-icon-152x152.png",
+      },
+      {
+        rel: "apple-touch-icon",
+        sizes: "180x180",
+        href: "/icons/Apple-icon-180x180.png",
+      },
+      { rel: "apple-touch-icon", href: "/icons/Apple-icon.png" },
+      { rel: "manifest", href: "/icons/Manifest.json" },
+    ],
   }),
   shellComponent: RootDocument,
 })
