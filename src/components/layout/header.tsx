@@ -7,9 +7,11 @@ import * as React from "react"
 import { ThemeSwitcher } from "@/components/layout/theme-switcher"
 import { Button } from "@/components/ui/button"
 import { Group } from "@/components/ui/group"
-import { InputGroup } from "@/components/ui/input-group"
-import { InputGroupAddon } from "@/components/ui/input-group-addon"
-import { InputGroupInput } from "@/components/ui/input-group-input"
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group"
 import {
   Sheet,
   SheetClose,
@@ -100,7 +102,7 @@ function MobileSearchSheet() {
 
 export function Header() {
   return (
-    <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40 border-b backdrop-blur">
+    <header className="bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 z-40 border-b backdrop-blur">
       <div className="flex h-16 items-center gap-4 px-4">
         <div className="flex w-10 items-center">
           <SidebarTrigger />

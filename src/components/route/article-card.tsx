@@ -1,9 +1,6 @@
 import { Link } from "@tanstack/react-router"
 
-import { Card } from "@/components/ui/card"
-import { CardHeader } from "@/components/ui/card-header"
-import { CardPanel } from "@/components/ui/card-panel"
-import { CardTitle } from "@/components/ui/card-title"
+import { Card, CardHeader, CardPanel, CardTitle } from "@/components/ui/card"
 
 export function ArticleCard({
   title,
