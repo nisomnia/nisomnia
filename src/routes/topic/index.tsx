@@ -13,11 +13,14 @@ const PER_PAGE = 100
 export const Route = createFileRoute("/topic/")({
   loader: async ({ context: { queryClient } }) => {
     await queryClient.prefetchQuery({
-      queryKey: ["topics", "all", LANGUAGE],
+      queryKey: ["topics", "all", "by-article-count", LANGUAGE],
       queryFn: async () => {
-        const { data, error } = await fetchClient.POST("/topic/by-language", {
-          body: { language: LANGUAGE, page: 1, perPage: PER_PAGE },
-        })
+        const { data, error } = await fetchClient.POST(
+          "/topic/by-article-count",
+          {
+            body: { language: LANGUAGE, page: 1, perPage: PER_PAGE },
+          },
+        )
         if (error) throw error
         return data ?? []
       },

@@ -106,7 +106,7 @@ export function AppSidebar() {
                 isActive={pathname === "/topic"}
                 render={<Link to="/topic" />}
               >
-                <span className="text-muted-foreground">View all topics</span>
+                <span className="text-muted-foreground">All topics</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>

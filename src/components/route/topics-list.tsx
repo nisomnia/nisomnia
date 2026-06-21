@@ -5,7 +5,7 @@ import type { operations } from "@/lib/api/types"
 import { Button } from "@/components/ui/button"
 
 type Topic =
-  operations["topicByLanguage"]["responses"][200]["content"]["application/json"][number]
+  operations["topicByArticleCount"]["responses"][200]["content"]["application/json"][number]
 
 export function TopicsList({ topics }: { topics: Topic[] }) {
   return (
