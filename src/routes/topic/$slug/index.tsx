@@ -4,14 +4,21 @@ import { ArticleCard } from "@/components/article/article-card"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import {
-  fetchArticlesByTopicIdInfinite,
+  prefetchArticlesByTopicId,
   useArticlesByTopicIdInfinite,
 } from "@/hooks/api/article"
+import { fetchTopicBySlug, useTopicBySlug } from "@/hooks/api/topic"
+import { siteConfig } from "@/lib/seo/config"
 import {
-  fetchTopicBySlug,
-  prefetchTopicBySlug,
-  useTopicBySlug,
-} from "@/hooks/api/topic"
+  breadcrumbJsonLd,
+  buildGraph,
+  collectionPageJsonLd,
+  jsonLdScript,
+  organizationJsonLd,
+  placeJsonLd,
+  websiteJsonLd,
+} from "@/lib/seo/json-ld"
+import { buildSeoMeta } from "@/lib/seo/meta"
 
 const PAGE_SIZE = 20
 
@@ -19,19 +26,51 @@ export const Route = createFileRoute("/topic/$slug/")({
   loader: async ({ params, context: { queryClient } }) => {
     const topic = await fetchTopicBySlug(params.slug)
     if (topic) {
-      await queryClient.prefetchInfiniteQuery({
-        queryKey: ["articles", "by-topic", topic.id, "id", PAGE_SIZE] as const,
-        queryFn: ({ pageParam }) =>
-          fetchArticlesByTopicIdInfinite(topic.id, PAGE_SIZE, pageParam),
-        initialPageParam: null as string | null,
-      })
+      await prefetchArticlesByTopicId(queryClient, topic.id, PAGE_SIZE)
     }
-    await prefetchTopicBySlug(queryClient, params.slug)
+    return topic
   },
-  head: () => ({
-    title: "Topic",
-    meta: [{ name: "description", content: "Browse articles by topic" }],
-  }),
+  head: ({ loaderData: topic }) => {
+    if (!topic) return { title: "Topic not found", meta: [], links: [] }
+    const url = `${siteConfig.siteUrl}/topic/${topic.slug}`
+    const title = topic.metaTitle ?? topic.title
+    const description = topic.metaDescription ?? topic.description ?? ""
+    const seo = buildSeoMeta({
+      title,
+      description,
+      url,
+      type: "article",
+      image: topic.featuredImage
+        ? { url: topic.featuredImage, alt: topic.title }
+        : undefined,
+      canonical: url,
+      hreflang: [{ lang: "id", href: url }],
+    })
+    const breadcrumb = breadcrumbJsonLd([
+      { name: "Home", url: siteConfig.siteUrl },
+      { name: "Topics", url: `${siteConfig.siteUrl}/topic` },
+      { name: topic.title, url },
+    ])
+    return {
+      ...seo,
+      scripts: [
+        jsonLdScript(
+          buildGraph([
+            placeJsonLd(),
+            organizationJsonLd(),
+            websiteJsonLd(),
+            breadcrumb,
+            collectionPageJsonLd({
+              name: topic.title,
+              url,
+              description,
+              breadcrumb,
+            }),
+          ]),
+        ),
+      ],
+    }
+  },
   component: TopicPage,
 })
 

@@ -2,9 +2,51 @@ import { Link, createFileRoute } from "@tanstack/react-router"
 
 import { TopicSection } from "@/components/topic/topic-section"
 import { Button } from "@/components/ui/button"
+import { siteConfig } from "@/lib/seo/config"
+import {
+  articleJsonLd,
+  buildGraph,
+  jsonLdScript,
+  organizationJsonLd,
+  placeJsonLd,
+  websiteJsonLd,
+  webpageJsonLd,
+} from "@/lib/seo/json-ld"
+import { buildSeoMeta } from "@/lib/seo/meta"
 
 export const Route = createFileRoute("/")({
   ssr: "data-only",
+  head: () => {
+    const url = siteConfig.siteUrl
+    const seo = buildSeoMeta({
+      title: `${siteConfig.siteName} - ${siteConfig.siteDescription}`,
+      description: siteConfig.siteDescription,
+      url,
+      canonical: url,
+    })
+    return {
+      ...seo,
+      scripts: [
+        jsonLdScript(
+          buildGraph([
+            placeJsonLd(),
+            organizationJsonLd(),
+            websiteJsonLd(),
+            webpageJsonLd({
+              name: siteConfig.siteName,
+              url,
+              description: siteConfig.siteDescription,
+            }),
+            articleJsonLd({
+              headline: siteConfig.siteName,
+              description: siteConfig.siteDescription,
+              url,
+            }),
+          ]),
+        ),
+      ],
+    }
+  },
   component: Home,
 })
 

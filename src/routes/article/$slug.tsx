@@ -10,6 +10,20 @@ import { Button } from "@/components/ui/button"
 import { useIsMobile } from "@/hooks/use-media-query"
 import { fetchClient } from "@/lib/api/client"
 import { parseContent } from "@/lib/parse-content"
+import { siteConfig } from "@/lib/seo/config"
+import {
+  breadcrumbJsonLd,
+  buildGraph,
+  imageObjectJsonLd,
+  jsonLdScript,
+  newsArticleJsonLd,
+  organizationJsonLd,
+  placeJsonLd,
+  videoObjectJsonLd,
+  websiteJsonLd,
+  webpageJsonLd,
+} from "@/lib/seo/json-ld"
+import { buildSeoMeta } from "@/lib/seo/meta"
 
 interface Author {
   id: string
@@ -59,23 +73,130 @@ export const Route = createFileRoute("/article/$slug")({
         return data as Article
       },
     })
-    return article
+
+    const videoIds = extractYouTubeIds(article.content)
+    const videoMeta = await Promise.all(
+      videoIds.map(async (videoId) => {
+        try {
+          const res = await fetch(
+            `https://www.youtube.com/oEmbed?url=https://www.youtube.com/watch?v=${videoId}&format=json`,
+          )
+          if (!res.ok) return null
+          const data = (await res.json()) as {
+            title: string
+            author_name: string
+            thumbnail_url: string
+          }
+          return { videoId, ...data }
+        } catch {
+          return null
+        }
+      }),
+    )
+
+    return {
+      article,
+      videoMeta: videoMeta.filter(
+        (v): v is NonNullable<typeof v> => v !== null,
+      ),
+    }
   },
-  head: ({ loaderData }) => ({
-    title: loaderData?.metaTitle ?? loaderData?.title ?? "Article",
-    meta: [
-      {
-        name: "description",
-        content: loaderData?.metaDescription ?? loaderData?.excerpt ?? "",
-      },
-    ],
-  }),
+  head: ({ loaderData }) => {
+    if (!loaderData) return { title: "Article", meta: [], links: [] }
+    const { article, videoMeta } = loaderData
+    const url = `${siteConfig.siteUrl}/article/${article.slug}`
+    const title = article.metaTitle ?? article.title
+    const description = article.metaDescription ?? article.excerpt ?? ""
+    const primaryTopic = article.topics[0]
+    const authorName = article.authors[0]?.name ?? article.authors[0]?.username
+    const seo = buildSeoMeta({
+      title,
+      description,
+      url,
+      type: "article",
+      image: article.featuredImage
+        ? { url: article.featuredImage, alt: article.title }
+        : undefined,
+      publishedTime: article.createdAt,
+      modifiedTime: article.updatedAt,
+      section: primaryTopic?.title,
+      tags: article.topics.map((t) => t.title),
+      canonical: url,
+    })
+    const breadcrumb = breadcrumbJsonLd([
+      { name: "Home", url: siteConfig.siteUrl },
+      ...(primaryTopic
+        ? [
+            {
+              name: primaryTopic.title,
+              url: `${siteConfig.siteUrl}/topic/${primaryTopic.slug}`,
+            },
+          ]
+        : []),
+      { name: article.title, url },
+    ])
+    const videoIds = extractYouTubeIds(article.content)
+    const videos = videoIds.map((videoId) => {
+      const meta = videoMeta.find((v) => v.videoId === videoId)
+      return videoObjectJsonLd({
+        name: meta?.title ?? article.title,
+        description: description,
+        videoId,
+        uploadDate: article.createdAt,
+        thumbnailUrl: meta?.thumbnail_url,
+      })
+    })
+    return {
+      ...seo,
+      scripts: [
+        jsonLdScript(
+          buildGraph([
+            placeJsonLd(),
+            organizationJsonLd(),
+            websiteJsonLd(),
+            ...(article.featuredImage
+              ? [
+                  imageObjectJsonLd({
+                    url: article.featuredImage,
+                    caption: article.title,
+                  }),
+                ]
+              : []),
+            ...videos,
+            breadcrumb,
+            webpageJsonLd({
+              name: article.title,
+              url,
+              description,
+              datePublished: article.createdAt,
+              dateModified: article.updatedAt,
+              imageUrl: article.featuredImage,
+              breadcrumb,
+            }),
+            newsArticleJsonLd({
+              headline: article.title,
+              description,
+              url,
+              imageUrl: article.featuredImage,
+              imageCaption: article.title,
+              datePublished: article.createdAt,
+              dateModified: article.updatedAt,
+              authorName,
+              section: primaryTopic?.title,
+              keywords: article.topics.map((t) => t.title),
+              breadcrumb,
+            }),
+          ]),
+        ),
+      ],
+    }
+  },
   component: ArticlePage,
 })
 
 function ArticlePage() {
   const { slug } = Route.useParams()
-  const article = Route.useLoaderData()
+  const { article } = Route.useLoaderData()
   const isMobile = useIsMobile()
 
   const { parts, headings } = useMemo(() => {
@@ -221,4 +342,19 @@ function extractHeadings(html: string): {
   )
 
   return { html: processedHtml, headings }
+}
+
+const YOUTUBE_ID_RE =
+  /(?:youtube\.com\/embed\/|youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/
+
+function extractYouTubeIds(content: string): string[] {
+  const ids = new Set<string>()
+  const iframeRe = /<iframe[^>]+src="([^"]+)"[^>]*>/gi
+  for (const match of content.matchAll(iframeRe)) {
+    const src = match[1]
+    if (!src) continue
+    const idMatch = src.match(YOUTUBE_ID_RE)
+    if (idMatch?.[1]) ids.add(idMatch[1])
+  }
+  return Array.from(ids)
 }

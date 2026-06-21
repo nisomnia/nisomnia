@@ -17,6 +17,14 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { fetchClient } from "@/lib/api/client"
 import TanStackQueryDevtools from "@/lib/query/devtools"
 import { TanstackQueryProvider } from "@/lib/query/root-provider"
+import { siteConfig } from "@/lib/seo/config"
+import {
+  buildGraph,
+  jsonLdScript,
+  organizationJsonLd,
+  placeJsonLd,
+  websiteJsonLd,
+} from "@/lib/seo/json-ld"
 import { ThemeProvider } from "@/lib/theme/provider"
 import appCss from "@/styles.css?url"
 
@@ -49,9 +57,21 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "theme-color", content: "#ffffff" },
       { name: "msapplication-config", content: "/icons/Browserconfig.xml" },
-      { title: "TanStack Start Starter" },
+      { name: "description", content: siteConfig.siteDescription },
+      {
+        name: "robots",
+        content:
+          "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+      },
+      { property: "og:locale", content: siteConfig.defaultLocale },
+      { property: "og:locale:alternate", content: siteConfig.alternateLocale },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: siteConfig.siteName },
+      { name: "twitter:card", content: siteConfig.twitter.card },
+      { name: "twitter:site", content: siteConfig.twitter.site },
     ],
     links: [
+      { rel: "canonical", href: siteConfig.siteUrl },
       { rel: "stylesheet", href: appCss },
       { rel: "icon", type: "image/x-icon", href: "/icons/Favicon.ico" },
       {
@@ -119,6 +139,11 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       },
       { rel: "apple-touch-icon", href: "/icons/Apple-icon.png" },
       { rel: "manifest", href: "/icons/Manifest.json" },
+    ],
+    scripts: [
+      jsonLdScript(
+        buildGraph([placeJsonLd(), organizationJsonLd(), websiteJsonLd()]),
+      ),
     ],
   }),
   shellComponent: RootDocument,

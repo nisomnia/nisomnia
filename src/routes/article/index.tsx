@@ -11,6 +11,8 @@ import {
   useArticleSearch,
   useArticlesByLanguageInfinite,
 } from "@/hooks/api/article"
+import { siteConfig } from "@/lib/seo/config"
+import { buildSeoMeta } from "@/lib/seo/meta"
 
 const PAGE_SIZE = 20
 
@@ -30,16 +32,23 @@ export const Route = createFileRoute("/article/")({
   },
   head: ({ match }) => {
     const q = (match.search as { q?: string }).q?.trim()
+    const url = `${siteConfig.siteUrl}/article`
+    const isSearching = Boolean(q)
+    const seo = buildSeoMeta({
+      title: q
+        ? `Search: ${q} - ${siteConfig.siteName}`
+        : `Articles - ${siteConfig.siteName}`,
+      description: q
+        ? `Search results for "${q}" on ${siteConfig.siteName}`
+        : `Read all articles on ${siteConfig.siteName}`,
+      url,
+      canonical: url,
+      noindex: isSearching,
+    })
     return {
-      title: q ? `Search: ${q}` : "Articles",
-      meta: [
-        {
-          name: "description",
-          content: q
-            ? `Search results for "${q}" on Nisomnia`
-            : "Read all articles on Nisomnia",
-        },
-      ],
+      title: seo.title,
+      meta: seo.meta,
+      links: seo.links,
     }
   },
   component: ArticleListPage,
