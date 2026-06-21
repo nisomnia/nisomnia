@@ -11,10 +11,10 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import React from "react"
 
-import { fetchClient } from "@/api/client"
 import { Header } from "@/components/layout/header"
 import { AppSidebar } from "@/components/layout/sidebar"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import { fetchClient } from "@/lib/api/client"
 import TanStackQueryDevtools from "@/lib/query/devtools"
 import { TanstackQueryProvider } from "@/lib/query/root-provider"
 import { ThemeProvider } from "@/lib/theme/provider"

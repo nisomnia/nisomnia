@@ -4,9 +4,9 @@ import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 import { z } from "zod"
 
-import { fetchClient } from "@/api/client"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
+import { fetchClient } from "@/lib/api/client"
 
 const PAGE_SIZE = 20
 const LANGUAGE = "id"

@@ -2,12 +2,12 @@ import { createFileRoute, Link } from "@tanstack/react-router"
 import DOMPurify from "isomorphic-dompurify"
 import { useMemo } from "react"
 
-import { fetchClient } from "@/api/client"
 import { ArticleShareBar } from "@/components/article/article-share-bar"
 import { ArticleTableOfContents } from "@/components/article/article-table-of-contents"
 import { RelatedInfiniteScroll } from "@/components/article/related-infinite-scroll"
 import { Button } from "@/components/ui/button"
 import { useIsMobile } from "@/hooks/use-media-query"
+import { fetchClient } from "@/lib/api/client"
 
 interface Author {
   id: string

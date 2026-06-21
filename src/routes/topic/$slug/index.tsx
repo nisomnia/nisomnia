@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query"
 import { createFileRoute, Link } from "@tanstack/react-router"
 
-import { fetchClient } from "@/api/client"
 import { Button } from "@/components/ui/button"
+import { fetchClient } from "@/lib/api/client"
 
 export const Route = createFileRoute("/topic/$slug/")({
   component: TopicPage,

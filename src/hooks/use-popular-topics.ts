@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query"
 
-import { fetchClient } from "@/api/client"
+import { fetchClient } from "@/lib/api/client"
 
 const POPULAR_TOPICS_LANGUAGE = "id"
 const POPULAR_TOPICS_LIMIT = 8

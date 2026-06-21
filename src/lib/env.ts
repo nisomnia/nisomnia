@@ -2,10 +2,6 @@ import { createEnv } from "@t3-oss/env-core"
 import { z } from "zod"
 
 export const env = createEnv({
-  server: {
-    API_URL: z.string(),
-  },
-
   clientPrefix: "PUBLIC_",
 
   client: {
@@ -16,3 +12,6 @@ export const env = createEnv({
   runtimeEnv: import.meta.env,
   emptyStringAsUndefined: true,
 })
+
+export const apiUrl = env.PUBLIC_API_URL
+export const apaiTitle = env.PUBLIC_APP_TITLE

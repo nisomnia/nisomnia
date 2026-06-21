@@ -3,8 +3,8 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 import { useEffect, useRef } from "react"
 
-import { fetchClient } from "@/api/client"
 import { Spinner } from "@/components/ui/spinner"
+import { fetchClient } from "@/lib/api/client"
 
 const PAGE_SIZE = 10
 const LANGUAGE = "id"

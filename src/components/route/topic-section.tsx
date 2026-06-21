@@ -2,12 +2,12 @@ import { useQuery } from "@tanstack/react-query"
 import { Link } from "@tanstack/react-router"
 import { ChevronRightIcon } from "lucide-react"
 
-import type { operations } from "@/api/types"
+import type { operations } from "@/lib/api/types"
 
-import { fetchClient } from "@/api/client"
 import { ArticleCard } from "@/components/route/article-card"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
+import { fetchClient } from "@/lib/api/client"
 
 const LANGUAGE = "id"
 const ARTICLES_PER_TOPIC = 5
