@@ -11,7 +11,9 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import React from "react"
 
+import { ErrorPage } from "@/components/layout/error-page"
 import { Header } from "@/components/layout/header"
+import { NotFound } from "@/components/layout/not-found"
 import { AppSidebar } from "@/components/layout/sidebar"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { fetchClient } from "@/lib/api/client"
@@ -179,6 +181,8 @@ gtag("config", "G-0JB3NXP0QW")`,
         : []),
     ],
   }),
+  notFoundComponent: NotFound,
+  errorComponent: ({ reset }) => <ErrorPage onReset={reset} />,
   shellComponent: RootDocument,
 })
 
