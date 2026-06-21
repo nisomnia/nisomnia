@@ -32,7 +32,7 @@ export const Route = createFileRoute("/article/$slug")({
   },
   head: ({ loaderData }) => {
     if (!loaderData?.article) {
-      return { title: "Article", meta: [], links: [], scripts: [] }
+      return { meta: [{ title: "Article" }], links: [], scripts: [] }
     }
     return buildArticleSeo(loaderData.article, loaderData.videoMeta)
   },

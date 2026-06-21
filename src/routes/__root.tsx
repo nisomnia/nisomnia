@@ -54,14 +54,13 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     })
   },
   head: () => ({
-    title: siteConfig.siteName,
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "theme-color", content: "#ffffff" },
       { name: "msapplication-config", content: "/icons/browserconfig.xml" },
       { title: siteConfig.siteName },
-      { description: siteConfig.siteDescription },
+      { name: "description", content: siteConfig.siteDescription },
       {
         name: "robots",
         content:

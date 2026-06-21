@@ -22,7 +22,7 @@ export const Route = createFileRoute("/topic/$slug/")({
   head: ({ loaderData: topic }) =>
     topic
       ? buildTopicSeo(topic)
-      : { title: "Topic not found", meta: [], links: [] },
+      : { meta: [{ title: "Topic not found" }], links: [] },
   component: TopicPage,
 })
 

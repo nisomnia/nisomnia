@@ -54,7 +54,6 @@ export const Route = createFileRoute("/topic/")({
       }),
     ])
     return {
-      title: seo.title,
       meta: seo.meta,
       links: seo.links,
       scripts: [jsonLdScript(graph)],

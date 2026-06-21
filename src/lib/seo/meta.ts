@@ -1,3 +1,5 @@
+import type { JSX } from "react"
+
 import { siteConfig, robotsConfig } from "./config"
 
 export interface SeoMetaOptions {
@@ -22,10 +24,12 @@ export interface SeoMetaOptions {
   hreflang?: { lang: string; href: string }[]
 }
 
+export type MetaTag = JSX.IntrinsicElements["meta"] | { title: string }
+export type LinkTag = JSX.IntrinsicElements["link"]
+
 export interface SeoMetaResult {
-  title: string
-  meta: Record<string, string>[]
-  links: Record<string, string>[]
+  meta: MetaTag[]
+  links: LinkTag[]
 }
 
 export function buildSeoMeta(options: SeoMetaOptions): SeoMetaResult {
@@ -44,7 +48,8 @@ export function buildSeoMeta(options: SeoMetaOptions): SeoMetaResult {
     hreflang,
   } = options
 
-  const meta: Record<string, string>[] = [
+  const meta: MetaTag[] = [
+    { title },
     { name: "description", content: description },
     {
       name: "robots",
@@ -95,13 +100,13 @@ export function buildSeoMeta(options: SeoMetaOptions): SeoMetaResult {
   if (modifiedTime)
     meta.push({ property: "og:updated_time", content: modifiedTime })
 
-  const links: Record<string, string>[] = []
+  const links: LinkTag[] = []
   if (canonical) links.push({ rel: "canonical", href: canonical })
   if (hreflang) {
     for (const { lang, href } of hreflang) {
-      links.push({ rel: "alternate", hreflang: lang, href })
+      links.push({ rel: "alternate", hrefLang: lang, href })
     }
   }
 
-  return { title, meta, links }
+  return { meta, links }
 }

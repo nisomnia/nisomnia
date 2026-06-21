@@ -46,7 +46,6 @@ export const Route = createFileRoute("/article/")({
       noindex: isSearching,
     })
     return {
-      title: seo.title,
       meta: seo.meta,
       links: seo.links,
     }
