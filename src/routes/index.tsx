@@ -19,7 +19,7 @@ export const Route = createFileRoute("/")({
   head: () => {
     const url = siteConfig.siteUrl
     const seo = buildSeoMeta({
-      title: `${siteConfig.siteName} - ${siteConfig.siteDescription}`,
+      title: siteConfig.siteName,
       description: siteConfig.siteDescription,
       url,
       canonical: url,
