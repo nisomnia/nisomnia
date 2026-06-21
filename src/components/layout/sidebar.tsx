@@ -3,6 +3,7 @@
 import { Link, useRouterState } from "@tanstack/react-router"
 import { FileTextIcon, HomeIcon, SearchIcon } from "lucide-react"
 
+import { Logo } from "@/components/layout/logo"
 import {
   Sidebar,
   SidebarContent,
@@ -14,9 +15,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { usePopularTopics } from "@/hooks/use-popular-topics"
-
-const APP_TITLE =
-  (import.meta.env.PUBLIC_APP_TITLE as string | undefined) ?? "Nisomnia"
 
 function useActiveTopicSlug(): string | undefined {
   const pathname = useRouterState({
@@ -89,16 +87,7 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="offcanvas" side="left">
       <SidebarHeader>
-        <Link className="flex items-center gap-2 px-2" to="/">
-          <img
-            alt={APP_TITLE}
-            className="size-8 rounded-md"
-            src="/icons/android-icon-192x192.png"
-          />
-          <span className="font-heading text-lg font-semibold group-data-[collapsible=icon]:hidden">
-            {APP_TITLE}
-          </span>
-        </Link>
+        <Logo showText className="px-2" />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>

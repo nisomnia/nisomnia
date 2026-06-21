@@ -4,6 +4,7 @@ import { useNavigate } from "@tanstack/react-router"
 import { SearchIcon, XIcon } from "lucide-react"
 import * as React from "react"
 
+import { Logo } from "@/components/layout/logo"
 import { ThemeSwitcher } from "@/components/layout/theme-switcher"
 import { Button } from "@/components/ui/button"
 import { Group } from "@/components/ui/group"
@@ -18,7 +19,7 @@ import {
   SheetPopup,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { SidebarTrigger } from "@/components/ui/sidebar"
+import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils/style"
 
 function SearchForm({
@@ -101,11 +102,14 @@ function MobileSearchSheet() {
 }
 
 export function Header() {
+  const { open } = useSidebar()
+
   return (
     <header className="bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 z-40 border-b backdrop-blur">
       <div className="flex h-16 items-center gap-4 px-4">
-        <div className="flex w-10 items-center">
+        <div className="flex items-center gap-2">
           <SidebarTrigger />
+          {!open && <Logo showText={false} />}
         </div>
 
         <div className="flex flex-1 justify-center">
