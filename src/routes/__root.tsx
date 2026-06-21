@@ -28,7 +28,7 @@ import {
   websiteJsonLd,
 } from "@/lib/seo/json-ld"
 import { ThemeProvider } from "@/lib/theme/provider"
-import appCss from "@/styles.css?url"
+import appCss from "@/styles.css?inline"
 
 const LANGUAGE = "id"
 const POPULAR_LIMIT = 8
@@ -88,7 +88,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     ],
     links: [
       { rel: "canonical", href: siteConfig.siteUrl },
-      { rel: "stylesheet", href: appCss },
       { rel: "icon", type: "image/x-icon", href: "/icons/favicon.ico" },
       {
         rel: "icon",
@@ -199,7 +198,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
     <html lang="id" suppressHydrationWarning>
       <head>
         <HeadContent />
-        <link rel="stylesheet" href={appCss} />
+        <style dangerouslySetInnerHTML={{ __html: appCss }} />
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){var k="theme",s=null,t="light";try{s=localStorage.getItem(k)}catch(e){}if(s==="light"||s==="dark"){t=s}else if(window.matchMedia("(prefers-color-scheme: dark)").matches){t="dark"}document.documentElement.classList.add(t)})();`,
