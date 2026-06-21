@@ -18,6 +18,10 @@ https://viteplus.dev/guide/.
 - [ ] Run `vp check` and `vp test` to format, lint, type check and test changes.
 - [ ] Check if there are `vite.config.ts` tasks or `package.json` scripts
       necessary for validation, run via `vp run <script>`.
+- [ ] **Do not start the dev server automatically.** Before running `vp dev`,
+      check whether the configured port (default 3000) is already in use. If the
+      port is unavailable, the dev server is being managed by the user — do not
+      run it and do not kill the existing process.
 - [ ] If setup, runtime, or package-manager behavior looks wrong, run
       `vp env doctor` and include its output when asking for help.
 
