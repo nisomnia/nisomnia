@@ -55,16 +55,16 @@ export const Route = createFileRoute("/sitemap.xml")({
           urlEntry(`${siteConfig.siteUrl}/article`),
         ]
 
-        let topicUrls: string[] = []
-        let articleUrls: string[] = []
+        const topicUrls: string[] = []
+        const articleUrls: string[] = []
 
         for (const language of ["id", "en"] as const) {
           const topics = await fetchAllSitemapEntries(
             "/topic/sitemap",
             language,
           )
-          topicUrls = topicUrls.concat(
-            topics.map((t) =>
+          topicUrls.push(
+            ...topics.map((t) =>
               urlEntry(`${siteConfig.siteUrl}/topic/${t.slug}`, t.updatedAt),
             ),
           )
@@ -73,8 +73,8 @@ export const Route = createFileRoute("/sitemap.xml")({
             "/article/sitemap",
             language,
           )
-          articleUrls = articleUrls.concat(
-            articles.map((a) =>
+          articleUrls.push(
+            ...articles.map((a) =>
               urlEntry(`${siteConfig.siteUrl}/article/${a.slug}`, a.updatedAt),
             ),
           )
