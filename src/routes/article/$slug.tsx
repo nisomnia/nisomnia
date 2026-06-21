@@ -165,7 +165,7 @@ function ArticlePage() {
                     key={topic.id}
                     to="/topic/$slug"
                     params={{ slug: topic.slug }}
-                    className="bg-muted text-muted-foreground hover:bg-muted/80 rounded-full px-3 py-1 text-xs font-medium"
+                    className="bg-muted text-muted-foreground hover:bg-muted/80 rounded-full px-3 py-1 text-sm font-medium"
                   >
                     {topic.title}
                   </Link>
