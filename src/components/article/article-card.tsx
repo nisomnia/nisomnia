@@ -32,7 +32,6 @@ export function ArticleCard({
             src={featuredImage}
             alt={title}
             layout="fullWidth"
-            aspectRatio={16 / 9}
             className="h-full w-full object-cover"
           />
         </div>

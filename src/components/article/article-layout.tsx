@@ -56,15 +56,16 @@ export function ArticleLayout({ article, slug }: ArticleLayoutProps) {
             </h1>
             <div className="text-muted-foreground mb-8 flex flex-wrap items-center gap-4 text-sm" />
             {article.featuredImage && (
-              <Image
-                src={article.featuredImage}
-                alt={article.metaTitle ?? article.title}
-                layout="fullWidth"
-                aspectRatio={16 / 9}
-                objectFit="cover"
-                priority
-                className="mb-6 rounded-lg"
-              />
+              <div className="mb-6 aspect-video w-full overflow-hidden rounded-lg">
+                <Image
+                  src={article.featuredImage}
+                  alt={article.metaTitle ?? article.title}
+                  layout="fullWidth"
+                  objectFit="cover"
+                  priority
+                  className="h-full w-full object-cover"
+                />
+              </div>
             )}
             {isMobile && toc}
             <ArticleContent parts={parts} />
