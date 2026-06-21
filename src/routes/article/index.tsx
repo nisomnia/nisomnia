@@ -3,6 +3,7 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { z } from "zod"
 
+import { ArticleCard } from "@/components/route/article-card"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import {
@@ -84,33 +85,15 @@ function ArticleListPage() {
 
       <div className="space-y-6">
         {articles.map((article) => (
-          <article
+          <ArticleCard
             key={article.id}
-            className="rounded-lg border p-6 transition-shadow hover:shadow-md"
-          >
-            <a href={`/article/${article.slug}`}>
-              {article.featuredImage && (
-                <img
-                  alt={article.metaTitle ?? article.title}
-                  className="mb-4 w-full rounded-lg object-cover"
-                  src={article.featuredImage}
-                />
-              )}
-              <h2 className="text-2xl font-semibold hover:underline">
-                {article.title}
-              </h2>
-              <p className="text-muted-foreground mt-2">{article.excerpt}</p>
-            </a>
-            {article.createdAt && (
-              <time className="text-muted-foreground mt-4 block text-sm">
-                {new Date(article.createdAt).toLocaleDateString("id-ID", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </time>
-            )}
-          </article>
+            excerpt={article.excerpt}
+            featuredImage={article.featuredImage}
+            slug={article.slug}
+            title={article.title}
+            titleClassName="sm:text-xl md:text-2xl lg:text-4xl"
+            excerptClassName="sm:text-sm md:text-base lg:text-xl lg:line-clamp-none"
+          />
         ))}
       </div>
 
