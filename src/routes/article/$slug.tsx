@@ -122,6 +122,29 @@ function ArticlePage() {
         </aside>
         <main className="min-w-0">
           <article>
+            <h1 className="mb-2 text-3xl font-bold md:text-4xl">
+              {article.title}
+            </h1>
+            <div className="text-muted-foreground mb-8 flex flex-wrap items-center gap-4 text-sm">
+              {/**
+              {article.createdAt && (
+                <time dateTime={article.createdAt}>
+                  {new Date(article.createdAt).toLocaleDateString("id-ID", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </time>
+              )}
+              **/}
+              {/**
+              {article.authors.length > 0 && (
+                <span>
+                  {article.authors.map((a) => a.name ?? a.username).join(", ")}
+                </span>
+              )} 
+            **/}
+            </div>
             {article.featuredImage && (
               <Image
                 src={article.featuredImage}
@@ -133,25 +156,6 @@ function ArticlePage() {
                 className="mb-6 rounded-lg"
               />
             )}
-            <h1 className="mb-4 text-3xl font-bold md:text-4xl">
-              {article.title}
-            </h1>
-            <div className="text-muted-foreground mb-8 flex flex-wrap items-center gap-4 text-sm">
-              {article.createdAt && (
-                <time dateTime={article.createdAt}>
-                  {new Date(article.createdAt).toLocaleDateString("id-ID", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </time>
-              )}
-              {article.authors.length > 0 && (
-                <span>
-                  {article.authors.map((a) => a.name ?? a.username).join(", ")}
-                </span>
-              )}
-            </div>
             {isMobile && toc}
             <ArticleContent parts={parts} />
             {article.topics.length > 0 && (
