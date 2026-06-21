@@ -2,33 +2,33 @@ export const siteConfig = {
   siteUrl: "https://nisomnia.com",
   siteName: "Nisomnia",
   siteDescription:
-    "Berita dan artikel terbaru seputar anime, game, manga, film, dan teknologi.",
+    "Nisomnia adalah media pop culture yang mengulas seputar geek culture, game, anime, manga, film, musik, tv, komik dan topik anti mainstream lainya.",
   defaultLocale: "id_ID",
   alternateLocale: "en_US",
   inLanguage: "id",
   twitter: {
     card: "summary_large_image" as const,
-    site: "@nisomnia",
-    creator: "@nisomnia",
+    site: "@nisomniadotcom",
+    creator: "@nisomniadotcom",
   },
   organization: {
     name: "Nisomnia",
     legalName: "Nisomnia",
     description:
-      "Media online yang menyajikan berita dan artikel seputar anime, game, manga, film, dan teknologi.",
-    logo: "https://nisomnia.com/icons/Apple-icon.png",
+      "Nisomnia adalah media pop culture yang mengulas seputar geek culture, game, anime, manga, film, musik, tv, komik dan topik anti mainstream lainya.",
+    logo: "https://nisomnia.com/images/logo-light.png",
     foundingDate: "2024",
     numberOfEmployees: "1-10",
     sameAs: [
-      "https://www.facebook.com/nisomnia",
-      "https://twitter.com/nisomnia",
-      "https://www.instagram.com/nisomnia",
-      "https://www.youtube.com/@nisomnia",
+      "https://www.facebook.com/nisomniadotcom",
+      "https://twitter.com/nisomniadotcom",
+      "https://www.instagram.com/nisomniadotcom",
+      "https://www.youtube.com/@nisomniadotcom",
     ],
     contactPoints: [
       {
         type: "ContactPoint" as const,
-        contactType: "customer support",
+        contactType: "business inquiries",
         email: "hello@nisomnia.com",
       },
     ],
@@ -38,10 +38,10 @@ export const siteConfig = {
     },
   },
   website: {
-    alternateName: "Nisomnia Media",
+    alternateName: "Nisomnia.com",
   },
   publisher: {
-    facebookUrl: "https://www.facebook.com/nisomnia",
+    facebookUrl: "https://www.facebook.com/nisomniadotcom",
   },
 }
 

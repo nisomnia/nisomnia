@@ -69,8 +69,14 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       { property: "og:site_name", content: siteConfig.siteName },
       { name: "twitter:card", content: siteConfig.twitter.card },
       { name: "twitter:site", content: siteConfig.twitter.site },
-      { property: "og:image", content: "/images/cover.png" },
-      { name: "twitter:image", content: "/images/cover.png" },
+      {
+        property: "og:image",
+        content: `${siteConfig.siteUrl}/images/cover.png`,
+      },
+      {
+        name: "twitter:image",
+        content: `${siteConfig.siteUrl}/images/cover.png`,
+      },
     ],
     links: [
       { rel: "canonical", href: siteConfig.siteUrl },
