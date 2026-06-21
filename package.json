@@ -31,6 +31,7 @@
     "@unpic/react": "^1.0.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cnfast": "^0.0.6",
     "isomorphic-dompurify": "^3.18.0",
     "lucide-react": "^1.21.0",
     "nitro": "npm:nitro-nightly@latest",
