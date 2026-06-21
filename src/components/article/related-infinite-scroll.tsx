@@ -16,7 +16,11 @@ interface RelatedInfiniteScrollProps {
 export function RelatedInfiniteScroll({
   currentSlug,
 }: RelatedInfiniteScrollProps) {
-  const articleQuery = useQuery({
+  const {
+    data: currentArticle,
+    isLoading: articleIsLoading,
+    isError: articleIsError,
+  } = useQuery({
     queryKey: ["article", "by-slug", currentSlug],
     queryFn: async () => {
       const { data, error } = await fetchClient.GET("/article/by-slug/{slug}", {
@@ -28,10 +32,17 @@ export function RelatedInfiniteScroll({
     staleTime: 5 * 60 * 1000,
   })
 
-  const currentArticleId = articleQuery.data?.id
-  const topicId = articleQuery.data?.topics[0]?.id
+  const currentArticleId = currentArticle?.id
+  const topicId = currentArticle?.topics[0]?.id
 
-  const infiniteQuery = useInfiniteQuery({
+  const {
+    data: infiniteData,
+    isLoading: infiniteIsLoading,
+    isError: infiniteIsError,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+  } = useInfiniteQuery({
     enabled: Boolean(currentArticleId) && Boolean(topicId),
     queryKey: ["articles", "related", currentArticleId, topicId, PAGE_SIZE],
     queryFn: ({ pageParam }) =>
@@ -64,12 +75,8 @@ export function RelatedInfiniteScroll({
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0]
-        if (
-          entry?.isIntersecting &&
-          infiniteQuery.hasNextPage &&
-          !infiniteQuery.isFetchingNextPage
-        ) {
-          infiniteQuery.fetchNextPage()
+        if (entry?.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage()
         }
       },
       { rootMargin: "200px" },
@@ -77,16 +84,12 @@ export function RelatedInfiniteScroll({
 
     observer.observe(element)
     return () => observer.disconnect()
-  }, [
-    infiniteQuery.hasNextPage,
-    infiniteQuery.isFetchingNextPage,
-    infiniteQuery.fetchNextPage,
-  ])
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage])
 
   const articles =
-    infiniteQuery.data?.pages.flatMap((page) => page?.articles ?? []) ?? []
-  const isLoading = articleQuery.isLoading || infiniteQuery.isLoading
-  const isError = articleQuery.isError || infiniteQuery.isError
+    infiniteData?.pages.flatMap((page) => page?.articles ?? []) ?? []
+  const isLoading = articleIsLoading || infiniteIsLoading
+  const isError = articleIsError || infiniteIsError
 
   if (isLoading) {
     return (
@@ -104,7 +107,7 @@ export function RelatedInfiniteScroll({
     )
   }
 
-  if (articles.length === 0) {
+  if (!articles || articles.length === 0) {
     return null
   }
 
@@ -141,7 +144,7 @@ export function RelatedInfiniteScroll({
         ))}
       </div>
       <div ref={sentinelRef} className="h-4" />
-      {infiniteQuery.isFetchingNextPage && (
+      {isFetchingNextPage && (
         <div className="flex items-center justify-center py-4">
           <Spinner className="text-muted-foreground" />
         </div>

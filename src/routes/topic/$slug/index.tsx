@@ -15,7 +15,11 @@ export const Route = createFileRoute("/topic/$slug/")({
 function TopicPage() {
   const { slug } = Route.useParams()
 
-  const topicQuery = useQuery({
+  const {
+    data: topic,
+    isLoading: topicIsLoading,
+    isError: topicIsError,
+  } = useQuery({
     queryKey: ["topic", "by-slug", slug],
     queryFn: async () => {
       const { data, error } = await fetchClient.GET("/topic/by-slug/{slug}", {
@@ -27,7 +31,7 @@ function TopicPage() {
     staleTime: 5 * 60 * 1000,
   })
 
-  if (topicQuery.isLoading) {
+  if (topicIsLoading) {
     return (
       <div className="mx-auto max-w-3xl p-8">
         <div className="bg-muted h-8 w-48 animate-pulse rounded" />
@@ -35,7 +39,7 @@ function TopicPage() {
     )
   }
 
-  if (topicQuery.isError || !topicQuery.data) {
+  if (topicIsError || !topic) {
     return (
       <div className="mx-auto max-w-3xl p-8 text-center">
         <h1 className="text-2xl font-semibold">Topic not found</h1>
@@ -48,8 +52,6 @@ function TopicPage() {
       </div>
     )
   }
-
-  const topic = topicQuery.data
 
   return (
     <div className="mx-auto max-w-3xl p-8">

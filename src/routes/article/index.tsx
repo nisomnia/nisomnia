@@ -1,6 +1,7 @@
+"use client"
+
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
-import { useEffect, useState } from "react"
 import { z } from "zod"
 
 import { fetchClient } from "@/api/client"
@@ -15,10 +16,6 @@ const articleSearchSchema = z.object({
 })
 
 export const Route = createFileRoute("/article/")({
-  head: () => ({
-    title: "Articles",
-    meta: [{ name: "description", content: "Read all articles on Nisomnia" }],
-  }),
   validateSearch: articleSearchSchema,
   loader: async ({ context: { queryClient } }) => {
     await queryClient.prefetchInfiniteQuery({
@@ -36,16 +33,24 @@ export const Route = createFileRoute("/article/")({
             if (error) throw error
             return data
           }),
-      initialPageParam: undefined as string | undefined,
+      initialPageParam: null as string | null,
     })
   },
+  head: () => ({
+    title: "Articles",
+    meta: [{ name: "description", content: "Read all articles on Nisomnia" }],
+  }),
   component: ArticleListPage,
 })
 
 function ArticleListPage() {
   const { q } = Route.useSearch()
 
-  const searchQuery = useQuery({
+  const {
+    data: searchData,
+    isLoading: searchIsLoading,
+    isError: searchIsError,
+  } = useQuery({
     enabled: Boolean(q),
     queryKey: ["articles", "search", LANGUAGE, q],
     queryFn: () =>
@@ -61,7 +66,14 @@ function ArticleListPage() {
     refetchOnWindowFocus: false,
   })
 
-  const infiniteQuery = useInfiniteQuery({
+  const {
+    data: infiniteData,
+    isLoading: infiniteIsLoading,
+    isError: infiniteIsError,
+    hasNextPage: infiniteHasNextPage,
+    isFetchingNextPage: infiniteIsFetchingNextPage,
+    fetchNextPage: infiniteFetchNextPage,
+  } = useInfiniteQuery({
     enabled: !q,
     queryKey: ["articles", "by-language", LANGUAGE, PAGE_SIZE],
     queryFn: ({ pageParam }) =>
@@ -77,32 +89,23 @@ function ArticleListPage() {
           if (error) throw error
           return data
         }),
-    initialPageParam: undefined as string | undefined,
+    initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => lastPage?.nextCursor ?? undefined,
     staleTime: 30_000,
     refetchOnWindowFocus: false,
   })
 
-  const [autoLoad, setAutoLoad] = useState(false)
-
-  const articles = q
-    ? (searchQuery.data ?? [])
-    : (infiniteQuery.data?.pages.flatMap((page) => page?.articles ?? []) ?? [])
-  const isLoading = q ? searchQuery.isLoading : infiniteQuery.isLoading
-  const isError = q ? searchQuery.isError : infiniteQuery.isError
-  const hasNextPage = !q && infiniteQuery.hasNextPage && !infiniteQuery.isError
-  const isFetchingNextPage = !q && infiniteQuery.isFetchingNextPage
-
-  useEffect(() => {
-    if (autoLoad && hasNextPage && !isFetchingNextPage) {
-      infiniteQuery.fetchNextPage()
-    }
-  }, [autoLoad, hasNextPage, isFetchingNextPage, infiniteQuery.fetchNextPage])
+  const articles = (searchData ?? []).concat(
+    infiniteData?.pages.flatMap((page) => page?.articles ?? []) ?? [],
+  )
+  const isLoading = searchIsLoading || infiniteIsLoading
+  const isError = searchIsError || infiniteIsError
+  const hasNextPage = infiniteHasNextPage && !infiniteIsError
+  const isFetchingNextPage = infiniteIsFetchingNextPage
 
   function handleLoadMore() {
-    setAutoLoad(true)
     if (!isFetchingNextPage) {
-      infiniteQuery.fetchNextPage()
+      infiniteFetchNextPage()
     }
   }
 
@@ -128,41 +131,41 @@ function ArticleListPage() {
       <h1 className="mb-8 text-4xl font-bold">
         {q ? `Search results for “${q}”` : "Articles"}
       </h1>
-      {articles.length === 0 ? (
+      {articles.length === 0 && (
         <p className="text-muted-foreground">No articles found.</p>
-      ) : (
-        <div className="space-y-6">
-          {articles.map((article) => (
-            <article
-              key={article.id}
-              className="rounded-lg border p-6 transition-shadow hover:shadow-md"
-            >
-              <a href={`/article/${article.slug}`}>
-                {article.featuredImage && (
-                  <img
-                    alt={article.metaTitle ?? article.title}
-                    className="mb-4 w-full rounded-lg object-cover"
-                    src={article.featuredImage}
-                  />
-                )}
-                <h2 className="text-2xl font-semibold hover:underline">
-                  {article.title}
-                </h2>
-                <p className="text-muted-foreground mt-2">{article.excerpt}</p>
-              </a>
-              {article.createdAt && (
-                <time className="text-muted-foreground mt-4 block text-sm">
-                  {new Date(article.createdAt).toLocaleDateString("id-ID", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </time>
-              )}
-            </article>
-          ))}
-        </div>
       )}
+      <div className="space-y-6">
+        {articles.map((article) => (
+          <article
+            key={article.id}
+            className="rounded-lg border p-6 transition-shadow hover:shadow-md"
+          >
+            <a href={`/article/${article.slug}`}>
+              {article.featuredImage && (
+                <img
+                  alt={article.metaTitle ?? article.title}
+                  className="mb-4 w-full rounded-lg object-cover"
+                  src={article.featuredImage}
+                />
+              )}
+              <h2 className="text-2xl font-semibold hover:underline">
+                {article.title}
+              </h2>
+              <p className="text-muted-foreground mt-2">{article.excerpt}</p>
+            </a>
+            {article.createdAt && (
+              <time className="text-muted-foreground mt-4 block text-sm">
+                {new Date(article.createdAt).toLocaleDateString("id-ID", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </time>
+            )}
+          </article>
+        ))}
+      </div>
+
       <div className="mt-8 text-center">
         {hasNextPage && (
           <Button disabled={isFetchingNextPage} onClick={handleLoadMore}>

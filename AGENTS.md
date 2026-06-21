@@ -90,3 +90,25 @@ https://viteplus.dev/guide/.
 | Diagnose env              | `vp env doctor`                                   |
 
 Single test file: `vp test run -- path/to/file.test.ts`
+
+## React Doctor
+
+Run `bunx react-doctor@latest --verbose` periodically to catch TanStack Start
+route-order issues, query destructuring mistakes, hydration flickers, unstable
+context values, and React 19 migration issues.
+
+Common fixes observed in this repo:
+
+- **Route property order**: put `loader` / `validateSearch` / `beforeLoad`
+  before `head` so TanStack Router type inference works
+  (`tanstack-start-route-property-order`).
+- **TanStack Query**: destructure `useQuery()` / `useInfiniteQuery()` results,
+  e.g. `const { data, isLoading } = useQuery(...)` instead of assigning the
+  whole object (`query-destructure-result`).
+- **Theme / hydration**: replace `useEffect`-driven theme state with
+  `useSyncExternalStore` and React 19 `use` for context reads.
+- **Context providers**: memoize the `value` object with `useMemo` to avoid
+  re-rendering consumers every render.
+- **Tooling note**: the Read tool can visually drop braces, `from`, and
+  semicolons. Verify actual bytes with `xxd`/`hexdump` or use Node
+  `fs.writeFileSync` replacements when bulk-rewriting files.

@@ -9,7 +9,7 @@ import {
   createRootRouteWithContext,
 } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
-import * as React from "react"
+import React from "react"
 
 import { fetchClient } from "@/api/client"
 import { Header } from "@/components/layout/header"
@@ -28,24 +28,6 @@ interface MyRouterContext {
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
-  head: () => ({
-    meta: [
-      {
-        charSet: "utf-8",
-      },
-      {
-        name: "viewport",
-        content: "width=device-width, initial-scale=1",
-      },
-    ],
-    title: "TanStack Start Starter",
-    links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
-    ],
-  }),
   loader: async ({ context: { queryClient } }) => {
     await queryClient.prefetchQuery({
       queryKey: ["topics", "popular", LANGUAGE, POPULAR_LIMIT],
@@ -61,6 +43,14 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       staleTime: 5 * 60 * 1000,
     })
   },
+  head: () => ({
+    meta: [
+      { charSet: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { title: "TanStack Start Starter" },
+    ],
+    links: [{ rel: "stylesheet", href: appCss }],
+  }),
   shellComponent: RootDocument,
 })
 
@@ -90,9 +80,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             </SidebarProvider>
           </ThemeProvider>
           <TanStackDevtools
-            config={{
-              position: "bottom-right",
-            }}
+            config={{ position: "bottom-right" }}
             plugins={[
               {
                 name: "Tanstack Router",
