@@ -5,6 +5,15 @@ import viteReact from "@vitejs/plugin-react"
 import { nitro } from "nitro/vite"
 import { defineConfig, lazyPlugins } from "vite-plus"
 
+import { redirects } from "./redirects"
+
+const redirectRouteRules = Object.fromEntries(
+  Object.entries(redirects).map(([path, { status, destination }]) => [
+    path,
+    { redirect: { to: destination, status } },
+  ]),
+)
+
 const config = defineConfig({
   envPrefix: ["VITE_", "PUBLIC_"],
   staged: {
@@ -323,7 +332,10 @@ const config = defineConfig({
   resolve: { tsconfigPaths: true },
   plugins: lazyPlugins(() => [
     devtools(),
-    nitro({ rollupConfig: { external: [/^@sentry\//] } }),
+    nitro({
+      rollupConfig: { external: [/^@sentry\//] },
+      routeRules: redirectRouteRules,
+    }),
     tailwindcss(),
     tanstackStart(),
     viteReact(),
