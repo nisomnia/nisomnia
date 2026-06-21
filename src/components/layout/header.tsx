@@ -56,6 +56,7 @@ function SearchForm({
           <SearchIcon className="text-muted-foreground size-4.5" />
         </InputGroupAddon>
         <InputGroupInput
+          aria-label="Cari artikel"
           autoFocus={autoFocus}
           className="px-0"
           onChange={(event) => setQuery(event.currentTarget.value)}

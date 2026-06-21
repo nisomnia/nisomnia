@@ -105,7 +105,9 @@ function ArticleListPage() {
       )}
 
       {isError && (
-        <p className="text-destructive mt-8">Failed to load articles.</p>
+        <p className="text-destructive mt-8" role="alert">
+          Failed to load articles.
+        </p>
       )}
 
       {!isLoading && !isError && articles.length === 0 && (

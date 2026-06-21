@@ -70,7 +70,9 @@ export function RelatedInfiniteScroll({
   if (isError) {
     return (
       <div className="flex items-center justify-center p-8">
-        <p className="text-destructive">Failed to load related articles.</p>
+        <p className="text-destructive" role="alert">
+          Failed to load related articles.
+        </p>
       </div>
     )
   }
@@ -108,7 +110,10 @@ export function RelatedInfiniteScroll({
                 {article.excerpt}
               </p>
               {article.createdAt && (
-                <time className="text-muted-foreground mt-2 block text-xs">
+                <time
+                  className="text-muted-foreground mt-2 block text-xs"
+                  dateTime={article.createdAt}
+                >
                   {new Date(article.createdAt).toLocaleDateString("id-ID", {
                     year: "numeric",
                     month: "long",

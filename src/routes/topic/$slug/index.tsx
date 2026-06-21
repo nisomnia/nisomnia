@@ -78,7 +78,9 @@ function TopicPage() {
       <h1 className="text-3xl font-bold">{topic.title}</h1>
 
       {articlesIsError && (
-        <p className="text-destructive mt-8">Failed to load articles.</p>
+        <p className="text-destructive mt-8" role="alert">
+          Failed to load articles.
+        </p>
       )}
 
       {!articlesIsLoading && !articlesIsError && articles.length === 0 && (

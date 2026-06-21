@@ -128,7 +128,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   const { queryClient } = Route.useRouteContext()
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="id" suppressHydrationWarning>
       <head>
         <HeadContent />
         <link rel="stylesheet" href={appCss} />
@@ -139,11 +139,17 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         />
       </head>
       <body>
+        <a
+          href="#main-content"
+          className="bg-primary text-primary-foreground sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-md focus:px-4 focus:py-2 focus:text-sm focus:font-medium"
+        >
+          Lewati ke konten utama
+        </a>
         <TanstackQueryProvider queryClient={queryClient}>
           <ThemeProvider>
             <SidebarProvider defaultOpen>
               <AppSidebar />
-              <SidebarInset>
+              <SidebarInset id="main-content">
                 <Header />
                 {children}
               </SidebarInset>

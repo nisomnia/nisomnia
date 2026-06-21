@@ -128,7 +128,7 @@ function ArticlePage() {
             </h1>
             <div className="text-muted-foreground mb-8 flex flex-wrap items-center gap-4 text-sm">
               {article.createdAt && (
-                <time>
+                <time dateTime={article.createdAt}>
                   {new Date(article.createdAt).toLocaleDateString("id-ID", {
                     year: "numeric",
                     month: "long",

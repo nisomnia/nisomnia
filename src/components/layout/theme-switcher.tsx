@@ -13,7 +13,9 @@ export function ThemeSwitcher() {
       size="icon"
       variant="ghost"
       onClick={toggleTheme}
-      aria-label="Toggle theme"
+      aria-label={
+        theme === "dark" ? "Beralih ke tema terang" : "Beralih ke tema gelap"
+      }
     >
       {theme === "dark" ? <MoonIcon /> : <SunIcon />}
     </Button>
