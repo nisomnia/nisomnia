@@ -54,6 +54,8 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     })
   },
   head: () => ({
+    title: siteConfig.siteName,
+    description: siteConfig.siteDescription,
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -68,13 +70,18 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       { property: "og:locale", content: siteConfig.defaultLocale },
       { property: "og:locale:alternate", content: siteConfig.alternateLocale },
       { property: "og:type", content: "website" },
+      { property: "og:title", content: siteConfig.siteName },
+      { property: "og:description", content: siteConfig.siteDescription },
+      { property: "og:url", content: siteConfig.siteUrl },
       { property: "og:site_name", content: siteConfig.siteName },
-      { name: "twitter:card", content: siteConfig.twitter.card },
-      { name: "twitter:site", content: siteConfig.twitter.site },
       {
         property: "og:image",
         content: `${siteConfig.siteUrl}/images/cover.png`,
       },
+      { name: "twitter:card", content: siteConfig.twitter.card },
+      { name: "twitter:title", content: siteConfig.siteName },
+      { name: "twitter:description", content: siteConfig.siteDescription },
+      { name: "twitter:site", content: siteConfig.twitter.site },
       {
         name: "twitter:image",
         content: `${siteConfig.siteUrl}/images/cover.png`,
