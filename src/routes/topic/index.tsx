@@ -4,26 +4,18 @@ import { createFileRoute } from "@tanstack/react-router"
 
 import { TopicsList } from "@/components/route/topics-list"
 import { Spinner } from "@/components/ui/spinner"
-import { useTopics } from "@/hooks/use-topics"
-import { fetchClient } from "@/lib/api/client"
+import {
+  prefetchTopicsByArticleCount,
+  useTopicsByArticleCount,
+} from "@/hooks/api/topic"
 
-const LANGUAGE = "id"
 const PER_PAGE = 100
 
 export const Route = createFileRoute("/topic/")({
   loader: async ({ context: { queryClient } }) => {
-    await queryClient.prefetchQuery({
-      queryKey: ["topics", "all", "by-article-count", LANGUAGE],
-      queryFn: async () => {
-        const { data, error } = await fetchClient.POST(
-          "/topic/by-article-count",
-          {
-            body: { language: LANGUAGE, page: 1, perPage: PER_PAGE },
-          },
-        )
-        if (error) throw error
-        return data ?? []
-      },
+    await prefetchTopicsByArticleCount(queryClient, {
+      page: 1,
+      perPage: PER_PAGE,
     })
   },
   ssr: "data-only",
@@ -31,7 +23,14 @@ export const Route = createFileRoute("/topic/")({
 })
 
 function TopicsPage() {
-  const { data: topics, isLoading, isError } = useTopics()
+  const {
+    data: topics,
+    isLoading,
+    isError,
+  } = useTopicsByArticleCount({
+    page: 1,
+    perPage: PER_PAGE,
+  })
 
   if (isLoading) {
     return (

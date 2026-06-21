@@ -14,7 +14,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { usePopularTopics } from "@/hooks/use-popular-topics"
+import { useTopicsByArticleCount } from "@/hooks/api/topic"
 
 function useActiveTopicSlug(): string | undefined {
   const pathname = useRouterState({
@@ -25,7 +25,7 @@ function useActiveTopicSlug(): string | undefined {
 }
 
 function TopicMenu() {
-  const topicsQuery = usePopularTopics()
+  const topicsQuery = useTopicsByArticleCount({ perPage: 8 })
   const topics = topicsQuery.data ?? []
   const activeSlug = useActiveTopicSlug()
 
@@ -37,7 +37,7 @@ function TopicMenu() {
 
   return (
     <>
-      {topics.map((topic) => (
+      {topics.map((topic: { slug: string; title: string }) => (
         <SidebarMenuItem key={topic.slug}>
           <SidebarMenuButton
             isActive={topic.slug === activeSlug}

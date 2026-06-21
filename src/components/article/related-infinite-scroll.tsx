@@ -1,14 +1,15 @@
 "use client"
 
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 import { Link } from "@tanstack/react-router"
 import { useEffect, useRef } from "react"
 
 import { Spinner } from "@/components/ui/spinner"
-import { fetchClient } from "@/lib/api/client"
+import {
+  useArticleBySlug,
+  useRelatedArticlesInfinite,
+} from "@/hooks/api/article"
 
 const PAGE_SIZE = 10
-const LANGUAGE = "id"
 
 interface RelatedInfiniteScrollProps {
   currentSlug: string
@@ -21,17 +22,7 @@ export function RelatedInfiniteScroll({
     data: currentArticle,
     isLoading: articleIsLoading,
     isError: articleIsError,
-  } = useQuery({
-    queryKey: ["article", "by-slug", currentSlug],
-    queryFn: async () => {
-      const { data, error } = await fetchClient.GET("/article/by-slug/{slug}", {
-        params: { path: { slug: currentSlug } },
-      })
-      if (error) throw error
-      return data
-    },
-    staleTime: 5 * 60 * 1000,
-  })
+  } = useArticleBySlug(currentSlug)
 
   const currentArticleId = currentArticle?.id
   const topicId = currentArticle?.topics[0]?.id
@@ -43,36 +34,13 @@ export function RelatedInfiniteScroll({
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
-  } = useInfiniteQuery({
-    enabled: Boolean(currentArticleId) && Boolean(topicId),
-    queryKey: ["articles", "related", currentArticleId, topicId, PAGE_SIZE],
-    queryFn: ({ pageParam }) =>
-      fetchClient
-        .POST("/article/related-infinite", {
-          body: {
-            currentArticleId: currentArticleId!,
-            topicId: topicId!,
-            language: LANGUAGE,
-            limit: PAGE_SIZE,
-            cursor: pageParam,
-          },
-        })
-        .then(({ data, error }) => {
-          if (error) throw error
-          return data
-        }),
-    initialPageParam: null as string | null,
-    getNextPageParam: (lastPage) => lastPage?.nextCursor ?? null,
-    staleTime: 30_000,
-    refetchOnWindowFocus: false,
-  })
+  } = useRelatedArticlesInfinite(currentArticleId, topicId, PAGE_SIZE)
 
   const sentinelRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const element = sentinelRef.current
     if (!element) return
-
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0]
@@ -82,7 +50,6 @@ export function RelatedInfiniteScroll({
       },
       { rootMargin: "200px" },
     )
-
     observer.observe(element)
     return () => observer.disconnect()
   }, [hasNextPage, isFetchingNextPage, fetchNextPage])
@@ -102,19 +69,22 @@ export function RelatedInfiniteScroll({
 
   if (isError) {
     return (
-      <div className="p-4 text-center">
+      <div className="flex items-center justify-center p-8">
         <p className="text-destructive">Failed to load related articles.</p>
       </div>
     )
   }
 
-  if (!articles || articles.length === 0) {
-    return null
+  if (articles.length === 0) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <p className="text-muted-foreground">No related articles found.</p>
+      </div>
+    )
   }
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold">Related Articles</h2>
+    <div className="space-y-4">
       <div className="flex flex-col gap-4">
         {articles.map((article) => (
           <Link

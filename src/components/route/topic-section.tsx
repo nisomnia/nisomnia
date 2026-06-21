@@ -1,65 +1,21 @@
-import { useQuery } from "@tanstack/react-query"
 import { Link } from "@tanstack/react-router"
 import { ChevronRightIcon } from "lucide-react"
-
-import type { operations } from "@/lib/api/types"
 
 import { ArticleCard } from "@/components/route/article-card"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
-import { fetchClient } from "@/lib/api/client"
+import {
+  useArticlesByTopicId,
+  type ArticlesByTopicItem,
+} from "@/hooks/api/article"
+import { useTopicBySlug } from "@/hooks/api/topic"
 
-const LANGUAGE = "id"
 const ARTICLES_PER_TOPIC = 4
-
-type ArticleResponse =
-  operations["articleByTopicId"]["responses"][200]["content"]["application/json"]
-type ArticleItem = ArticleResponse[number]["article"]
-
-function useTopicBySlug(slug: string) {
-  return useQuery({
-    queryKey: ["topic", "by-slug", slug],
-    queryFn: async () => {
-      const { data, error } = await fetchClient.GET("/topic/by-slug/{slug}", {
-        params: { path: { slug } },
-      })
-      if (error) throw error
-      return data
-    },
-    staleTime: 5 * 60 * 1000,
-  })
-}
-
-function useArticlesByTopicId(topicId: string | undefined) {
-  return useQuery({
-    enabled: Boolean(topicId),
-    queryKey: [
-      "articles",
-      "by-topic-id",
-      topicId,
-      LANGUAGE,
-      ARTICLES_PER_TOPIC,
-    ],
-    queryFn: async () => {
-      const { data, error } = await fetchClient.POST("/article/by-topic-id", {
-        body: {
-          topicId: topicId!,
-          language: LANGUAGE,
-          page: 1,
-          perPage: ARTICLES_PER_TOPIC,
-        },
-      })
-      if (error) throw error
-      return data
-    },
-    staleTime: 5 * 60 * 1000,
-  })
-}
 
 export function TopicSection({ label, slug }: { label: string; slug: string }) {
   const topicQuery = useTopicBySlug(slug)
   const topicId = topicQuery.data?.id
-  const articlesQuery = useArticlesByTopicId(topicId)
+  const articlesQuery = useArticlesByTopicId(topicId, ARTICLES_PER_TOPIC)
 
   const isLoading = topicQuery.isLoading || articlesQuery.isLoading
   const articles = articlesQuery.data?.flatMap((r) => [r.article]) ?? []
@@ -88,7 +44,7 @@ export function TopicSection({ label, slug }: { label: string; slug: string }) {
         ) : (
           articles
             .slice(0, ARTICLES_PER_TOPIC)
-            .map((article: ArticleItem) => (
+            .map((article: ArticlesByTopicItem) => (
               <ArticleCard
                 key={article.id}
                 title={article.title}

@@ -1,42 +1,31 @@
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 import { createFileRoute, Link } from "@tanstack/react-router"
 
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
-import { fetchClient } from "@/lib/api/client"
+import {
+  fetchArticlesByTopicIdInfinite,
+  useArticlesByTopicIdInfinite,
+} from "@/hooks/api/article"
+import {
+  fetchTopicBySlug,
+  prefetchTopicBySlug,
+  useTopicBySlug,
+} from "@/hooks/api/topic"
 
 const PAGE_SIZE = 20
-const LANGUAGE = "id"
 
 export const Route = createFileRoute("/topic/$slug/")({
   loader: async ({ params, context: { queryClient } }) => {
-    const { data: topic, error } = await fetchClient.GET(
-      "/topic/by-slug/{slug}",
-      {
-        params: { path: { slug: params.slug } },
-      },
-    )
-    if (error) throw error
+    const topic = await fetchTopicBySlug(params.slug)
     if (topic) {
       await queryClient.prefetchInfiniteQuery({
-        queryKey: ["articles", "by-topic", topic.id, LANGUAGE, PAGE_SIZE],
+        queryKey: ["articles", "by-topic", topic.id, "id", PAGE_SIZE] as const,
         queryFn: ({ pageParam }) =>
-          fetchClient
-            .POST("/article/by-topic-id-infinite", {
-              body: {
-                topicId: topic.id,
-                language: LANGUAGE,
-                limit: PAGE_SIZE,
-                cursor: pageParam,
-              },
-            })
-            .then(({ data, error }) => {
-              if (error) throw error
-              return data
-            }),
+          fetchArticlesByTopicIdInfinite(topic.id, PAGE_SIZE, pageParam),
         initialPageParam: null as string | null,
       })
     }
+    await prefetchTopicBySlug(queryClient, params.slug)
   },
   head: () => ({
     title: "Topic",
@@ -47,23 +36,11 @@ export const Route = createFileRoute("/topic/$slug/")({
 
 function TopicPage() {
   const { slug } = Route.useParams()
-
   const {
     data: topic,
     isLoading: topicIsLoading,
     isError: topicIsError,
-  } = useQuery({
-    queryKey: ["topic", "by-slug", slug],
-    queryFn: async () => {
-      const { data, error } = await fetchClient.GET("/topic/by-slug/{slug}", {
-        params: { path: { slug } },
-      })
-      if (error) throw error
-      return data
-    },
-    staleTime: 5 * 60 * 1000,
-  })
-
+  } = useTopicBySlug(slug)
   const {
     data: infiniteData,
     isLoading: articlesIsLoading,
@@ -71,28 +48,10 @@ function TopicPage() {
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
-  } = useInfiniteQuery({
-    enabled: Boolean(topic?.id),
-    queryKey: ["articles", "by-topic", topic?.id, LANGUAGE, PAGE_SIZE],
-    queryFn: ({ pageParam }) =>
-      fetchClient
-        .POST("/article/by-topic-id-infinite", {
-          body: {
-            topicId: topic!.id,
-            language: LANGUAGE,
-            limit: PAGE_SIZE,
-            cursor: pageParam,
-          },
-        })
-        .then(({ data, error }) => {
-          if (error) throw error
-          return data
-        }),
-    initialPageParam: null as string | null,
-    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-    staleTime: 30_000,
-    refetchOnWindowFocus: false,
-  })
+  } = useArticlesByTopicIdInfinite(topic?.id, PAGE_SIZE)
+
+  const articles =
+    infiniteData?.pages.flatMap((page) => page?.articles ?? []) ?? []
 
   if (topicIsLoading) {
     return (
@@ -109,35 +68,13 @@ function TopicPage() {
         <p className="text-muted-foreground mt-2">
           We could not find a topic for “{slug}”.
         </p>
-        <Button className="mt-6" render={<Link to="/" />}>
-          Go home
-        </Button>
       </div>
     )
   }
 
-  const articles = infiniteData?.pages.flatMap((page) => page.articles) ?? []
-
-  function handleLoadMore() {
-    if (!isFetchingNextPage) {
-      fetchNextPage()
-    }
-  }
-
   return (
     <div className="mx-auto max-w-3xl p-8">
-      <h1 className="mb-8 text-4xl font-bold">{topic.title}</h1>
-      {topic.description && (
-        <p className="text-muted-foreground mt-4 text-lg">
-          {topic.description}
-        </p>
-      )}
-
-      {articlesIsLoading && (
-        <div className="flex items-center justify-center p-8">
-          <Spinner className="text-muted-foreground" />
-        </div>
-      )}
+      <h1 className="text-3xl font-bold">{topic.title}</h1>
 
       {articlesIsError && (
         <p className="text-destructive mt-8">Failed to load articles.</p>
@@ -181,7 +118,7 @@ function TopicPage() {
 
       <div className="mt-8 text-center">
         {hasNextPage && (
-          <Button disabled={isFetchingNextPage} onClick={handleLoadMore}>
+          <Button disabled={isFetchingNextPage} onClick={() => fetchNextPage()}>
             {isFetchingNextPage && <Spinner />}
             {isFetchingNextPage ? "Loading..." : "Load More"}
           </Button>

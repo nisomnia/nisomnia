@@ -1,15 +1,17 @@
 "use client"
 
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
-import { fetchClient } from "@/lib/api/client"
+import {
+  fetchArticlesByLanguageInfinite,
+  useArticleSearch,
+  useArticlesByLanguageInfinite,
+} from "@/hooks/api/article"
 
 const PAGE_SIZE = 20
-const LANGUAGE = "id"
 
 const articleSearchSchema = z.object({
   q: z.string().optional(),
@@ -19,20 +21,9 @@ export const Route = createFileRoute("/article/")({
   validateSearch: articleSearchSchema,
   loader: async ({ context: { queryClient } }) => {
     await queryClient.prefetchInfiniteQuery({
-      queryKey: ["articles", "by-language", LANGUAGE, PAGE_SIZE],
+      queryKey: ["articles", "by-language", "id", PAGE_SIZE] as const,
       queryFn: ({ pageParam }) =>
-        fetchClient
-          .POST("/article/by-language-infinite", {
-            body: {
-              language: LANGUAGE,
-              limit: PAGE_SIZE,
-              cursor: pageParam,
-            },
-          })
-          .then(({ data, error }) => {
-            if (error) throw error
-            return data
-          }),
+        fetchArticlesByLanguageInfinite(PAGE_SIZE, pageParam),
       initialPageParam: null as string | null,
     })
   },
@@ -45,27 +36,11 @@ export const Route = createFileRoute("/article/")({
 
 function ArticleListPage() {
   const { q } = Route.useSearch()
-
   const {
     data: searchData,
     isLoading: searchIsLoading,
     isError: searchIsError,
-  } = useQuery({
-    enabled: Boolean(q),
-    queryKey: ["articles", "search", LANGUAGE, q],
-    queryFn: () =>
-      fetchClient
-        .POST("/article/search", {
-          body: { language: LANGUAGE, limit: PAGE_SIZE, searchQuery: q ?? "" },
-        })
-        .then(({ data, error }) => {
-          if (error) throw error
-          return data ?? []
-        }),
-    staleTime: 30_000,
-    refetchOnWindowFocus: false,
-  })
-
+  } = useArticleSearch(q, PAGE_SIZE)
   const {
     data: infiniteData,
     isLoading: infiniteIsLoading,
@@ -73,27 +48,7 @@ function ArticleListPage() {
     hasNextPage: infiniteHasNextPage,
     isFetchingNextPage: infiniteIsFetchingNextPage,
     fetchNextPage: infiniteFetchNextPage,
-  } = useInfiniteQuery({
-    enabled: !q,
-    queryKey: ["articles", "by-language", LANGUAGE, PAGE_SIZE],
-    queryFn: ({ pageParam }) =>
-      fetchClient
-        .POST("/article/by-language-infinite", {
-          body: {
-            language: LANGUAGE,
-            limit: PAGE_SIZE,
-            cursor: pageParam,
-          },
-        })
-        .then(({ data, error }) => {
-          if (error) throw error
-          return data
-        }),
-    initialPageParam: null as string | null,
-    getNextPageParam: (lastPage) => lastPage?.nextCursor ?? undefined,
-    staleTime: 30_000,
-    refetchOnWindowFocus: false,
-  })
+  } = useArticlesByLanguageInfinite(PAGE_SIZE)
 
   const articles = (searchData ?? []).concat(
     infiniteData?.pages.flatMap((page) => page?.articles ?? []) ?? [],
@@ -109,31 +64,24 @@ function ArticleListPage() {
     }
   }
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <Spinner className="text-muted-foreground" />
-      </div>
-    )
-  }
-
-  if (isError) {
-    return (
-      <div className="p-8 text-center">
-        <h1 className="text-4xl font-bold">Articles</h1>
-        <p className="text-destructive mt-8">Failed to load articles.</p>
-      </div>
-    )
-  }
-
   return (
     <div className="mx-auto max-w-3xl p-8">
-      <h1 className="mb-8 text-4xl font-bold">
-        {q ? `Search results for “${q}”` : "Articles"}
-      </h1>
-      {articles.length === 0 && (
+      <h1 className="text-3xl font-bold">Articles</h1>
+
+      {isLoading && (
+        <div className="mt-8 flex justify-center">
+          <Spinner />
+        </div>
+      )}
+
+      {isError && (
+        <p className="text-destructive mt-8">Failed to load articles.</p>
+      )}
+
+      {!isLoading && !isError && articles.length === 0 && (
         <p className="text-muted-foreground">No articles found.</p>
       )}
+
       <div className="space-y-6">
         {articles.map((article) => (
           <article
