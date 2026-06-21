@@ -79,15 +79,48 @@ export const Route = createFileRoute("/article/$slug")({
       videoIds.map(async (videoId) => {
         try {
           const res = await fetch(
-            `https://www.youtube.com/oEmbed?url=https://www.youtube.com/watch?v=${videoId}&format=json`,
+            `https://www.youtube.com/watch?v=${videoId}`,
+            { headers: { "User-Agent": "Mozilla/5.0" } },
           )
           if (!res.ok) return null
-          const data = (await res.json()) as {
-            title: string
-            author_name: string
-            thumbnail_url: string
+          const html = await res.text()
+          const meta = (re: RegExp) => html.match(re)?.[1]?.trim()
+          const name =
+            meta(
+              /<meta\s+property=["']og:title["']\s+content=["']([^"']*)["']/,
+            ) ?? meta(/<meta\s+name=["']title["']\s+content=["']([^"']*)["']/)
+          const desc =
+            meta(
+              /<meta\s+property=["']og:description["']\s+content=["']([^"']*)["']/,
+            ) ??
+            meta(/<meta\s+name=["']description["']\s+content=["']([^"']*)["']/)
+          const thumbnail =
+            meta(
+              /<meta\s+property=["']og:image["']\s+content=["']([^"']*)["']/,
+            ) ?? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
+          const uploadDate = meta(
+            /<meta\s+itemprop=["']datePublished["']\s+content=["']([^"']*)["']/,
+          )
+          const duration = meta(
+            /<meta\s+itemprop=["']duration["']\s+content=["']([^"']*)["']/,
+          )
+          const width = meta(
+            /<meta\s+property=["']og:video:width["']\s+content=["']([^"']*)["']/,
+          )
+          const height = meta(
+            /<meta\s+property=["']og:video:height["']\s+content=["']([^"']*)["']/,
+          )
+          if (!name) return null
+          return {
+            videoId,
+            title: name,
+            description: desc ?? "",
+            thumbnailUrl: thumbnail,
+            uploadDate: uploadDate ?? null,
+            duration: duration ?? null,
+            width: width ? Number(width) : undefined,
+            height: height ? Number(height) : undefined,
           }
-          return { videoId, ...data }
         } catch {
           return null
         }
@@ -136,14 +169,27 @@ export const Route = createFileRoute("/article/$slug")({
       { name: article.title, url },
     ])
     const videoIds = extractYouTubeIds(article.content)
+    const webpage = webpageJsonLd({
+      name: article.title,
+      url,
+      description,
+      datePublished: article.createdAt,
+      dateModified: article.updatedAt,
+      imageUrl: article.featuredImage,
+      breadcrumb,
+    })
     const videos = videoIds.map((videoId) => {
       const meta = videoMeta.find((v) => v.videoId === videoId)
       return videoObjectJsonLd({
         name: meta?.title ?? article.title,
-        description: description,
+        description: meta?.description ?? description,
         videoId,
-        uploadDate: article.createdAt,
-        thumbnailUrl: meta?.thumbnail_url,
+        uploadDate: meta?.uploadDate ?? article.createdAt,
+        thumbnailUrl: meta?.thumbnailUrl,
+        duration: meta?.duration ?? undefined,
+        width: meta?.width,
+        height: meta?.height,
+        isPartOf: webpage,
       })
     })
     return {
@@ -164,15 +210,7 @@ export const Route = createFileRoute("/article/$slug")({
               : []),
             ...videos,
             breadcrumb,
-            webpageJsonLd({
-              name: article.title,
-              url,
-              description,
-              datePublished: article.createdAt,
-              dateModified: article.updatedAt,
-              imageUrl: article.featuredImage,
-              breadcrumb,
-            }),
+            webpage,
             newsArticleJsonLd({
               headline: article.title,
               description,

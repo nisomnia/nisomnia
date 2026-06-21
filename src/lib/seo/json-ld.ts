@@ -278,6 +278,10 @@ export function videoObjectJsonLd(options: {
   thumbnailUrl?: string
   contentUrl?: string
   embedUrl?: string
+  duration?: string
+  width?: number
+  height?: number
+  isPartOf?: JsonLd
 }): JsonLd {
   const {
     name,
@@ -287,6 +291,10 @@ export function videoObjectJsonLd(options: {
     thumbnailUrl,
     contentUrl,
     embedUrl,
+    duration,
+    width,
+    height,
+    isPartOf,
   } = options
   return {
     "@type": "VideoObject",
@@ -298,7 +306,13 @@ export function videoObjectJsonLd(options: {
     contentUrl: contentUrl ?? `https://www.youtube.com/watch?v=${videoId}`,
     embedUrl: embedUrl ?? `https://www.youtube.com/embed/${videoId}`,
     uploadDate: uploadDate ?? undefined,
+    duration: duration ?? undefined,
+    width: width ?? undefined,
+    height: height ?? undefined,
     isFamilyFriendly: true,
+    isPartOf: isPartOf
+      ? { "@id": isPartOf["@id"] ?? `${siteConfig.siteUrl}/#website` }
+      : undefined,
   }
 }
 
