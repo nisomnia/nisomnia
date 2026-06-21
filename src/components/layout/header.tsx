@@ -7,11 +7,9 @@ import * as React from "react"
 import { ThemeSwitcher } from "@/components/layout/theme-switcher"
 import { Button } from "@/components/ui/button"
 import { Group } from "@/components/ui/group"
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group"
+import { InputGroup } from "@/components/ui/input-group"
+import { InputGroupAddon } from "@/components/ui/input-group-addon"
+import { InputGroupInput } from "@/components/ui/input-group-input"
 import {
   Sheet,
   SheetClose,

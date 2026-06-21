@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
+import DOMPurify from "isomorphic-dompurify"
 import { useMemo } from "react"
 
 import { fetchClient } from "@/api/client"
@@ -41,16 +42,20 @@ interface Article {
 }
 
 export const Route = createFileRoute("/article/$slug")({
-  loader: async ({ params, context: { queryClient } }): Promise<Article> => {
+  loader: async ({ params, context: { queryClient } }) => {
     const { slug } = params
-    const { data, error } = await fetchClient.GET("/article/by-slug/{slug}", {
-      params: { path: { slug } },
-    })
-    if (error) throw error
-    const article = data as Article
-    await queryClient.prefetchQuery({
+    const article = await queryClient.fetchQuery({
       queryKey: ["article", "by-slug", slug],
-      queryFn: () => Promise.resolve(article),
+      queryFn: async () => {
+        const { data, error } = await fetchClient.GET(
+          "/article/by-slug/{slug}",
+          {
+            params: { path: { slug } },
+          },
+        )
+        if (error) throw error
+        return data as Article
+      },
     })
     return article
   },
@@ -140,7 +145,7 @@ function ArticlePage() {
             {isMobile && toc}
             <div
               className="prose max-w-none space-y-4"
-              dangerouslySetInnerHTML={{ __html: html }}
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(html) }}
             />
           </article>
           <div className="mt-12">

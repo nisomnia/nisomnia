@@ -65,17 +65,20 @@ export function ArticleTableOfContents({
   const [open, setOpen] = useState(variant !== "collapsible")
 
   useEffect(() => {
-    const elements = headings
-      .map((heading) => document.getElementById(heading.id))
-      .filter((el): el is HTMLElement => el !== null)
+    const elements = headings.reduce<HTMLElement[]>((acc, heading) => {
+      const el = document.getElementById(heading.id)
+      if (el) acc.push(el)
+      return acc
+    }, [])
 
     if (elements.length === 0) return
 
     const observer = new IntersectionObserver(
       (entries) => {
-        const intersecting = entries
-          .filter((entry) => entry.isIntersecting)
-          .map((entry) => entry.target.id)
+        const intersecting = entries.reduce<string[]>((acc, entry) => {
+          if (entry.isIntersecting) acc.push(entry.target.id)
+          return acc
+        }, [])
 
         if (intersecting.length === 0) return
 

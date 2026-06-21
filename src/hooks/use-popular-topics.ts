@@ -4,8 +4,8 @@ import { useQuery } from "@tanstack/react-query"
 
 import { fetchClient } from "@/api/client"
 
-export const POPULAR_TOPICS_LANGUAGE = "id"
-export const POPULAR_TOPICS_LIMIT = 8
+const POPULAR_TOPICS_LANGUAGE = "id"
+const POPULAR_TOPICS_LIMIT = 8
 
 export function usePopularTopics() {
   return useQuery({
