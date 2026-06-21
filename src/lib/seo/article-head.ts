@@ -31,9 +31,10 @@ export function buildArticleSeo(
     description,
     url,
     type: "article",
-    image: article.featuredImage
-      ? { url: article.featuredImage, alt: article.title }
-      : undefined,
+    image: {
+      url: article.featuredImage ?? `${siteConfig.siteUrl}/images/cover.png`,
+      alt: article.title,
+    },
     publishedTime: article.createdAt,
     modifiedTime: article.updatedAt,
     section: primaryTopic?.title,
@@ -59,7 +60,7 @@ export function buildArticleSeo(
     description,
     datePublished: article.createdAt,
     dateModified: article.updatedAt,
-    imageUrl: article.featuredImage,
+    imageUrl: article.featuredImage ?? "/images/cover.png",
     breadcrumb,
   })
   const videos = videoIds.map((videoId) => {
@@ -91,7 +92,12 @@ export function buildArticleSeo(
                   caption: article.title,
                 }),
               ]
-            : []),
+            : [
+                imageObjectJsonLd({
+                  url: "/images/cover.png",
+                  caption: article.title,
+                }),
+              ]),
           ...videos,
           breadcrumb,
           webpage,
@@ -99,7 +105,7 @@ export function buildArticleSeo(
             headline: article.title,
             description,
             url,
-            imageUrl: article.featuredImage,
+            imageUrl: article.featuredImage ?? "/images/cover.png",
             imageCaption: article.title,
             datePublished: article.createdAt,
             dateModified: article.updatedAt,
