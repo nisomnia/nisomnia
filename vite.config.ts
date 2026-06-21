@@ -333,6 +333,7 @@ const config = defineConfig({
   plugins: lazyPlugins(() => [
     devtools(),
     nitro({
+      preset: "bun",
       rollupConfig: { external: [/^@sentry\//] },
       routeRules: redirectRouteRules,
     }),
