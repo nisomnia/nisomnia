@@ -11,6 +11,7 @@
     "generate-api-types": "bun x openapi-typescript https://api.nisomnia.com/public/spec.json -o ./src/api/types.d.ts",
     "build": "vp build",
     "preview": "vp preview",
+    "start": "bun run .output/server/index.mjs",
     "test": "vp test run",
     "prepare": "vp config",
     "predev": "bun run generate-api-types"
