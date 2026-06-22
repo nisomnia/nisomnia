@@ -2,6 +2,7 @@ import { Link, createFileRoute } from "@tanstack/react-router"
 
 import { TopicSection } from "@/components/topic/topic-section"
 import { Button } from "@/components/ui/button"
+import { fetchClient } from "@/lib/api/client"
 import { siteConfig } from "@/lib/seo/config"
 import {
   articleJsonLd,
@@ -14,8 +15,70 @@ import {
 } from "@/lib/seo/json-ld"
 import { buildSeoMeta } from "@/lib/seo/meta"
 
+const DEFAULT_LANGUAGE = "id"
+const ARTICLES_PER_TOPIC = 4
+
+const TOPIC_SLUGS = [
+  { label: "Anime", slug: "anime" },
+  { label: "Game", slug: "game" },
+  { label: "Manga", slug: "manga" },
+  { label: "Film", slug: "film" },
+  { label: "Teknologi", slug: "teknologi" },
+] as const
+
 export const Route = createFileRoute("/")({
-  ssr: "data-only",
+  ssr: true,
+  loader: async ({ context: { queryClient } }) => {
+    const topics = await Promise.all(
+      TOPIC_SLUGS.map(({ slug }) =>
+        queryClient.fetchQuery({
+          queryKey: ["topic", "by-slug", slug],
+          queryFn: async () => {
+            const { data, error } = await fetchClient.GET(
+              "/topic/by-slug/{slug}",
+              {
+                params: { path: { slug } },
+              },
+            )
+            if (error) throw error
+            if (!data) throw new Error(`Topic not found: ${slug}`)
+            return data
+          },
+          staleTime: 5 * 60 * 1000,
+        }),
+      ),
+    )
+
+    await Promise.all(
+      topics.map((topic) =>
+        queryClient.fetchQuery({
+          queryKey: [
+            "articles",
+            "by-topic-id",
+            topic.id,
+            DEFAULT_LANGUAGE,
+            ARTICLES_PER_TOPIC,
+          ],
+          queryFn: async () => {
+            const { data, error } = await fetchClient.POST(
+              "/article/by-topic-id",
+              {
+                body: {
+                  topicId: topic.id,
+                  language: DEFAULT_LANGUAGE,
+                  page: 1,
+                  perPage: ARTICLES_PER_TOPIC,
+                },
+              },
+            )
+            if (error) throw error
+            return data ?? []
+          },
+          staleTime: 5 * 60 * 1000,
+        }),
+      ),
+    )
+  },
   head: () => {
     const url = siteConfig.siteUrl
     const seo = buildSeoMeta({
@@ -49,14 +112,6 @@ export const Route = createFileRoute("/")({
   },
   component: Home,
 })
-
-const TOPIC_SLUGS = [
-  { label: "Anime", slug: "anime" },
-  { label: "Game", slug: "game" },
-  { label: "Manga", slug: "manga" },
-  { label: "Film", slug: "film" },
-  { label: "Teknologi", slug: "teknologi" },
-]
 
 function Home() {
   return (
