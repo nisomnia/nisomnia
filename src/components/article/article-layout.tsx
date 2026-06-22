@@ -63,7 +63,7 @@ export function ArticleLayout({ article, slug }: ArticleLayoutProps) {
                   layout="fixed"
                   width={1024}
                   height={576}
-                  priority
+                  priority={true}
                   sizes="(max-width: 768px) 100vw, 1024px"
                   background="auto"
                   className="h-full w-full object-cover"
