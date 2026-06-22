@@ -185,31 +185,27 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
           ],
         }),
       },
-      ...(import.meta.env.NODE_ENV === "production"
-        ? [
-            {
-              src: "https://www.googletagmanager.com/gtag/js?id=G-0JB3NXP0QW",
-              async: true,
-              defer: true,
-            },
-            {
-              children: `window.dataLayer = window.dataLayer || [];
+      {
+        src: "https://www.googletagmanager.com/gtag/js?id=G-0JB3NXP0QW",
+        async: true,
+        defer: true,
+      },
+      {
+        children: `window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments)}
 gtag("js", new Date())
 gtag("config", "G-0JB3NXP0QW")`,
-            },
-            {
-              src: "https://analytics.yopem.com/script.js",
-              async: true,
-              "data-website-id": "dc9d1fa0-9691-48c7-83cd-1c79e16a80ca",
-            },
-            {
-              src: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4946821479056257",
-              async: true,
-              crossOrigin: "anonymous" as const,
-            },
-          ]
-        : []),
+      },
+      {
+        src: "https://analytics.yopem.com/script.js",
+        async: true,
+        "data-website-id": "dc9d1fa0-9691-48c7-83cd-1c79e16a80ca",
+      },
+      {
+        src: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4946821479056257",
+        async: true,
+        crossOrigin: "anonymous" as const,
+      },
     ],
   }),
   notFoundComponent: NotFound,
