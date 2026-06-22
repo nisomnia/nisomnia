@@ -662,6 +662,11 @@ export const redirects: Record<string, Redirect> = {
     destination: "/article/boruto-lebih-buruk-dari-naruto",
     status: 301,
   },
+  "/article/daftar-hero-mobile-legends": {
+    destination: "/article/daftar-seluruh-hero-mobile-legends",
+    status: 301,
+  },
+
   // TOPIC
   "/topic/serial_ferxn": {
     destination: "/topic/serial",
