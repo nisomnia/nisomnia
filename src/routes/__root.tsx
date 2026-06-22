@@ -87,7 +87,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       },
     ],
     links: [
-      { rel: "canonical", href: siteConfig.siteUrl },
       { rel: "icon", type: "image/x-icon", href: "/icons/favicon.ico" },
       {
         rel: "icon",
