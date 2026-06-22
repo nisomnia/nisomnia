@@ -77,8 +77,19 @@ export function buildArticleSeo(
       isPartOf: webpage,
     })
   })
+  const links: typeof seo.links = [...seo.links]
+  if (article.featuredImage) {
+    links.push({
+      rel: "preload",
+      as: "image",
+      href: article.featuredImage,
+      fetchPriority: "high",
+    })
+  }
+
   return {
     ...seo,
+    links,
     scripts: [
       jsonLdScript(
         buildGraph([

@@ -32,8 +32,19 @@ export function buildTopicSeo(topic: NonNullable<TopicResponse>) {
     { name: "Topics", url: `${siteConfig.siteUrl}/topic` },
     { name: topic.title, url },
   ])
+  const links: typeof seo.links = [...seo.links]
+  if (topic.featuredImage) {
+    links.push({
+      rel: "preload",
+      as: "image",
+      href: topic.featuredImage,
+      fetchPriority: "high",
+    })
+  }
+
   return {
     ...seo,
+    links,
     scripts: [
       jsonLdScript(
         buildGraph([

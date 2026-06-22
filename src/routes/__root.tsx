@@ -87,6 +87,11 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       },
     ],
     links: [
+      { rel: "preconnect", href: "https://api.nisomnia.com" },
+      { rel: "dns-prefetch", href: "https://api.nisomnia.com" },
+      { rel: "preconnect", href: "https://www.googletagmanager.com" },
+      { rel: "preconnect", href: "https://analytics.yopem.com" },
+      { rel: "preconnect", href: "https://pagead2.googlesyndication.com" },
       { rel: "icon", type: "image/x-icon", href: "/icons/favicon.ico" },
       {
         rel: "icon",
@@ -158,6 +163,17 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       jsonLdScript(
         buildGraph([placeJsonLd(), organizationJsonLd(), websiteJsonLd()]),
       ),
+      {
+        type: "speculationrules",
+        children: JSON.stringify({
+          prerender: [
+            {
+              where: { href_matches: "/*" },
+              eagerness: "moderate",
+            },
+          ],
+        }),
+      },
       ...(import.meta.env.NODE_ENV === "production"
         ? [
             {

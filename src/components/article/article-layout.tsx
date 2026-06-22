@@ -63,7 +63,9 @@ export function ArticleLayout({ article, slug }: ArticleLayoutProps) {
                   layout="fullWidth"
                   objectFit="cover"
                   priority
-                  className="h-full w-full object-cover"
+                  sizes="(max-width: 768px) 100vw, 1024px"
+                  background="auto"
+                  className="h-full w-full"
                 />
               </div>
             )}

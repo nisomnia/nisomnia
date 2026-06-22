@@ -26,6 +26,8 @@ function ContentPartView({ part }: { part: ContentPart }) {
         src={part.src}
         alt={part.alt}
         layout="fullWidth"
+        sizes="(max-width: 768px) 100vw, 800px"
+        background="auto"
         className="my-2 rounded-lg"
       />
     )

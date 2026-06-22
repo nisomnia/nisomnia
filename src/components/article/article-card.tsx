@@ -32,6 +32,8 @@ export function ArticleCard({
             src={featuredImage}
             alt={title}
             layout="fullWidth"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            background="auto"
             className="h-full w-full object-cover"
           />
         </div>

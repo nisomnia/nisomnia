@@ -102,6 +102,8 @@ export function RelatedInfiniteScroll({
                   src={article.featuredImage}
                   alt={article.metaTitle ?? article.title}
                   layout="fullWidth"
+                  sizes="(max-width: 640px) 5rem, 8rem"
+                  background="auto"
                   className="h-full w-full object-cover"
                 />
               </div>
