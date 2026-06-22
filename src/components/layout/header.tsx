@@ -110,7 +110,8 @@ export function Header() {
       <div className="flex h-16 items-center gap-4 px-4">
         <div className="flex items-center gap-2">
           <SidebarTrigger />
-          {!open && <Logo showText={false} />}
+          <Logo showText={false} className="block lg:hidden" />
+          {!open && <Logo showText={false} className="hidden lg:block" />}
         </div>
 
         <div className="flex flex-1 justify-center">
