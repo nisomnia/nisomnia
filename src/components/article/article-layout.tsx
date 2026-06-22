@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router"
-import { Image } from "@unpic/react"
 import { useMemo } from "react"
 
 import type { ArticleResponse } from "@/hooks/api/article"
@@ -8,6 +7,7 @@ import { ArticleContent } from "@/components/article/article-content"
 import { ArticleShareBar } from "@/components/article/article-share-bar"
 import { ArticleTableOfContents } from "@/components/article/article-table-of-contents"
 import { RelatedInfiniteScroll } from "@/components/article/related-infinite-scroll"
+import { Image } from "@/components/image"
 import { useIsMobile } from "@/hooks/use-media-query"
 import { extractHeadings } from "@/lib/article/headings"
 import { parseContent } from "@/lib/parse-content"

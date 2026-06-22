@@ -1,9 +1,9 @@
 "use client"
 
 import { Link } from "@tanstack/react-router"
-import { Image } from "@unpic/react"
 import { useEffect, useRef } from "react"
 
+import { Image } from "@/components/image"
 import { Spinner } from "@/components/ui/spinner"
 import {
   useArticleBySlug,

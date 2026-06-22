@@ -1,8 +1,9 @@
-import { Image } from "@unpic/react"
 import DOMPurify from "isomorphic-dompurify"
 import { memo } from "react"
 
 import type { ContentPart } from "@/lib/parse-content"
+
+import { Image } from "@/components/image"
 
 function YouTubeEmbed({ videoId }: { videoId: string }) {
   return (

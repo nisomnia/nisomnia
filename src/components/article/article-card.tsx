@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router"
-import { Image } from "@unpic/react"
 
+import { Image } from "@/components/image"
 import { cn } from "@/lib/utils/style"
 
 export function ArticleCard({
