@@ -4,7 +4,7 @@ import sharp from "sharp"
 import { siteConfig } from "@/lib/seo/config"
 
 const ALLOWED_ORIGIN = "https://assets.nisomnia.com"
-const CACHE_ONE_YEAR = 31536000
+const CACHE_ONE_YEAR_SECONDS = 31536000
 const MAX_WIDTH = 3840
 const DEFAULT_QUALITY = 75
 const CACHE_VERSION = "v1"
@@ -64,9 +64,9 @@ async function setCachedImage(
   const entry: CachedImage = {
     body: body.toString("base64"),
     contentType,
-    cacheControl: `public, max-age=${CACHE_ONE_YEAR}, immutable`,
+    cacheControl: `public, max-age=${CACHE_ONE_YEAR_SECONDS}, immutable`,
   }
-  await storage.setItem(key, entry, { ttl: CACHE_ONE_YEAR })
+  await storage.setItem(key, entry)
 }
 
 export async function optimizeImageRequest(
@@ -142,7 +142,7 @@ export async function optimizeImageRequest(
   const response = new Response(output as unknown as BodyInit, {
     headers: {
       "Content-Type": "image/webp",
-      "Cache-Control": `public, max-age=${CACHE_ONE_YEAR}, immutable`,
+      "Cache-Control": `public, max-age=${CACHE_ONE_YEAR_SECONDS}, immutable`,
       "Access-Control-Allow-Origin": siteConfig.siteUrl,
     },
   })
