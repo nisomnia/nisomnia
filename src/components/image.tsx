@@ -23,29 +23,29 @@ export type NisomniaImageProps = Omit<
   blurHash?: string
 }
 
+export interface OptimizedImageOptions {
+  width?: number | string
+  height?: number | string
+  quality?: number | string
+}
+
 function isAssetsUrl(src: string): boolean {
   return src.startsWith(ASSETS_HOST) || src.includes("assets.nisomnia.com")
 }
 
-export function nisomniaTransformer(
-  src: string | URL,
-  operations: {
-    width?: number | string
-    height?: number | string
-    quality?: number | string
-  },
+export function buildOptimizedImageUrl(
+  src: string,
+  operations: OptimizedImageOptions = {},
 ): string {
-  const srcString = src.toString()
-
-  if (!isAssetsUrl(srcString)) {
-    return srcString
+  if (!isAssetsUrl(src)) {
+    return src
   }
 
   const target = new URL(
     "/image",
     typeof window === "undefined" ? "http://localhost" : window.location.origin,
   )
-  target.searchParams.set("url", srcString)
+  target.searchParams.set("url", src)
 
   if (operations.width) {
     target.searchParams.set("w", String(Math.round(Number(operations.width))))
@@ -58,6 +58,13 @@ export function nisomniaTransformer(
   }
 
   return target.pathname + target.search
+}
+
+export function nisomniaTransformer(
+  src: string | URL,
+  operations: OptimizedImageOptions,
+): string {
+  return buildOptimizedImageUrl(src.toString(), operations)
 }
 
 export function Image({ blurHash, ...props }: NisomniaImageProps) {

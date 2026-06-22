@@ -34,11 +34,12 @@ export function TopicArticles({
       )}
 
       <div className="space-y-6">
-        {articles.map((article) => (
+        {articles.map((article, index) => (
           <ArticleCard
             key={article.id}
             excerpt={article.excerpt}
             featuredImage={article.featuredImage}
+            priority={index === 0}
             slug={article.slug}
             title={article.title}
             titleClassName="sm:text-xl md:text-2xl lg:text-4xl"

@@ -27,12 +27,13 @@ function ContentPartView({ part }: { part: ContentPart }) {
         <Image
           src={part.src}
           alt={part.alt}
-          layout="fixed"
+          layout="constrained"
           width={800}
           height={450}
           sizes="(max-width: 768px) 100vw, 800px"
           background="auto"
           className="h-full w-full object-cover"
+          unstyled
         />
       </div>
     )

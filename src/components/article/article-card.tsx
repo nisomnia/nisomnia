@@ -11,6 +11,7 @@ export function ArticleCard({
   className,
   titleClassName,
   excerptClassName,
+  priority,
 }: {
   title: string
   slug: string
@@ -19,6 +20,7 @@ export function ArticleCard({
   className?: string
   titleClassName?: string
   excerptClassName?: string
+  priority?: boolean
 }) {
   return (
     <Link
@@ -31,12 +33,14 @@ export function ArticleCard({
           <Image
             src={featuredImage}
             alt={title}
-            layout="fixed"
+            layout="constrained"
             width={640}
             height={360}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
             background="auto"
             className="h-full w-full object-cover"
+            unstyled
+            priority={priority}
           />
         </div>
       )}

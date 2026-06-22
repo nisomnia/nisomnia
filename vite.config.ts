@@ -16,6 +16,7 @@ const redirectRouteRules = Object.fromEntries(
 
 const config = defineConfig({
   envPrefix: ["VITE_", "PUBLIC_"],
+  build: { sourcemap: true },
   staged: {
     "*": "vp check --fix",
     "*.{ts,tsx}": "vp lint --fix",

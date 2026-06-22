@@ -16,6 +16,7 @@ export function Logo({ showText = true, className }: LogoProps) {
   return (
     <Link
       to="/"
+      aria-label={`${APP_TITLE} home`}
       className={cn(
         "flex items-center gap-2 overflow-hidden rounded-lg outline-hidden focus-visible:ring-2",
         className,

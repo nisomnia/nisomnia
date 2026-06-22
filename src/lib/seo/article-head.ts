@@ -1,6 +1,7 @@
 import type { ArticleResponse } from "@/hooks/api/article"
 import type { VideoMeta } from "@/lib/article/types"
 
+import { buildOptimizedImageUrl } from "@/components/image"
 import { extractYouTubeIds } from "@/lib/article/youtube"
 import { siteConfig } from "@/lib/seo/config"
 import {
@@ -82,7 +83,7 @@ export function buildArticleSeo(
     links.push({
       rel: "preload",
       as: "image",
-      href: article.featuredImage,
+      href: buildOptimizedImageUrl(article.featuredImage, { width: 1024 }),
       fetchPriority: "high",
     })
   }

@@ -3,9 +3,9 @@ import sharp from "sharp"
 import { siteConfig } from "@/lib/seo/config"
 
 const ALLOWED_ORIGIN = "https://assets.nisomnia.com"
-const CACHE_ONE_DAY = 86400
+const CACHE_ONE_YEAR = 31536000
 const MAX_WIDTH = 3840
-const DEFAULT_QUALITY = 80
+const DEFAULT_QUALITY = 75
 
 function isAllowedHost(url: URL): boolean {
   return url.origin === ALLOWED_ORIGIN || url.hostname === "assets.nisomnia.com"
@@ -71,7 +71,7 @@ export async function optimizeImageRequest(
     return new Response(buffer, {
       headers: {
         "Content-Type": contentType,
-        "Cache-Control": `public, max-age=${CACHE_ONE_DAY}, immutable`,
+        "Cache-Control": `public, max-age=${CACHE_ONE_YEAR}, immutable`,
         "Access-Control-Allow-Origin": siteConfig.siteUrl,
       },
     })
@@ -79,7 +79,12 @@ export async function optimizeImageRequest(
 
   let pipeline = sharp(buffer, { animated: contentType === "image/gif" })
     .rotate()
-    .webp({ quality, effort: 4 })
+    .webp({
+      quality,
+      effort: 5,
+      smartSubsample: true,
+      nearLossless: quality >= 90,
+    })
 
   if (width) {
     const metadata = await sharp(buffer).metadata()
@@ -99,7 +104,7 @@ export async function optimizeImageRequest(
   return new Response(output as unknown as BodyInit, {
     headers: {
       "Content-Type": "image/webp",
-      "Cache-Control": `public, max-age=${CACHE_ONE_DAY}, immutable`,
+      "Cache-Control": `public, max-age=${CACHE_ONE_YEAR}, immutable`,
       "Access-Control-Allow-Origin": siteConfig.siteUrl,
     },
   })
