@@ -14,6 +14,7 @@ export interface ImageContentPart {
 export interface YouTubeContentPart {
   type: "youtube"
   src: string
+  caption?: string
 }
 
 export interface AdContentPart {
@@ -104,6 +105,7 @@ export function parseContent(
         contentParts.push({
           type: "youtube",
           src: extractYouTubeId(src),
+          caption: element.getAttribute("data-caption") ?? undefined,
         })
       }
 

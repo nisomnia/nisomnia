@@ -3,22 +3,8 @@ import { memo } from "react"
 
 import type { ContentPart } from "@/lib/parse-content"
 
+import { YouTubeEmbed } from "@/components/article/youtube-embed"
 import { Image } from "@/components/image"
-
-function YouTubeEmbed({ videoId }: { videoId: string }) {
-  return (
-    <div className="relative my-2 aspect-video w-full overflow-hidden rounded-lg">
-      <iframe
-        className="absolute inset-0 h-full w-full"
-        src={`https://www.youtube-nocookie.com/embed/${videoId}`}
-        title="YouTube video"
-        loading="lazy"
-        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-      />
-    </div>
-  )
-}
 
 function ContentPartView({ part }: { part: ContentPart }) {
   if (part.type === "image") {
@@ -39,7 +25,16 @@ function ContentPartView({ part }: { part: ContentPart }) {
     )
   }
   if (part.type === "youtube") {
-    return <YouTubeEmbed videoId={part.src} />
+    return (
+      <figure className="my-4">
+        <YouTubeEmbed videoId={part.src} title={part.caption} />
+        {part.caption && (
+          <figcaption className="text-muted-foreground mt-2 text-center text-sm">
+            {part.caption}
+          </figcaption>
+        )}
+      </figure>
+    )
   }
   if (part.type === "ad") {
     return (
