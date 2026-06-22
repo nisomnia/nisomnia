@@ -101,7 +101,9 @@ export function RelatedInfiniteScroll({
                 <Image
                   src={article.featuredImage}
                   alt={article.metaTitle ?? article.title}
-                  layout="fullWidth"
+                  layout="fixed"
+                  width={128}
+                  height={96}
                   sizes="(max-width: 640px) 5rem, 8rem"
                   background="auto"
                   className="h-full w-full object-cover"

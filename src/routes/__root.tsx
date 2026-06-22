@@ -89,6 +89,12 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     links: [
       { rel: "preconnect", href: "https://api.nisomnia.com" },
       { rel: "dns-prefetch", href: "https://api.nisomnia.com" },
+      {
+        rel: "preconnect",
+        href: "https://assets.nisomnia.com",
+        crossOrigin: "anonymous" as const,
+      },
+      { rel: "dns-prefetch", href: "https://assets.nisomnia.com" },
       { rel: "preconnect", href: "https://www.googletagmanager.com" },
       { rel: "preconnect", href: "https://analytics.yopem.com" },
       { rel: "preconnect", href: "https://pagead2.googlesyndication.com" },
@@ -168,7 +174,12 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         children: JSON.stringify({
           prerender: [
             {
-              where: { href_matches: "/*" },
+              where: {
+                href_matches: "/*",
+                not: {
+                  href_matches: ["/article/*?*", "/topic/*?*"],
+                },
+              },
               eagerness: "moderate",
             },
           ],

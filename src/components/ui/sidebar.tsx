@@ -160,6 +160,7 @@ export function SidebarProvider({
           className,
         )}
         data-slot="sidebar-wrapper"
+        data-sidebar-initialized
         style={
           {
             "--sidebar-width": SIDEBAR_WIDTH,

@@ -22,14 +22,18 @@ function YouTubeEmbed({ videoId }: { videoId: string }) {
 function ContentPartView({ part }: { part: ContentPart }) {
   if (part.type === "image") {
     return (
-      <Image
-        src={part.src}
-        alt={part.alt}
-        layout="fullWidth"
-        sizes="(max-width: 768px) 100vw, 800px"
-        background="auto"
-        className="my-2 rounded-lg"
-      />
+      <div className="aspect-video w-full overflow-hidden rounded-lg">
+        <Image
+          src={part.src}
+          alt={part.alt}
+          layout="fixed"
+          width={800}
+          height={450}
+          sizes="(max-width: 768px) 100vw, 800px"
+          background="auto"
+          className="h-full w-full object-cover"
+        />
+      </div>
     )
   }
   if (part.type === "youtube") {

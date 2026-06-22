@@ -60,12 +60,13 @@ export function ArticleLayout({ article, slug }: ArticleLayoutProps) {
                 <Image
                   src={article.featuredImage}
                   alt={article.metaTitle ?? article.title}
-                  layout="fullWidth"
-                  objectFit="cover"
+                  layout="fixed"
+                  width={1024}
+                  height={576}
                   priority
                   sizes="(max-width: 768px) 100vw, 1024px"
                   background="auto"
-                  className="h-full w-full"
+                  className="h-full w-full object-cover"
                 />
               </div>
             )}

@@ -31,7 +31,9 @@ export function ArticleCard({
           <Image
             src={featuredImage}
             alt={title}
-            layout="fullWidth"
+            layout="fixed"
+            width={640}
+            height={360}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
             background="auto"
             className="h-full w-full object-cover"
