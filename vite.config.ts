@@ -336,7 +336,7 @@ const config = defineConfig({
       preset: "bun",
       rollupConfig: { external: [/^@sentry\//] },
       routeRules: redirectRouteRules,
-      scanDirs: ["server"],
+      scanDirs: ["src/server"],
     }),
     tailwindcss(),
     tanstackStart(),
