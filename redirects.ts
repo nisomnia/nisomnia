@@ -666,6 +666,11 @@ export const redirects: Record<string, Redirect> = {
     destination: "/article/daftar-seluruh-hero-mobile-legends",
     status: 301,
   },
+  "/assets/media/2019/02/Drama-Korea-Terbaik-Dengan-Rating-Tertinggi-Sepanjang-Masa.png":
+    {
+      destination: "/article/drama-korea-terbaik-dengan-rating-tertinggi",
+      status: 301,
+    },
 
   // TOPIC
   "/topic/serial_ferxn": {
