@@ -658,9 +658,17 @@ export const redirects: Record<string, Redirect> = {
     destination: "/article/build-alucard-mobile-legends",
     status: 301,
   },
+  "/boruto-lebih-buruk-dari-naruto/": {
+    destination: "/article/boruto-lebih-buruk-dari-naruto",
+    status: 301,
+  },
   // TOPIC
   "/topic/serial_ferxn": {
     destination: "/topic/serial",
+    status: 301,
+  },
+  "/article/topic/novel_e9szh": {
+    destination: "/topic/novel",
     status: 301,
   },
   "/topic/aplikasi_47v8b": {
@@ -800,6 +808,10 @@ export const redirects: Record<string, Redirect> = {
     status: 301,
   },
   "/movie/**": {
+    destination: "/topic/film",
+    status: 301,
+  },
+  "/genre/**": {
     destination: "/topic/film",
     status: 301,
   },
