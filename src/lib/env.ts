@@ -13,7 +13,7 @@ export const env = createEnv({
     CACHE_CLEAR_SECRET: z.string().optional(),
   },
 
-  runtimeEnv: import.meta.env,
+  runtimeEnv: { ...import.meta.env, ...process.env },
   emptyStringAsUndefined: true,
 })
 
