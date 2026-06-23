@@ -1,5 +1,5 @@
 import DOMPurify from "isomorphic-dompurify"
-import { memo } from "react"
+import { memo, useCallback } from "react"
 
 import type { ContentPart } from "@/lib/parse-content"
 
@@ -7,6 +7,13 @@ import { YouTubeEmbed } from "@/components/article/youtube-embed"
 import { Image } from "@/components/image"
 
 function ContentPartView({ part }: { part: ContentPart }) {
+  const adRef = useCallback((el: HTMLDivElement | null) => {
+    if (!el) return
+    if (window.adsbygoogle) {
+      window.adsbygoogle.push({})
+    }
+  }, [])
+
   if (part.type === "image") {
     return (
       <div className="aspect-video w-full overflow-hidden rounded-lg">
@@ -39,6 +46,7 @@ function ContentPartView({ part }: { part: ContentPart }) {
   if (part.type === "ad") {
     return (
       <div
+        ref={adRef}
         className="my-2"
         dangerouslySetInnerHTML={{ __html: part.content }}
       />
