@@ -11,6 +11,7 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import React from "react"
 
+import { LazyAdsense } from "@/components/adsense/lazy-adsense"
 import { ErrorPage } from "@/components/layout/error-page"
 import { Header } from "@/components/layout/header"
 import { NotFound } from "@/components/layout/not-found"
@@ -201,11 +202,6 @@ gtag("config", "G-0JB3NXP0QW")`,
         async: true,
         "data-website-id": "dc9d1fa0-9691-48c7-83cd-1c79e16a80ca",
       },
-      {
-        src: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4946821479056257",
-        async: true,
-        crossOrigin: "anonymous" as const,
-      },
     ],
   }),
   notFoundComponent: NotFound,
@@ -257,6 +253,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             />
           )}
         </TanstackQueryProvider>
+        <LazyAdsense />
         <Scripts />
       </body>
     </html>
