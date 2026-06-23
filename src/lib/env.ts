@@ -9,6 +9,10 @@ export const env = createEnv({
     PUBLIC_APP_TITLE: z.string(),
   },
 
+  server: {
+    CACHE_CLEAR_SECRET: z.string().optional(),
+  },
+
   runtimeEnv: import.meta.env,
   emptyStringAsUndefined: true,
 })

@@ -8,6 +8,7 @@ const CACHE_ONE_YEAR_SECONDS = 31536000
 const MAX_WIDTH = 3840
 const DEFAULT_QUALITY = 75
 const CACHE_VERSION = "v1"
+const CACHE_PREFIX = `image:${CACHE_VERSION}`
 
 function isAllowedHost(url: URL): boolean {
   return url.origin === ALLOWED_ORIGIN || url.hostname === "assets.nisomnia.com"
@@ -32,7 +33,14 @@ function buildCacheKey(url: URL): string {
   const normalized = new URL(src)
   normalized.search = ""
   normalized.hash = ""
-  return `image:${CACHE_VERSION}:${normalized.pathname}:${width ?? "orig"}:${quality ?? "default"}`
+  return `${CACHE_PREFIX}:${normalized.pathname}:${width ?? "orig"}:${quality ?? "default"}`
+}
+
+export async function clearImageCache(): Promise<number> {
+  const storage = getStorage("cache")
+  const keys = await storage.getKeys(CACHE_PREFIX)
+  await Promise.all(keys.map((key) => storage.removeItem(key)))
+  return keys.length
 }
 
 interface CachedImage {
