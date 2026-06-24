@@ -335,7 +335,7 @@ const config = defineConfig({
     devtools(),
     nitro({
       preset: "bun",
-      rollupConfig: { external: [/^@sentry\//] },
+      rollupConfig: { external: [/^@sentry\//, "isomorphic-dompurify"] },
       routeRules: redirectRouteRules,
       scanDirs: ["src/server"],
     }),
