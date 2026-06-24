@@ -12,6 +12,15 @@ import {
   useArticlesByLanguageInfinite,
 } from "@/hooks/api/article"
 import { siteConfig } from "@/lib/seo/config"
+import {
+  breadcrumbJsonLd,
+  buildGraph,
+  collectionPageJsonLd,
+  jsonLdScript,
+  organizationJsonLd,
+  placeJsonLd,
+  websiteJsonLd,
+} from "@/lib/seo/json-ld"
 import { buildSeoMeta } from "@/lib/seo/meta"
 
 const PAGE_SIZE = 20
@@ -45,9 +54,31 @@ export const Route = createFileRoute("/article/")({
       canonical: url,
       noindex: isSearching,
     })
+    const breadcrumb = breadcrumbJsonLd([
+      { name: "Home", url: siteConfig.siteUrl },
+      { name: "Articles", url },
+    ])
     return {
       meta: seo.meta,
       links: seo.links,
+      scripts: isSearching
+        ? []
+        : [
+            jsonLdScript(
+              buildGraph([
+                placeJsonLd(),
+                organizationJsonLd(),
+                websiteJsonLd(),
+                breadcrumb,
+                collectionPageJsonLd({
+                  name: "Articles",
+                  url,
+                  description: `Read all articles on ${siteConfig.siteName}`,
+                  breadcrumb,
+                }),
+              ]),
+            ),
+          ],
     }
   },
   component: ArticleListPage,

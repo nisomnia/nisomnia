@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button"
 import { fetchClient } from "@/lib/api/client"
 import { siteConfig } from "@/lib/seo/config"
 import {
-  articleJsonLd,
   buildGraph,
+  collectionPageJsonLd,
   jsonLdScript,
   organizationJsonLd,
   placeJsonLd,
@@ -100,10 +100,10 @@ export const Route = createFileRoute("/")({
               url,
               description: siteConfig.siteDescription,
             }),
-            articleJsonLd({
-              headline: siteConfig.siteName,
-              description: siteConfig.siteDescription,
+            collectionPageJsonLd({
+              name: siteConfig.siteName,
               url,
+              description: siteConfig.siteDescription,
             }),
           ]),
         ),

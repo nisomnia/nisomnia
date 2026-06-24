@@ -26,7 +26,8 @@ export function buildArticleSeo(
   const title = article.metaTitle ?? article.title
   const description = article.metaDescription ?? article.excerpt ?? ""
   const primaryTopic = article.topics[0]
-  const authorName = article.authors[0]?.name ?? article.authors[0]?.username
+  const author = article.authors[0]
+  const authorName = author?.name ?? author?.username
   const seo = buildSeoMeta({
     title,
     description,
@@ -54,6 +55,11 @@ export function buildArticleSeo(
       : []),
     { name: article.title, url },
   ])
+  const authorUrl = author?.username
+    ? `${siteConfig.siteUrl}/user/${author.username}`
+    : undefined
+  const imageUrl =
+    article.featuredImage ?? `${siteConfig.siteUrl}/images/cover.png`
   const videoIds = extractYouTubeIds(article.content)
   const webpage = webpageJsonLd({
     name: article.title,
@@ -61,7 +67,7 @@ export function buildArticleSeo(
     description,
     datePublished: article.createdAt,
     dateModified: article.updatedAt,
-    imageUrl: article.featuredImage ?? `${siteConfig.siteUrl}/images/cover.png`,
+    imageUrl,
     breadcrumb,
   })
   const videos = videoIds.map((videoId) => {
@@ -97,19 +103,10 @@ export function buildArticleSeo(
           placeJsonLd(),
           organizationJsonLd(),
           websiteJsonLd(),
-          ...(article.featuredImage
-            ? [
-                imageObjectJsonLd({
-                  url: article.featuredImage,
-                  caption: article.title,
-                }),
-              ]
-            : [
-                imageObjectJsonLd({
-                  url: `${siteConfig.siteUrl}/images/cover.png`,
-                  caption: article.title,
-                }),
-              ]),
+          imageObjectJsonLd({
+            url: imageUrl,
+            caption: article.title,
+          }),
           ...videos,
           breadcrumb,
           webpage,
@@ -123,6 +120,7 @@ export function buildArticleSeo(
             datePublished: article.createdAt,
             dateModified: article.updatedAt,
             authorName,
+            authorUrl,
             section: primaryTopic?.title,
             keywords: article.topics.map((t) => t.title),
             breadcrumb,

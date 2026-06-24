@@ -36,6 +36,11 @@ export const Route = createFileRoute("/topic/")({
       description: "Browse all topics available on Nisomnia.",
       url,
       canonical: url,
+      image: {
+        url: `${siteConfig.siteUrl}/images/cover.png`,
+        alt: "Nisomnia topics",
+      },
+      hreflang: [{ lang: "id", href: url }],
     })
     const breadcrumb = breadcrumbJsonLd([
       { name: "Home", url: siteConfig.siteUrl },
