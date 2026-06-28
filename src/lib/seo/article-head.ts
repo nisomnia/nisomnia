@@ -76,12 +76,12 @@ export function buildArticleSeo(
       name: meta?.title ?? article.title,
       description: meta?.description ?? description,
       videoId,
+      pageUrl: url,
       uploadDate: meta?.uploadDate ?? article.createdAt,
       thumbnailUrl: meta?.thumbnailUrl,
       duration: meta?.duration ?? undefined,
       width: meta?.width,
       height: meta?.height,
-      isPartOf: webpage,
     })
   })
   const links: typeof seo.links = [...seo.links]

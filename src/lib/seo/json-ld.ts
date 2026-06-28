@@ -274,6 +274,7 @@ export function videoObjectJsonLd(options: {
   name: string
   description: string
   videoId: string
+  pageUrl: string
   uploadDate?: string | null
   thumbnailUrl?: string
   contentUrl?: string
@@ -281,12 +282,12 @@ export function videoObjectJsonLd(options: {
   duration?: string
   width?: number
   height?: number
-  isPartOf?: JsonLd
 }): JsonLd {
   const {
     name,
     description,
     videoId,
+    pageUrl,
     uploadDate,
     thumbnailUrl,
     contentUrl,
@@ -294,11 +295,10 @@ export function videoObjectJsonLd(options: {
     duration,
     width,
     height,
-    isPartOf,
   } = options
   return {
     "@type": "VideoObject",
-    "@id": `${siteConfig.siteUrl}/#video-${videoId}`,
+    "@id": `${pageUrl}#schema-video-${videoId}`,
     name,
     description,
     thumbnailUrl:
@@ -310,9 +310,10 @@ export function videoObjectJsonLd(options: {
     width: width ?? undefined,
     height: height ?? undefined,
     isFamilyFriendly: true,
-    isPartOf: isPartOf
-      ? { "@id": isPartOf["@id"] ?? `${siteConfig.siteUrl}/#website` }
-      : undefined,
+    isPartOf: { "@id": `${pageUrl}#webpage` },
+    publisher: { "@id": `${siteConfig.siteUrl}/#organization` },
+    mainEntityOfPage: { "@id": `${pageUrl}#webpage` },
+    inLanguage: siteConfig.inLanguage,
   }
 }
 
