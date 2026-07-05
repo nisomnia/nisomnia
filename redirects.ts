@@ -841,4 +841,8 @@ export const redirects: Record<string, Redirect> = {
     destination: "/article/drama-korea-sekolah",
     status: 301,
   },
+  "/article/game-pc-offline-ringan-hq0p4": {
+    destination: "/article/game-pc-offline-ringan",
+    status: 301,
+  },
 }
