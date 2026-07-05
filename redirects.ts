@@ -825,4 +825,20 @@ export const redirects: Record<string, Redirect> = {
     destination: "/topic/film",
     status: 301,
   },
+  "/article/topic/kunci-jawaban": {
+    destination: "/topic/kunci-jawaban",
+    status: 301,
+  },
+  "/article/topic/aplikasi_47v8b": {
+    destination: "/topic/aplikasi",
+    status: 301,
+  },
+  "/article/pengertian-software-pada-komputer_8rtyh": {
+    destination: "/article/pengertian-software-pada-komputer_8rtyh",
+    status: 301,
+  },
+  "/read/drama-korea-sekolah": {
+    destination: "/article/drama-korea-sekolah",
+    status: 301,
+  },
 }
