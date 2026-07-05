@@ -277,7 +277,6 @@ export function videoObjectJsonLd(options: {
   pageUrl: string
   uploadDate?: string | null
   thumbnailUrl?: string
-  contentUrl?: string
   embedUrl?: string
   duration?: string
   width?: number
@@ -290,7 +289,6 @@ export function videoObjectJsonLd(options: {
     pageUrl,
     uploadDate,
     thumbnailUrl,
-    contentUrl,
     embedUrl,
     duration,
     width,
@@ -303,7 +301,6 @@ export function videoObjectJsonLd(options: {
     description,
     thumbnailUrl:
       thumbnailUrl ?? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
-    contentUrl: contentUrl ?? `https://www.youtube.com/watch?v=${videoId}`,
     embedUrl: embedUrl ?? `https://www.youtube.com/embed/${videoId}`,
     uploadDate: uploadDate ?? undefined,
     duration: duration ?? undefined,
