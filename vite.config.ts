@@ -143,6 +143,11 @@ const config = defineConfig({
       "oxlint-tailwindcss",
       { name: "vite-plus", specifier: "vite-plus/oxlint-plugin" },
     ],
+    settings: {
+      tailwindcss: {
+        entryPoint: "./src/styles.css",
+      },
+    },
     rules: {
       "tailwindcss/no-unknown-classes": "error",
       "tailwindcss/no-conflicting-classes": "error",
