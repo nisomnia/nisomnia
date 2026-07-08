@@ -30,11 +30,13 @@ const config = defineConfig({
     semi: false,
     singleQuote: false,
     tabWidth: 2,
-    trailingComma: "all",
-    experimentalTailwindcss: {
-      functions: ["cn", "cva", "clsx"],
+    sortTailwindcss: {
+      stylesheet: "./src/styles.css",
+      functions: ["clsx", "cn", "cva"],
+      preserveWhitespace: true,
     },
-    experimentalSortPackageJson: true,
+    trailingComma: "all",
+    sortPackageJson: true,
     ignorePatterns: [
       "node_modules",
       ".pnp",
@@ -137,8 +139,16 @@ const config = defineConfig({
   },
   lint: {
     plugins: ["eslint", "import", "oxc", "promise", "typescript", "unicorn"],
-    jsPlugins: [{ name: "vite-plus", specifier: "vite-plus/oxlint-plugin" }],
+    jsPlugins: [
+      "oxlint-tailwindcss",
+      { name: "vite-plus", specifier: "vite-plus/oxlint-plugin" },
+    ],
     rules: {
+      "tailwindcss/no-unknown-classes": "error",
+      "tailwindcss/no-conflicting-classes": "error",
+      "tailwindcss/enforce-sort-order": "warn",
+      "tailwindcss/no-deprecated-classes": "error",
+      "tailwindcss/no-unnecessary-whitespace": "error",
       "vite-plus/prefer-vite-plus-imports": "error",
       "constructor-super": "off",
       "for-direction": "error",
