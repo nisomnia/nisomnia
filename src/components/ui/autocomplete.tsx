@@ -34,7 +34,7 @@ export function AutocompleteInput({
 
   return (
     <AutocompletePrimitive.InputGroup
-      className="text-foreground relative w-full not-has-[>*.w-full]:w-fit has-disabled:opacity-64"
+      className="relative w-full text-foreground not-has-[>*.w-full]:w-fit has-disabled:opacity-64"
       data-slot="autocomplete-input-group"
     >
       {startAddon && (
@@ -118,12 +118,12 @@ export function AutocompletePopup({
       >
         <span
           className={cn(
-            "bg-popover relative flex max-h-full max-w-(--available-width) min-w-(--anchor-width) origin-(--transform-origin) rounded-lg border shadow-lg/5 transition-[scale,opacity] not-dark:bg-clip-padding before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-lg)-1px)] before:shadow-[0_1px_--theme(--color-black/4%)] dark:before:shadow-[0_-1px_--theme(--color-white/6%)]",
+            "relative flex max-h-full max-w-(--available-width) min-w-(--anchor-width) origin-(--transform-origin) rounded-lg border bg-popover shadow-lg/5 transition-[scale,opacity] not-dark:bg-clip-padding before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-lg)-1px)] before:shadow-[0_1px_--theme(--color-black/4%)] dark:before:shadow-[0_-1px_--theme(--color-white/6%)]",
             className,
           )}
         >
           <AutocompletePrimitive.Popup
-            className="text-foreground flex max-h-[min(var(--available-height),23rem)] flex-1 flex-col"
+            className="flex max-h-[min(var(--available-height),23rem)] flex-1 flex-col text-foreground"
             data-slot="autocomplete-popup"
             {...props}
           >
@@ -143,7 +143,7 @@ export function AutocompleteItem({
   return (
     <AutocompletePrimitive.Item
       className={cn(
-        "data-highlighted:bg-accent data-highlighted:text-accent-foreground flex min-h-8 cursor-default items-center rounded-sm px-2 py-1 text-base outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-64 sm:min-h-7 sm:text-sm",
+        "flex min-h-8 cursor-default items-center rounded-sm px-2 py-1 text-base outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-64 data-highlighted:bg-accent data-highlighted:text-accent-foreground sm:min-h-7 sm:text-sm",
         className,
       )}
       data-slot="autocomplete-item"
@@ -160,7 +160,7 @@ export function AutocompleteSeparator({
 }: AutocompletePrimitive.Separator.Props): React.ReactElement {
   return (
     <AutocompletePrimitive.Separator
-      className={cn("bg-border mx-2 my-1 h-px last:hidden", className)}
+      className={cn("mx-2 my-1 h-px bg-border last:hidden", className)}
       data-slot="autocomplete-separator"
       {...props}
     />
@@ -187,7 +187,7 @@ export function AutocompleteGroupLabel({
   return (
     <AutocompletePrimitive.GroupLabel
       className={cn(
-        "text-muted-foreground px-2 py-1.5 text-xs font-medium",
+        "px-2 py-1.5 text-xs font-medium text-muted-foreground",
         className,
       )}
       data-slot="autocomplete-group-label"
@@ -203,7 +203,7 @@ export function AutocompleteEmpty({
   return (
     <AutocompletePrimitive.Empty
       className={cn(
-        "text-muted-foreground text-center text-base not-empty:p-2 sm:text-sm",
+        "text-center text-base text-muted-foreground not-empty:p-2 sm:text-sm",
         className,
       )}
       data-slot="autocomplete-empty"
@@ -276,7 +276,7 @@ export function AutocompleteStatus({
   return (
     <AutocompletePrimitive.Status
       className={cn(
-        "text-muted-foreground px-3 py-2 text-xs font-medium empty:m-0 empty:p-0",
+        "px-3 py-2 text-xs font-medium text-muted-foreground empty:m-0 empty:p-0",
         className,
       )}
       data-slot="autocomplete-status"

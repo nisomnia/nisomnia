@@ -393,7 +393,7 @@ body {
 
   .article-content blockquote,
   .tiptap blockquote {
-    @apply border-border my-4 rounded-sm border-l-4 p-4 italic;
+    @apply my-4 rounded-sm border-l-4 border-border p-4 italic;
   }
 
   .article-content img,

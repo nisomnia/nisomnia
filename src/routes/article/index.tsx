@@ -144,13 +144,13 @@ function ArticleListPage() {
       )}
 
       {isError && (
-        <p className="text-destructive mt-8" role="alert">
+        <p className="mt-8 text-destructive" role="alert">
           Failed to load articles.
         </p>
       )}
 
       {!isLoading && !isError && articles.length === 0 && (
-        <p className="text-muted-foreground mt-8">
+        <p className="mt-8 text-muted-foreground">
           {isSearching
             ? `No articles found for "${searchQuery}".`
             : "No articles found."}

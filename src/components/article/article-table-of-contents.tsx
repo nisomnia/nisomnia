@@ -139,7 +139,7 @@ export function ArticleTableOfContents({
             className={cn(
               "block rounded-md px-2 py-1 text-sm transition-colors",
               activeId === heading.id
-                ? "bg-accent text-foreground font-medium"
+                ? "bg-accent font-medium text-foreground"
                 : "text-muted-foreground hover:text-foreground",
             )}
             onClick={() => setOpen(false)}

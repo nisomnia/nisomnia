@@ -53,7 +53,7 @@ function SearchForm({
     >
       <InputGroup className="rounded-full">
         <InputGroupAddon className="ps-3.5">
-          <SearchIcon className="text-muted-foreground size-4.5" />
+          <SearchIcon className="size-4.5 text-muted-foreground" />
         </InputGroupAddon>
         <InputGroupInput
           aria-label="Cari artikel"
@@ -106,7 +106,7 @@ export function Header() {
   const { open } = useSidebar()
 
   return (
-    <header className="bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 z-40 border-b backdrop-blur">
+    <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="flex h-16 items-center gap-4 px-4">
         <div className="flex items-center gap-2">
           <SidebarTrigger />

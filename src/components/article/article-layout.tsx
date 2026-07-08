@@ -46,7 +46,7 @@ export function ArticleLayout({ article, slug }: ArticleLayoutProps) {
           <ArticleShareBar
             url={articleUrl}
             title={article.title}
-            className="bg-background/80 rounded-2xl border p-2 shadow-lg backdrop-blur-md"
+            className="rounded-2xl border bg-background/80 p-2 shadow-lg backdrop-blur-md"
           />
         </aside>
         <main className="min-w-0">
@@ -54,7 +54,7 @@ export function ArticleLayout({ article, slug }: ArticleLayoutProps) {
             <h1 className="mb-2 text-3xl font-bold md:text-4xl">
               {article.title}
             </h1>
-            <div className="text-muted-foreground mb-8 flex flex-wrap items-center gap-4 text-sm" />
+            <div className="mb-8 flex flex-wrap items-center gap-4 text-sm text-muted-foreground" />
             {article.featuredImage && (
               <div className="mb-6 aspect-video w-full overflow-hidden rounded-lg">
                 <Image
@@ -79,7 +79,7 @@ export function ArticleLayout({ article, slug }: ArticleLayoutProps) {
                     key={topic.id}
                     to="/topic/$slug"
                     params={{ slug: topic.slug }}
-                    className="bg-muted text-muted-foreground hover:bg-muted/80 rounded-full px-3 py-1 text-sm font-medium"
+                    className="rounded-full bg-muted px-3 py-1 text-sm font-medium text-muted-foreground hover:bg-muted/80"
                   >
                     {topic.title}
                   </Link>
@@ -99,7 +99,7 @@ export function ArticleLayout({ article, slug }: ArticleLayoutProps) {
         <ArticleShareBar
           url={articleUrl}
           title={article.title}
-          className="bg-background/80 rounded-2xl border p-2 shadow-lg backdrop-blur-md"
+          className="rounded-2xl border bg-background/80 p-2 shadow-lg backdrop-blur-md"
         />
       </div>
     </div>

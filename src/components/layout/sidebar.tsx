@@ -31,7 +31,7 @@ function TopicMenu() {
 
   if (topics.length === 0) {
     return (
-      <p className="text-muted-foreground px-2 text-sm">No topics found.</p>
+      <p className="px-2 text-sm text-muted-foreground">No topics found.</p>
     )
   }
 
@@ -96,7 +96,7 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="offcanvas" side="left">
       <SidebarHeader>
-        <Logo showText className="text-primary px-2" />
+        <Logo showText className="px-2 text-primary" />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>

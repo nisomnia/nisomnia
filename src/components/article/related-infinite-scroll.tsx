@@ -114,12 +114,12 @@ export function RelatedInfiniteScroll({
               <h3 className="text-sm font-semibold hover:underline sm:text-lg">
                 {article.title}
               </h3>
-              <p className="text-muted-foreground mt-1 line-clamp-2 text-xs sm:text-sm">
+              <p className="mt-1 line-clamp-2 text-xs text-muted-foreground sm:text-sm">
                 {article.excerpt}
               </p>
               {article.createdAt && (
                 <time
-                  className="text-muted-foreground mt-2 block text-xs"
+                  className="mt-2 block text-xs text-muted-foreground"
                   dateTime={article.createdAt}
                 >
                   {new Date(article.createdAt).toLocaleDateString("id-ID", {

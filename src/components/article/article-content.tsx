@@ -29,7 +29,7 @@ function ContentPartView({ part }: { part: ContentPart }) {
       <figure className="my-4">
         <YouTubeEmbed videoId={part.src} title={part.caption} />
         {part.caption && (
-          <figcaption className="text-muted-foreground mt-2 text-center text-sm">
+          <figcaption className="mt-2 text-center text-sm text-muted-foreground">
             {part.caption}
           </figcaption>
         )}

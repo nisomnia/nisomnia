@@ -46,7 +46,7 @@ export function ProgressTrack({
   return (
     <ProgressPrimitive.Track
       className={cn(
-        "bg-input block h-1.5 w-full overflow-hidden rounded-full",
+        "block h-1.5 w-full overflow-hidden rounded-full bg-input",
         className,
       )}
       data-slot="progress-track"

@@ -55,7 +55,7 @@ export function ArticleCard({
       {excerpt && (
         <p
           className={cn(
-            "text-muted-foreground mt-2 line-clamp-3 text-xs sm:text-sm",
+            "mt-2 line-clamp-3 text-xs text-muted-foreground sm:text-sm",
             excerptClassName,
           )}
         >

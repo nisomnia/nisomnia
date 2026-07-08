@@ -35,7 +35,7 @@ export function Logo({ showText = true, className }: LogoProps) {
         />
       </svg>
       {showText && (
-        <span className="font-heading truncate text-lg font-semibold">
+        <span className="truncate font-heading text-lg font-semibold">
           {APP_TITLE}
         </span>
       )}

@@ -16,7 +16,7 @@ export function TopicHeader({
   if (isLoading) {
     return (
       <div className="mx-auto max-w-3xl p-8">
-        <div className="bg-muted h-8 w-48 animate-pulse rounded" />
+        <div className="h-8 w-48 animate-pulse rounded bg-muted" />
       </div>
     )
   }
@@ -25,7 +25,7 @@ export function TopicHeader({
     return (
       <div className="mx-auto max-w-3xl p-8 text-center">
         <h1 className="text-2xl font-semibold">Topic not found</h1>
-        <p className="text-muted-foreground mt-2">
+        <p className="mt-2 text-muted-foreground">
           We could not find a topic for &ldquo;{slug}&rdquo;.
         </p>
       </div>

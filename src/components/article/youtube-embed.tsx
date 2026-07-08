@@ -35,7 +35,7 @@ function YouTubeFacade({
     <button
       type="button"
       onClick={onActivate}
-      className="group focus-visible:outline-ring relative aspect-video w-full cursor-pointer overflow-hidden rounded-lg bg-black focus-visible:outline-2 focus-visible:outline-offset-2"
+      className="group relative aspect-video w-full cursor-pointer overflow-hidden rounded-lg bg-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
       aria-label={title ? `Play video: ${title}` : "Play YouTube video"}
     >
       {!hasError && (

@@ -31,7 +31,7 @@ export function MeterLabel({
 }: MeterPrimitive.Label.Props): React.ReactElement {
   return (
     <MeterPrimitive.Label
-      className={cn("text-foreground text-sm font-medium", className)}
+      className={cn("text-sm font-medium text-foreground", className)}
       data-slot="meter-label"
       {...props}
     />
@@ -44,7 +44,7 @@ export function MeterTrack({
 }: MeterPrimitive.Track.Props): React.ReactElement {
   return (
     <MeterPrimitive.Track
-      className={cn("bg-input block h-2 w-full overflow-hidden", className)}
+      className={cn("block h-2 w-full overflow-hidden bg-input", className)}
       data-slot="meter-track"
       {...props}
     />
@@ -70,7 +70,7 @@ export function MeterValue({
 }: MeterPrimitive.Value.Props): React.ReactElement {
   return (
     <MeterPrimitive.Value
-      className={cn("text-foreground text-sm tabular-nums", className)}
+      className={cn("text-sm text-foreground tabular-nums", className)}
       data-slot="meter-value"
       {...props}
     />
