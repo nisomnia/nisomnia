@@ -46,7 +46,7 @@ function ContentPartView({ part }: { part: ContentPart }) {
   }
   return (
     <div
-      className="prose max-w-none space-y-2"
+      className="max-w-none space-y-2"
       dangerouslySetInnerHTML={{
         __html: DOMPurify.sanitize(part.content),
       }}
