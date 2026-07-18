@@ -18,4 +18,4 @@ export const env = createEnv({
 })
 
 export const apiUrl = env.PUBLIC_API_URL
-export const apaiTitle = env.PUBLIC_APP_TITLE
+export const appTitle = env.PUBLIC_APP_TITLE
