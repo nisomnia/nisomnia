@@ -1,5 +1,8 @@
 import { Link, createFileRoute } from "@tanstack/react-router"
+import { ArrowRightIcon } from "lucide-react"
 
+import { FeaturedSection } from "@/components/home/featured-section"
+import { HOME_TOPICS, TopicPills } from "@/components/home/topic-pills"
 import { TopicSection } from "@/components/topic/topic-section"
 import { Button } from "@/components/ui/button"
 import { fetchClient } from "@/lib/api/client"
@@ -18,19 +21,11 @@ import { buildSeoMeta } from "@/lib/seo/meta"
 const DEFAULT_LANGUAGE = "id"
 const ARTICLES_PER_TOPIC = 4
 
-const TOPIC_SLUGS = [
-  { label: "Anime", slug: "anime" },
-  { label: "Game", slug: "game" },
-  { label: "Manga", slug: "manga" },
-  { label: "Film", slug: "film" },
-  { label: "Teknologi", slug: "teknologi" },
-] as const
-
 export const Route = createFileRoute("/")({
   ssr: true,
   loader: async ({ context: { queryClient } }) => {
     const topics = await Promise.all(
-      TOPIC_SLUGS.map(({ slug }) =>
+      HOME_TOPICS.map(({ slug }) =>
         queryClient.fetchQuery({
           queryKey: ["topic", "by-slug", slug],
           queryFn: async () => {
@@ -114,14 +109,27 @@ export const Route = createFileRoute("/")({
 })
 
 function Home() {
+  const slugs = HOME_TOPICS.map(({ slug }) => slug)
+
   return (
-    <div className="mx-auto max-w-7xl space-y-12 px-4 py-8 sm:px-6 lg:px-8">
-      {TOPIC_SLUGS.map(({ label, slug }) => (
-        <TopicSection key={slug} label={label} slug={slug} />
+    <div className="mx-auto max-w-7xl space-y-16 px-4 py-10 sm:px-6 lg:px-8">
+      <TopicPills />
+
+      <FeaturedSection slugs={slugs} />
+
+      {HOME_TOPICS.map(({ label, slug }) => (
+        <TopicSection key={slug} label={label} slug={slug} startIndex={1} />
       ))}
 
-      <div className="flex justify-center pt-4">
-        <Button render={<Link to="/article" />}>Lihat semua artikel</Button>
+      <div className="flex justify-center pt-2">
+        <Button
+          render={<Link to="/article" />}
+          size="lg"
+          className="gap-1.5 rounded-full px-8"
+        >
+          Lihat semua artikel
+          <ArrowRightIcon />
+        </Button>
       </div>
     </div>
   )

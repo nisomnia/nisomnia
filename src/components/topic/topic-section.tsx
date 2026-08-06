@@ -1,9 +1,11 @@
+"use client"
+
 import { Link } from "@tanstack/react-router"
-import { ChevronRightIcon } from "lucide-react"
+import { ArrowRightIcon } from "lucide-react"
 
 import { ArticleCard } from "@/components/article/article-card"
 import { Button } from "@/components/ui/button"
-import { Spinner } from "@/components/ui/spinner"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   useArticlesByTopicId,
   type ArticlesByTopicItem,
@@ -12,7 +14,15 @@ import { useTopicBySlug } from "@/hooks/api/topic"
 
 const ARTICLES_PER_TOPIC = 4
 
-export function TopicSection({ label, slug }: { label: string; slug: string }) {
+export function TopicSection({
+  label,
+  slug,
+  startIndex = 0,
+}: {
+  label: string
+  slug: string
+  startIndex?: number
+}) {
   const topicQuery = useTopicBySlug(slug)
   const topicId = topicQuery.data?.id
   const articlesQuery = useArticlesByTopicId(topicId, ARTICLES_PER_TOPIC)
@@ -21,40 +31,47 @@ export function TopicSection({ label, slug }: { label: string; slug: string }) {
   const articles = articlesQuery.data?.flatMap((r) => [r.article]) ?? []
 
   return (
-    <section className="space-y-4">
-      {!isLoading && (
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold">{label}</h2>
-          <Button
-            render={<Link to="/topic/$slug" params={{ slug }} />}
-            variant="ghost"
-            size="sm"
-            className="gap-1"
-          >
-            Lihat Semua
-            <ChevronRightIcon />
-          </Button>
-        </div>
-      )}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {isLoading ? (
-          <div className="col-span-full flex h-64 items-center justify-center">
-            <Spinner />
-          </div>
-        ) : (
-          articles
-            .slice(0, ARTICLES_PER_TOPIC)
-            .map((article: ArticlesByTopicItem, index: number) => (
-              <ArticleCard
-                key={article.id}
-                excerpt={article.excerpt}
-                featuredImage={article.featuredImage}
-                priority={index === 0}
-                slug={article.slug}
-                title={article.title}
-              />
+    <section aria-labelledby={`topic-${slug}`} className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 id={`topic-${slug}`} className="text-2xl font-bold tracking-tight">
+          {label}
+        </h2>
+        <Button
+          render={<Link to="/topic/$slug" params={{ slug }} />}
+          variant="outline"
+          size="sm"
+          className="gap-1 rounded-full"
+        >
+          Lihat Semua
+          <ArrowRightIcon />
+        </Button>
+      </div>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {isLoading
+          ? Array.from({ length: 3 }).map((_, index) => (
+              <div
+                key={index}
+                className="flex flex-col overflow-hidden rounded-xl border bg-card"
+              >
+                <Skeleton className="aspect-video w-full rounded-none" />
+                <div className="space-y-2 p-4">
+                  <Skeleton className="h-4 w-4/5" />
+                  <Skeleton className="h-3 w-3/5" />
+                </div>
+              </div>
             ))
-        )}
+          : articles
+              .slice(startIndex, startIndex + ARTICLES_PER_TOPIC)
+              .map((article: ArticlesByTopicItem, index: number) => (
+                <ArticleCard
+                  key={article.id}
+                  excerpt={article.excerpt}
+                  featuredImage={article.featuredImage}
+                  priority={index === 0}
+                  slug={article.slug}
+                  title={article.title}
+                />
+              ))}
       </div>
     </section>
   )

@@ -1,7 +1,57 @@
+"use client"
+
 import { Link } from "@tanstack/react-router"
 
 import { Image } from "@/components/image"
 import { cn } from "@/lib/utils/style"
+
+const CARD_VARIANTS = {
+  compact: {
+    imageAspect: "aspect-4/3",
+    imageWrapperClassName: "w-24 shrink-0",
+    imageClassName:
+      "h-full w-full object-cover transition-transform duration-300 group-hover:scale-105",
+    imageHeight: 144,
+    imageSizes: "96px",
+    imageWidth: 192,
+    linkClassName:
+      "group flex items-start gap-3 rounded-xl border bg-card p-3 transition-shadow hover:shadow-md",
+    textClassName: "min-w-0",
+    titleClassName:
+      "line-clamp-2 text-sm leading-snug font-semibold group-hover:underline",
+    excerptClassName: "mt-1 line-clamp-2 text-xs text-muted-foreground",
+  },
+  default: {
+    imageAspect: "aspect-video",
+    imageWrapperClassName: "w-full",
+    imageClassName:
+      "h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]",
+    imageHeight: 360,
+    imageSizes: "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw",
+    imageWidth: 640,
+    linkClassName:
+      "group flex flex-col overflow-hidden rounded-xl border bg-card transition-shadow hover:shadow-md",
+    textClassName: "flex flex-1 flex-col gap-2 p-4",
+    titleClassName:
+      "line-clamp-2 text-lg leading-snug font-semibold group-hover:underline",
+    excerptClassName: "line-clamp-2 text-sm text-muted-foreground",
+  },
+  spotlight: {
+    imageAspect: "aspect-video",
+    imageWrapperClassName: "w-full",
+    imageClassName:
+      "h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]",
+    imageHeight: 576,
+    imageSizes: "(max-width: 1024px) 100vw, 50vw",
+    imageWidth: 1024,
+    linkClassName:
+      "group flex flex-col overflow-hidden rounded-2xl border bg-card transition-shadow hover:shadow-lg",
+    textClassName: "flex flex-1 flex-col gap-3 p-5 sm:p-6",
+    titleClassName:
+      "line-clamp-3 text-xl leading-tight font-bold tracking-tight group-hover:underline sm:text-2xl",
+    excerptClassName: "line-clamp-3 text-sm text-muted-foreground sm:text-base",
+  },
+} as const
 
 export function ArticleCard({
   title,
@@ -12,6 +62,7 @@ export function ArticleCard({
   titleClassName,
   excerptClassName,
   priority,
+  variant = "default",
 }: {
   title: string
   slug: string
@@ -21,47 +72,46 @@ export function ArticleCard({
   titleClassName?: string
   excerptClassName?: string
   priority?: boolean
+  variant?: keyof typeof CARD_VARIANTS
 }) {
+  const styles = CARD_VARIANTS[variant]
+
   return (
     <Link
       to="/article/$slug"
       params={{ slug }}
-      className={cn("block rounded-lg p-2 transition-shadow", className)}
+      className={cn(styles.linkClassName, className)}
     >
       {featuredImage && (
-        <div className="mb-4 aspect-video w-full overflow-hidden rounded-lg">
+        <div
+          className={cn(
+            "shrink-0 overflow-hidden",
+            styles.imageWrapperClassName,
+            styles.imageAspect,
+          )}
+        >
           <Image
             src={featuredImage}
             alt={title}
             layout="constrained"
-            width={640}
-            height={360}
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            width={styles.imageWidth}
+            height={styles.imageHeight}
+            sizes={styles.imageSizes}
             background="auto"
-            className="h-full w-full object-cover"
+            className={styles.imageClassName}
             unstyled
             priority={priority}
           />
         </div>
       )}
-      <h2
-        className={cn(
-          "line-clamp-3 text-lg font-semibold hover:underline",
-          titleClassName,
+      <div className={styles.textClassName}>
+        <h2 className={cn(styles.titleClassName, titleClassName)}>{title}</h2>
+        {excerpt && (
+          <p className={cn(styles.excerptClassName, excerptClassName)}>
+            {excerpt}
+          </p>
         )}
-      >
-        {title}
-      </h2>
-      {excerpt && (
-        <p
-          className={cn(
-            "mt-2 line-clamp-3 text-xs text-muted-foreground sm:text-sm",
-            excerptClassName,
-          )}
-        >
-          {excerpt}
-        </p>
-      )}
+      </div>
     </Link>
   )
 }
