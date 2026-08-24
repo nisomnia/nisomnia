@@ -46,7 +46,7 @@ export function ArticleLayout({ article, slug }: ArticleLayoutProps) {
           <ArticleShareBar
             url={articleUrl}
             title={article.title}
-            className="rounded-2xl border bg-background/80 p-2 shadow-lg backdrop-blur-md"
+            className="rounded-2xl border border-white/20 bg-background/80 p-2 shadow-lg backdrop-blur-md backdrop-saturate-[180%] will-change-[backdrop-filter,transform]"
           />
         </aside>
         <main className="min-w-0">
@@ -99,7 +99,7 @@ export function ArticleLayout({ article, slug }: ArticleLayoutProps) {
         <ArticleShareBar
           url={articleUrl}
           title={article.title}
-          className="rounded-2xl border bg-background/80 p-2 shadow-lg backdrop-blur-md"
+          className="rounded-2xl border border-white/20 bg-background/80 p-2 shadow-lg backdrop-blur-md backdrop-saturate-[180%] will-change-[backdrop-filter,transform]"
         />
       </div>
     </div>

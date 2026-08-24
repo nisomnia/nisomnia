@@ -106,7 +106,7 @@ export function Header() {
   const { open } = useSidebar()
 
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+    <header className="sticky top-0 z-40 border-b border-white/10 bg-background/60 shadow-sm shadow-black/5 backdrop-blur-[20px] backdrop-saturate-[180%] will-change-[backdrop-filter] supports-backdrop-filter:bg-background/60">
       <div className="flex h-16 items-center gap-4 px-4">
         <div className="flex items-center gap-2">
           <SidebarTrigger />

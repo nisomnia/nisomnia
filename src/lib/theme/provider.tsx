@@ -31,6 +31,13 @@ function getInitialTheme(): Theme {
 
 function applyThemeClass(theme: Theme) {
   const root = window.document.documentElement
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  if (!reduce) {
+    root.style.transition = "background-color 200ms ease, color 200ms ease"
+    window.setTimeout(() => {
+      root.style.transition = ""
+    }, 220)
+  }
   root.classList.remove("light", "dark")
   root.classList.add(theme)
 }
