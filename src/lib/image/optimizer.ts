@@ -1,5 +1,4 @@
 import { useStorage as getStorage } from "nitro/storage"
-import sharp from "sharp"
 
 import { siteConfig } from "@/lib/seo/config"
 
@@ -65,12 +64,12 @@ async function getCachedImage(key: string): Promise<Response | undefined> {
 
 async function setCachedImage(
   key: string,
-  body: Buffer,
+  body: Uint8Array,
   contentType: string,
 ): Promise<void> {
   const storage = getStorage("cache")
   const entry: CachedImage = {
-    body: body.toString("base64"),
+    body: Buffer.from(body).toString("base64"),
     contentType,
     cacheControl: `public, max-age=${CACHE_ONE_YEAR_SECONDS}, immutable`,
   }
@@ -124,30 +123,20 @@ export async function optimizeImageRequest(
     return notFound()
   }
 
-  const contentType = upstream.headers.get("content-type") ?? "image/webp"
   const arrayBuffer = await upstream.arrayBuffer()
   const buffer = Buffer.from(arrayBuffer)
 
-  const isGif = contentType === "image/gif"
-  const pipeline = sharp(buffer, { animated: isGif })
-    .rotate()
-    .webp({
-      quality,
-      effort: 4,
-      smartSubsample: true,
-      nearLossless: quality >= 90,
-    })
+  let image = new Bun.Image(buffer).webp({ quality })
 
-  if (width && !isGif) {
-    pipeline.resize({
-      width,
+  if (width) {
+    image = image.resize(width, undefined, {
       withoutEnlargement: true,
       fit: "inside",
     })
   }
 
-  const output = await pipeline.toBuffer()
-  const response = new Response(output, {
+  const output = await image.bytes()
+  const response = new Response(Uint8Array.from(output), {
     headers: {
       "Content-Type": "image/webp",
       "Cache-Control": `public, max-age=${CACHE_ONE_YEAR_SECONDS}, immutable`,
