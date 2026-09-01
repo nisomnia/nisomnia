@@ -1,0 +1,11 @@
+pre-commit:
+  commands:
+    format:
+      glob: "*.{js,jsx,ts,tsx,json,jsonc,md,css,yaml,yml}"
+      run: bunx oxfmt --check {staged_files}
+    lint:
+      glob: "*.{js,jsx,ts,tsx}"
+      run: bunx oxlint --type-aware --type-check {staged_files}
+    typecheck:
+      glob: "*.{ts,tsx}"
+      run: bun run typecheck

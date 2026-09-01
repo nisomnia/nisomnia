@@ -11,4 +11,3 @@ Dockerfile
 .dockerignore
 .opencode
 openspec
-.vite-hooks

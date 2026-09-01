@@ -1,31 +1,10 @@
-<!--VITE PLUS START-->
-
-# Using Vite+, the Unified Toolchain for the Web
-
-This project is using Vite+, a unified toolchain built on top of Vite, Rolldown,
-Vitest, tsdown, Oxlint, Oxfmt, and Vite Task. Vite+ wraps runtime management,
-package management, and frontend tooling in a single global CLI called `vp`.
-Vite+ is distinct from Vite, and it invokes Vite through `vp dev` and
-`vp build`. Run `vp help` to print a list of commands and `vp <command> --help`
-for information about a specific command.
-
-Docs are local at `node_modules/vite-plus/docs` or online at
-https://viteplus.dev/guide/.
-
 ## Review Checklist
 
-- [ ] Run `vp install` after pulling remote changes and before getting started.
-- [ ] Run `vp check` and `vp test` to format, lint, type check and test changes.
-- [ ] Check if there are `vite.config.ts` tasks or `package.json` scripts
-      necessary for validation, run via `vp run <script>`.
-- [ ] **Do not start the dev server automatically.** Before running `vp dev`,
-      check whether the configured port (default 3000) is already in use. If the
-      port is unavailable, the dev server is being managed by the user — do not
-      run it and do not kill the existing process.
-- [ ] If setup, runtime, or package-manager behavior looks wrong, run
-      `vp env doctor` and include its output when asking for help.
-
-<!--VITE PLUS END-->
+- [ ] Run `bun install` after pulling remote changes.
+- [ ] Run `bun run check` and `bun run test` after changes.
+- [ ] **Do not start the dev server automatically.** Before running
+      `bun run dev`, check whether port 3000 is already in use. If unavailable,
+      do not run or kill the existing process.
 
 ## Stack
 
@@ -74,14 +53,10 @@ cross-package imports.
 `src/lib/api/types.d.ts` is a large generated file (OpenAPI → TypeScript via
 `openapi-typescript`). `client.ts` imports it via relative `./types`.
 
-The `generate-api-types` script in `package.json` writes to
-`./src/api/types.d.ts` — a **stale path** that does not match where `client.ts`
-imports from. Before running `bun run generate-api-types`, fix the `-o` path to
-`./src/lib/api/types.d.ts`, or the regeneration will not update the file
-actually used. Lint/fmt ignore `src/api/types.d.ts` and `src/lib/api/types.d.ts`
-via `vite.config.ts`.
+The `generate-api-types` script writes to `./src/lib/api/types.d.ts`. Lint/fmt
+ignore generated API types via `.oxlintrc.json` and `.oxfmtrc.json`.
 
-`predev` runs `generate-api-types` automatically before `vp dev`.
+`predev` runs `generate-api-types` automatically before `bun run dev`.
 
 ## Components (shadcn / COSS UI)
 
@@ -115,7 +90,7 @@ via `vite.config.ts`.
   Query, or React 19 patterns (`use`, Suspense) instead of side-effect hooks.
 - `no-console` lint rule is `error` — only `console.error`, `console.warn`,
   `console.info` allowed. No `console.log`.
-- **Formatter (oxfmt) defaults** (see `vite.config.ts`): `semi: false`,
+- **Formatter (oxfmt) defaults** (see `.oxfmtrc.json`): `semi: false`,
   `singleQuote: false` (double quotes), `tabWidth: 2`, `trailingComma: "all"`,
   `printWidth: 80`, `bracketSpacing: true`, `jsxSingleQuote: false`,
   `proseWrap: "always"`. No semicolons is intentional — do not add them.
@@ -129,36 +104,31 @@ via `vite.config.ts`.
 
 ## Commands
 
-| Purpose                   | Command                                              |
-| ------------------------- | ---------------------------------------------------- |
-| Install                   | `bun install` or `vp install`                        |
-| Dev server                | `vp dev` (port 3000; `predev` regenerates API types) |
-| Build                     | `vp build`                                           |
-| Format + lint + typecheck | `vp check` (`--fix` to autofix)                      |
-| Lint only                 | `vp lint` (`--fix`)                                  |
-| Format only               | `vp fmt` (`--write`)                                 |
-| Run tests                 | `vp test` or `vp test run`                           |
-| Generate routes           | `bun run generate-routes` (alias: `tsr generate`)    |
-| Generate API types        | `bun run generate-api-types` (see gotcha above)      |
-| Preview build             | `vp preview`                                         |
-| Diagnose env              | `vp env doctor`                                      |
+| Purpose                   | Command                                           |
+| ------------------------- | ------------------------------------------------- |
+| Install                   | `bun install`                                     |
+| Dev server                | `bun run dev` (port 3000; regenerates API types)  |
+| Build                     | `bun run build`                                   |
+| Format + lint + typecheck | `bun run check`                                   |
+| Lint only                 | `bun run lint` (`bun run lint:fix` to autofix)    |
+| Format only               | `bun run fmt` (`bun run fmt:check` to check)      |
+| Run tests                 | `bun run test`                                    |
+| Generate routes           | `bun run generate-routes` (alias: `tsr generate`) |
+| Generate API types        | `bun run generate-api-types`                      |
+| Preview build             | `bun run preview`                                 |
 
-Single test file: `vp test run -- path/to/file.test.ts`
+Single test file: `bun run test -- path/to/file.test.ts`
 
-## Git hooks / staged checks
+## Git hooks
 
-`.vite-hooks/pre-commit` runs `vp staged`, which applies (see `vite.config.ts`
-`staged`):
-
-- `*` → `vp check --fix`
-- `*.{ts,tsx}` → `vp lint --fix`
-- `*.{js,ts,tsx,json,md,yaml,yml,css}` → `vp fmt --write`
+Lefthook checks staged formatting and lint, then type-checks TypeScript changes.
+`bun install` installs the hook.
 
 ## Testing
 
 Vitest configured (jsdom, Testing Library). No tests currently exist in `src/`.
-Type-aware lint with type checking is on (`options.typeCheck: true`). When
-adding tests, follow existing patterns once present.
+Type-aware lint with type checking is on. When adding tests, follow existing
+patterns once present.
 
 ## React Doctor
 
