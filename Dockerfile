@@ -37,4 +37,4 @@ COPY --from=build /app/public ./public
 COPY --from=build /app/.output ./.output
 EXPOSE 3000
 
-CMD ["bun", "run", "./.output/server/index.mjs"]
+CMD ["bun", "--bun", "./.output/server/index.mjs"]
