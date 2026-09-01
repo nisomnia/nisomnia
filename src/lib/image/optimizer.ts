@@ -54,7 +54,7 @@ async function getCachedImage(key: string): Promise<Response | undefined> {
   const entry = await storage.getItem<CachedImage>(key)
   if (!entry) return undefined
   const body = Buffer.from(entry.body, "base64")
-  return new Response(body as unknown as BodyInit, {
+  return new Response(body, {
     headers: {
       "Content-Type": entry.contentType,
       "Cache-Control": entry.cacheControl,
@@ -147,7 +147,7 @@ export async function optimizeImageRequest(
   }
 
   const output = await pipeline.toBuffer()
-  const response = new Response(output as unknown as BodyInit, {
+  const response = new Response(output, {
     headers: {
       "Content-Type": "image/webp",
       "Cache-Control": `public, max-age=${CACHE_ONE_YEAR_SECONDS}, immutable`,

@@ -68,7 +68,7 @@ export function Calendar({
 
       return acc
     },
-    { ...defaultClassNames } as typeof defaultClassNames,
+    { ...defaultClassNames },
   )
 
   const defaultComponents = {

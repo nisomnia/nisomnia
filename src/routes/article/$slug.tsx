@@ -1,7 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import type { ArticleResponse } from "@/hooks/api/article"
-
 import { ArticleLayout } from "@/components/article/article-layout"
 import { ArticleNotFound } from "@/components/article/article-not-found"
 import { fetchClient } from "@/lib/api/client"
@@ -21,7 +19,7 @@ export const Route = createFileRoute("/article/$slug")({
           },
         )
         if (error) throw error
-        return data as ArticleResponse
+        return data
       },
     })
 

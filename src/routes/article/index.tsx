@@ -40,7 +40,7 @@ export const Route = createFileRoute("/article/")({
     })
   },
   head: ({ match }) => {
-    const q = (match.search as { q?: string }).q?.trim()
+    const q = match.search.q?.trim()
     const url = `${siteConfig.siteUrl}/article`
     const isSearching = Boolean(q)
     const seo = buildSeoMeta({
