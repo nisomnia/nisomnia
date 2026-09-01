@@ -9,26 +9,21 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as TopicIndexRouteImport } from './routes/topic/index'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ArticleIndexRouteImport } from './routes/article/index'
 import { Route as ArticleSlugRouteImport } from './routes/article/$slug'
+import { Route as TopicIndexRouteImport } from './routes/topic/index'
 import { Route as TopicSlugIndexRouteImport } from './routes/topic/$slug/index'
 
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TopicIndexRoute = TopicIndexRouteImport.update({
-  id: '/topic/',
-  path: '/topic/',
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArticleIndexRoute = ArticleIndexRouteImport.update({
@@ -39,6 +34,11 @@ const ArticleIndexRoute = ArticleIndexRouteImport.update({
 const ArticleSlugRoute = ArticleSlugRouteImport.update({
   id: '/article/$slug',
   path: '/article/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TopicIndexRoute = TopicIndexRouteImport.update({
+  id: '/topic/',
+  path: '/topic/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TopicSlugIndexRoute = TopicSlugIndexRouteImport.update({
@@ -110,13 +110,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -124,11 +117,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/topic/': {
-      id: '/topic/'
-      path: '/topic'
-      fullPath: '/topic/'
-      preLoaderRoute: typeof TopicIndexRouteImport
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/article/': {
@@ -143,6 +136,13 @@ declare module '@tanstack/react-router' {
       path: '/article/$slug'
       fullPath: '/article/$slug'
       preLoaderRoute: typeof ArticleSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/topic/': {
+      id: '/topic/'
+      path: '/topic'
+      fullPath: '/topic/'
+      preLoaderRoute: typeof TopicIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/topic/$slug/': {
