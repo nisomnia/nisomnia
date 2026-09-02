@@ -13,12 +13,6 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group"
-import {
-  Sheet,
-  SheetClose,
-  SheetPopup,
-  SheetTrigger,
-} from "@/components/ui/sheet"
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils/style"
 
@@ -72,33 +66,42 @@ function SearchForm({
   )
 }
 
-function MobileSearchSheet() {
+function MobileSearchDialog() {
   const [open, setOpen] = React.useState(false)
 
   return (
-    <Sheet onOpenChange={setOpen} open={open}>
-      <SheetTrigger render={<Button size="icon" variant="ghost" />}>
+    <>
+      <Button size="icon" variant="ghost" onClick={() => setOpen(true)}>
         <SearchIcon />
         <span className="sr-only">Open search</span>
-      </SheetTrigger>
-      <SheetPopup
-        className="row-start-1 h-auto max-h-none justify-start border-b"
-        showCloseButton={false}
-        side="top"
-      >
-        <div className="flex items-center gap-2 p-4">
-          <SearchForm
-            autoFocus
-            className="flex-1"
-            onSubmit={() => setOpen(false)}
-          />
-          <SheetClose render={<Button size="icon" variant="ghost" />}>
-            <XIcon />
-            <span className="sr-only">Close search</span>
-          </SheetClose>
-        </div>
-      </SheetPopup>
-    </Sheet>
+      </Button>
+      {open && (
+        <dialog
+          aria-label="Search articles"
+          className="fixed inset-x-0 top-0 m-0 h-auto max-h-none w-full max-w-none border-0 border-b bg-background p-0 text-foreground backdrop:bg-black/50"
+          onClose={() => setOpen(false)}
+          ref={(dialog) => {
+            if (dialog && !dialog.open) dialog.showModal()
+          }}
+        >
+          <div className="flex items-center gap-2 p-4">
+            <SearchForm
+              autoFocus
+              className="flex-1"
+              onSubmit={() => setOpen(false)}
+            />
+            <Button
+              aria-label="Close search"
+              size="icon"
+              variant="ghost"
+              onClick={() => setOpen(false)}
+            >
+              <XIcon />
+            </Button>
+          </div>
+        </dialog>
+      )}
+    </>
   )
 }
 
@@ -123,7 +126,7 @@ export function Header() {
         <div className="flex w-fit items-center justify-end gap-2">
           <ThemeSwitcher />
           <div className="lg:hidden">
-            <MobileSearchSheet />
+            <MobileSearchDialog />
           </div>
         </div>
       </div>

@@ -4,8 +4,7 @@ import { Link } from "@tanstack/react-router"
 
 import { cn } from "@/lib/utils/style"
 
-const APP_TITLE =
-  (import.meta.env.PUBLIC_APP_TITLE as string | undefined) ?? "Nisomnia"
+const APP_TITLE = import.meta.env.PUBLIC_APP_TITLE ?? "Nisomnia"
 
 interface LogoProps {
   showText?: boolean

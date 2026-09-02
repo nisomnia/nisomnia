@@ -62,12 +62,11 @@ export function TopicSection({
             ))
           : articles
               .slice(startIndex, startIndex + ARTICLES_PER_TOPIC)
-              .map((article: ArticlesByTopicItem, index: number) => (
+              .map((article: ArticlesByTopicItem) => (
                 <ArticleCard
                   key={article.id}
                   excerpt={article.excerpt}
                   featuredImage={article.featuredImage}
-                  priority={index === 0}
                   slug={article.slug}
                   title={article.title}
                 />

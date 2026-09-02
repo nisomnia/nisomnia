@@ -17,7 +17,6 @@ import { Header } from "@/components/layout/header"
 import { NotFound } from "@/components/layout/not-found"
 import { AppSidebar } from "@/components/layout/sidebar"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import { fetchClient } from "@/lib/api/client"
 import TanStackQueryDevtools from "@/lib/query/devtools"
 import { TanstackQueryProvider } from "@/lib/query/root-provider"
 import { siteConfig } from "@/lib/seo/config"
@@ -31,29 +30,11 @@ import {
 import { ThemeProvider } from "@/lib/theme/provider"
 import appCss from "@/styles.css?inline"
 
-const LANGUAGE = "id"
-const POPULAR_LIMIT = 8
-
 interface MyRouterContext {
   queryClient: QueryClient
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
-  loader: async ({ context: { queryClient } }) => {
-    await queryClient.prefetchQuery({
-      queryKey: ["topics", "popular", LANGUAGE, POPULAR_LIMIT],
-      queryFn: () =>
-        fetchClient
-          .POST("/topic/by-article-count", {
-            body: { language: LANGUAGE, perPage: POPULAR_LIMIT },
-          })
-          .then(({ data, error }) => {
-            if (error) throw error
-            return data ?? []
-          }),
-      staleTime: 5 * 60 * 1000,
-    })
-  },
   head: () => ({
     meta: [
       { charSet: "utf-8" },

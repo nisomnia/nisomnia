@@ -48,7 +48,7 @@ function FeaturedCard({
     <ArticleCard
       excerpt={article.excerpt}
       featuredImage={article.featuredImage}
-      priority
+      priority={variant === "spotlight"}
       slug={article.slug}
       title={article.title}
       variant={variant}

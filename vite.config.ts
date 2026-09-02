@@ -14,6 +14,14 @@ const redirectRouteRules = Object.fromEntries(
   ]),
 )
 
+const contentRouteRules = {
+  "/": { swr: 300 },
+  "/article": { swr: 300 },
+  "/article/**": { swr: 300 },
+  "/topic": { swr: 300 },
+  "/topic/**": { swr: 300 },
+}
+
 const config = defineConfig({
   envPrefix: ["VITE_", "PUBLIC_"],
   build: { sourcemap: true },
@@ -23,7 +31,7 @@ const config = defineConfig({
     nitro({
       preset: "bun",
       rollupConfig: { external: [/^@sentry\//, "isomorphic-dompurify"] },
-      routeRules: redirectRouteRules,
+      routeRules: { ...contentRouteRules, ...redirectRouteRules },
       scanDirs: ["src/server"],
     }),
     tailwindcss(),

@@ -3,22 +3,14 @@
 import { mergeProps } from "@base-ui/react/merge-props"
 import { useRender } from "@base-ui/react/use-render"
 import { cva, type VariantProps } from "class-variance-authority"
-import { MenuIcon } from "lucide-react"
+import { MenuIcon, XIcon } from "lucide-react"
 import * as React from "react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
-import {
-  Sheet,
-  SheetDescription,
-  SheetHeader,
-  SheetPopup,
-  SheetTitle,
-} from "@/components/ui/sheet"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Tooltip, TooltipPopup, TooltipTrigger } from "@/components/ui/tooltip"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { cn } from "@/lib/utils/style"
 
@@ -187,7 +179,7 @@ export function Sidebar({
   side?: "left" | "right"
   variant?: "sidebar" | "floating" | "inset"
   collapsible?: "offcanvas" | "icon" | "none"
-}): React.ReactElement {
+}) {
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
 
   if (collapsible === "none") {
@@ -206,27 +198,40 @@ export function Sidebar({
   }
 
   if (isMobile) {
+    if (!openMobile) return null
+
     return (
-      <Sheet onOpenChange={setOpenMobile} open={openMobile} {...props}>
-        <SheetPopup
-          className="w-(--sidebar-width) bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
-          data-mobile="true"
-          data-sidebar="sidebar"
-          data-slot="sidebar"
-          side={side}
-          style={
-            {
-              "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
-            } as React.CSSProperties
-          }
+      <dialog
+        aria-label="Sidebar"
+        className={cn(
+          "fixed inset-y-0 m-0 h-dvh max-h-none w-(--sidebar-width) max-w-none border-0 bg-sidebar p-0 text-sidebar-foreground backdrop:bg-black/50",
+          side === "left" ? "left-0" : "right-0 left-auto",
+          className,
+        )}
+        data-mobile="true"
+        data-sidebar="sidebar"
+        data-slot="sidebar"
+        onClose={() => setOpenMobile(false)}
+        ref={(dialog) => {
+          if (dialog && !dialog.open) dialog.showModal()
+        }}
+        style={
+          {
+            "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
+          } as React.CSSProperties
+        }
+      >
+        <Button
+          aria-label="Close sidebar"
+          className="absolute top-2 right-2 z-10"
+          size="icon"
+          variant="ghost"
+          onClick={() => setOpenMobile(false)}
         >
-          <SheetHeader className="sr-only">
-            <SheetTitle>Sidebar</SheetTitle>
-            <SheetDescription>Displays the mobile sidebar.</SheetDescription>
-          </SheetHeader>
-          <div className="flex h-full w-full flex-col">{children}</div>
-        </SheetPopup>
-      </Sheet>
+          <XIcon />
+        </Button>
+        <div className="flex h-full w-full flex-col">{children}</div>
+      </dialog>
     )
   }
 
@@ -531,16 +536,12 @@ export function SidebarMenuButton({
   isActive = false,
   variant = "default",
   size = "default",
-  tooltip,
   className,
   render,
   ...props
 }: useRender.ComponentProps<"button"> & {
   isActive?: boolean
-  tooltip?: string | React.ComponentProps<typeof TooltipPopup>
 } & VariantProps<typeof sidebarMenuButtonVariants>): React.ReactElement {
-  const { isMobile, state } = useSidebar()
-
   const defaultProps = {
     className: cn(sidebarMenuButtonVariants({ size, variant }), className),
     "data-active": isActive,
@@ -549,37 +550,11 @@ export function SidebarMenuButton({
     "data-slot": "sidebar-menu-button",
   }
 
-  const buttonProps = mergeProps<"button">(defaultProps, props)
-
-  const buttonElement = useRender({
+  return useRender({
     defaultTagName: "button",
-    props: buttonProps,
+    props: mergeProps<"button">(defaultProps, props),
     render,
   })
-
-  if (!tooltip) {
-    return buttonElement
-  }
-
-  if (typeof tooltip === "string") {
-    tooltip = {
-      children: tooltip,
-    }
-  }
-
-  return (
-    <Tooltip>
-      <TooltipTrigger
-        render={buttonElement as React.ReactElement<Record<string, unknown>>}
-      />
-      <TooltipPopup
-        align="center"
-        hidden={state !== "collapsed" || isMobile}
-        side="right"
-        {...tooltip}
-      />
-    </Tooltip>
-  )
 }
 
 export function SidebarMenuAction({
