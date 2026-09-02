@@ -14,14 +14,6 @@ const redirectRouteRules = Object.fromEntries(
   ]),
 )
 
-const contentRouteRules = {
-  "/": { swr: 300 },
-  "/article": { swr: 300 },
-  "/article/**": { swr: 300 },
-  "/topic": { swr: 300 },
-  "/topic/**": { swr: 300 },
-}
-
 const config = defineConfig({
   envPrefix: ["VITE_", "PUBLIC_"],
   build: { sourcemap: true },
@@ -32,7 +24,7 @@ const config = defineConfig({
       preset: "bun",
       compressPublicAssets: { gzip: true, brotli: true },
       rollupConfig: { external: [/^@sentry\//, "isomorphic-dompurify"] },
-      routeRules: { ...contentRouteRules, ...redirectRouteRules },
+      routeRules: redirectRouteRules,
       scanDirs: ["src/server"],
     }),
     tailwindcss(),

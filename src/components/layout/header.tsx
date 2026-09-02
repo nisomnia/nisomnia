@@ -7,7 +7,6 @@ import * as React from "react"
 import { Logo } from "@/components/layout/logo"
 import { ThemeSwitcher } from "@/components/layout/theme-switcher"
 import { Button } from "@/components/ui/button"
-import { Group } from "@/components/ui/group"
 import {
   InputGroup,
   InputGroupAddon,
@@ -52,7 +51,6 @@ function SearchForm({
         <InputGroupInput
           aria-label="Cari artikel"
           autoFocus={autoFocus}
-          className="px-0"
           onChange={(event) => setQuery(event.currentTarget.value)}
           placeholder="Search articles..."
           type="search"
@@ -118,9 +116,9 @@ export function Header() {
         </div>
 
         <div className="flex flex-1 justify-center">
-          <Group className="hidden w-full max-w-md lg:flex">
+          <div className="hidden w-full max-w-md lg:flex">
             <SearchForm className="flex-1" />
-          </Group>
+          </div>
         </div>
 
         <div className="flex w-fit items-center justify-end gap-2">

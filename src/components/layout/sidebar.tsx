@@ -11,10 +11,20 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { useTopicsByArticleCount } from "@/hooks/api/topic"
+import { cn } from "@/lib/utils/style"
+
+const MENU_LINK_CLASS_NAME =
+  "flex h-8 w-full items-center gap-2 overflow-hidden rounded-lg p-2 text-left text-sm outline-hidden hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2"
+
+function menuLinkClassName(isActive: boolean) {
+  return cn(
+    MENU_LINK_CLASS_NAME,
+    isActive && "bg-sidebar-accent font-medium text-sidebar-accent-foreground",
+  )
+}
 
 function useActiveTopicSlug(): string | undefined {
   const pathname = useRouterState({
@@ -39,12 +49,13 @@ function TopicMenu() {
     <>
       {topics.map((topic: { slug: string; title: string }) => (
         <SidebarMenuItem key={topic.slug}>
-          <SidebarMenuButton
-            isActive={topic.slug === activeSlug}
-            render={<Link params={{ slug: topic.slug }} to="/topic/$slug" />}
+          <Link
+            className={menuLinkClassName(topic.slug === activeSlug)}
+            params={{ slug: topic.slug }}
+            to="/topic/$slug"
           >
             {topic.title}
-          </SidebarMenuButton>
+          </Link>
         </SidebarMenuItem>
       ))}
     </>
@@ -59,34 +70,34 @@ function MainNav() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton isActive={pathname === "/"} render={<Link to="/" />}>
+        <Link className={menuLinkClassName(pathname === "/")} to="/">
           <HomeIcon />
           <span>Home</span>
-        </SidebarMenuButton>
+        </Link>
       </SidebarMenuItem>
       <SidebarMenuItem>
-        <SidebarMenuButton
-          isActive={pathname.startsWith("/article")}
-          render={<Link to="/article" />}
+        <Link
+          className={menuLinkClassName(pathname.startsWith("/article"))}
+          to="/article"
         >
           <FileTextIcon />
           <span>Articles</span>
-        </SidebarMenuButton>
+        </Link>
       </SidebarMenuItem>
       <SidebarMenuItem>
-        <SidebarMenuButton render={<Link to="/article" search={{ q: "" }} />}>
+        <Link className={MENU_LINK_CLASS_NAME} search={{ q: "" }} to="/article">
           <SearchIcon />
           <span>Search</span>
-        </SidebarMenuButton>
+        </Link>
       </SidebarMenuItem>
       <SidebarMenuItem>
-        <SidebarMenuButton
-          isActive={pathname.startsWith("/topic")}
-          render={<Link to="/topic" />}
+        <Link
+          className={menuLinkClassName(pathname.startsWith("/topic"))}
+          to="/topic"
         >
           <HashIcon />
           <span>Topics</span>
-        </SidebarMenuButton>
+        </Link>
       </SidebarMenuItem>
     </SidebarMenu>
   )
@@ -94,7 +105,7 @@ function MainNav() {
 
 export function AppSidebar() {
   return (
-    <Sidebar collapsible="offcanvas" side="left">
+    <Sidebar>
       <SidebarHeader>
         <Logo showText className="px-2 text-primary" />
       </SidebarHeader>
