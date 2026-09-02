@@ -1,9 +1,9 @@
 import { Link, createFileRoute } from "@tanstack/react-router"
 import { ArrowRightIcon } from "lucide-react"
 
+import { DeferredTopicSections } from "@/components/home/deferred-topic-sections"
 import { FeaturedSection } from "@/components/home/featured-section"
 import { HOME_TOPICS, TopicPills } from "@/components/home/topic-pills"
-import { TopicSection } from "@/components/topic/topic-section"
 import { Button } from "@/components/ui/button"
 import { fetchClient } from "@/lib/api/client"
 import { siteConfig } from "@/lib/seo/config"
@@ -19,60 +19,47 @@ import {
 import { buildSeoMeta } from "@/lib/seo/meta"
 
 const DEFAULT_LANGUAGE = "id"
-const ARTICLES_PER_TOPIC = 4
+const FEATURED_ARTICLES = 1
 
 export const Route = createFileRoute("/")({
   ssr: true,
   loader: async ({ context: { queryClient } }) => {
-    const topics = await Promise.all(
-      HOME_TOPICS.map(({ slug }) =>
-        queryClient.fetchQuery({
-          queryKey: ["topic", "by-slug", slug],
-          queryFn: async () => {
-            const { data, error } = await fetchClient.GET(
-              "/topic/by-slug/{slug}",
-              {
-                params: { path: { slug } },
-              },
-            )
-            if (error) throw error
-            if (!data) throw new Error(`Topic not found: ${slug}`)
-            return data
-          },
-          staleTime: 5 * 60 * 1000,
-        }),
-      ),
-    )
+    const { slug } = HOME_TOPICS[0]
+    const topic = await queryClient.fetchQuery({
+      queryKey: ["topic", "by-slug", slug],
+      queryFn: async () => {
+        const { data, error } = await fetchClient.GET("/topic/by-slug/{slug}", {
+          params: { path: { slug } },
+        })
+        if (error) throw error
+        if (!data) throw new Error(`Topic not found: ${slug}`)
+        return data
+      },
+      staleTime: 5 * 60 * 1000,
+    })
 
-    await Promise.all(
-      topics.map((topic) =>
-        queryClient.fetchQuery({
-          queryKey: [
-            "articles",
-            "by-topic-id",
-            topic.id,
-            DEFAULT_LANGUAGE,
-            ARTICLES_PER_TOPIC,
-          ],
-          queryFn: async () => {
-            const { data, error } = await fetchClient.POST(
-              "/article/by-topic-id",
-              {
-                body: {
-                  topicId: topic.id,
-                  language: DEFAULT_LANGUAGE,
-                  page: 1,
-                  perPage: ARTICLES_PER_TOPIC,
-                },
-              },
-            )
-            if (error) throw error
-            return data ?? []
+    await queryClient.fetchQuery({
+      queryKey: [
+        "articles",
+        "by-topic-id",
+        topic.id,
+        DEFAULT_LANGUAGE,
+        FEATURED_ARTICLES,
+      ],
+      queryFn: async () => {
+        const { data, error } = await fetchClient.POST("/article/by-topic-id", {
+          body: {
+            topicId: topic.id,
+            language: DEFAULT_LANGUAGE,
+            page: 1,
+            perPage: FEATURED_ARTICLES,
           },
-          staleTime: 5 * 60 * 1000,
-        }),
-      ),
-    )
+        })
+        if (error) throw error
+        return data ?? []
+      },
+      staleTime: 5 * 60 * 1000,
+    })
   },
   head: () => {
     const url = siteConfig.siteUrl
@@ -117,9 +104,7 @@ function Home() {
 
       <FeaturedSection slugs={slugs} />
 
-      {HOME_TOPICS.map(({ label, slug }) => (
-        <TopicSection key={slug} label={label} slug={slug} startIndex={1} />
-      ))}
+      <DeferredTopicSections topics={HOME_TOPICS} />
 
       <div className="flex justify-center pt-2">
         <Button

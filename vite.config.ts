@@ -30,6 +30,7 @@ const config = defineConfig({
     devtools(),
     nitro({
       preset: "bun",
+      compressPublicAssets: { gzip: true, brotli: true },
       rollupConfig: { external: [/^@sentry\//, "isomorphic-dompurify"] },
       routeRules: { ...contentRouteRules, ...redirectRouteRules },
       scanDirs: ["src/server"],

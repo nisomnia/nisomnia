@@ -2,6 +2,7 @@
 
 import { Link } from "@tanstack/react-router"
 import { ArrowRightIcon } from "lucide-react"
+import { useCallback, useState } from "react"
 
 import { ArticleCard } from "@/components/article/article-card"
 import { Button } from "@/components/ui/button"
@@ -12,7 +13,35 @@ import {
 } from "@/hooks/api/article"
 import { useTopicBySlug } from "@/hooks/api/topic"
 
-const ARTICLES_PER_TOPIC = 4
+const ARTICLES_PER_TOPIC = 1
+
+function FeaturedCardSkeleton({
+  variant,
+}: {
+  variant: "compact" | "spotlight"
+}) {
+  if (variant === "compact") {
+    return (
+      <div className="flex h-full items-start gap-3 rounded-xl border bg-card p-3">
+        <Skeleton className="aspect-4/3 w-24 shrink-0 rounded-none" />
+        <div className="min-w-0 flex-1 space-y-2">
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-3 w-3/4" />
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex h-full flex-col overflow-hidden rounded-2xl border bg-card">
+      <Skeleton className="aspect-video w-full rounded-none" />
+      <div className="space-y-2 p-5 sm:p-6">
+        <Skeleton className="h-5 w-4/5" />
+        <Skeleton className="h-4 w-3/5" />
+      </div>
+    </div>
+  )
+}
 
 function FeaturedCard({
   slug,
@@ -28,15 +57,7 @@ function FeaturedCard({
   )
 
   if (topicQuery.isLoading || articlesQuery.isLoading) {
-    return (
-      <div className="flex h-full flex-col overflow-hidden rounded-2xl border bg-card">
-        <Skeleton className="aspect-video w-full rounded-none" />
-        <div className="space-y-2 p-5 sm:p-6">
-          <Skeleton className="h-5 w-4/5" />
-          <Skeleton className="h-4 w-3/5" />
-        </div>
-      </div>
-    )
+    return <FeaturedCardSkeleton variant={variant} />
   }
 
   const article: ArticlesByTopicItem | undefined =
@@ -54,6 +75,41 @@ function FeaturedCard({
       variant={variant}
       className="h-full"
     />
+  )
+}
+
+function DeferredFeaturedCards({ slugs }: { slugs: string[] }) {
+  const [visible, setVisible] = useState(false)
+
+  const observe = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (!node || visible) return
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry?.isIntersecting) return
+          setVisible(true)
+          observer.disconnect()
+        },
+        { rootMargin: "0px 0px -25%" },
+      )
+
+      observer.observe(node)
+      return () => observer.disconnect()
+    },
+    [visible],
+  )
+
+  return (
+    <div ref={observe} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+      {slugs.map((slug) =>
+        visible ? (
+          <FeaturedCard key={slug} slug={slug} variant="compact" />
+        ) : (
+          <FeaturedCardSkeleton key={slug} variant="compact" />
+        ),
+      )}
+    </div>
   )
 }
 
@@ -81,11 +137,7 @@ export function FeaturedSection({ slugs }: { slugs: string[] }) {
 
       <div className="grid gap-4 lg:grid-cols-2">
         <FeaturedCard slug={lead} variant="spotlight" />
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-          {rest.map((slug) => (
-            <FeaturedCard key={slug} slug={slug} variant="compact" />
-          ))}
-        </div>
+        <DeferredFeaturedCards slugs={rest} />
       </div>
     </section>
   )

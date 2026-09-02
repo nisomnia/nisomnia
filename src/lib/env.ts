@@ -1,21 +1,7 @@
-import { createEnv } from "@t3-oss/env-core"
-import { z } from "zod"
+const apiUrl = import.meta.env.PUBLIC_API_URL
 
-export const env = createEnv({
-  clientPrefix: "PUBLIC_",
+if (!apiUrl) {
+  throw new Error("PUBLIC_API_URL is required")
+}
 
-  client: {
-    PUBLIC_API_URL: z.string(),
-    PUBLIC_APP_TITLE: z.string(),
-  },
-
-  server: {
-    CACHE_CLEAR_SECRET: z.string().optional(),
-  },
-
-  runtimeEnv: { ...import.meta.env, ...process.env },
-  emptyStringAsUndefined: true,
-})
-
-export const apiUrl = env.PUBLIC_API_URL
-export const appTitle = env.PUBLIC_APP_TITLE
+export { apiUrl }

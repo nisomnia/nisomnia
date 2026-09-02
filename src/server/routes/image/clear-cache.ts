@@ -1,6 +1,5 @@
 import { defineHandler } from "nitro"
 
-import { env } from "@/lib/env"
 import { clearImageCache } from "@/lib/image/optimizer"
 
 function unauthorized(): Response {
@@ -18,7 +17,7 @@ export default defineHandler(async (event) => {
     })
   }
 
-  const secret = env.CACHE_CLEAR_SECRET
+  const secret = process.env.CACHE_CLEAR_SECRET
   if (!secret) {
     return new Response("Cache clearing is not configured", {
       status: 503,

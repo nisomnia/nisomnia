@@ -1,7 +1,6 @@
 "use client"
 
 import { createFileRoute } from "@tanstack/react-router"
-import { z } from "zod"
 
 import { ArticleCard } from "@/components/article/article-card"
 import { Button } from "@/components/ui/button"
@@ -25,12 +24,9 @@ import { buildSeoMeta } from "@/lib/seo/meta"
 
 const PAGE_SIZE = 20
 
-const articleSearchSchema = z.object({
-  q: z.string().optional(),
-})
-
 export const Route = createFileRoute("/article/")({
-  validateSearch: articleSearchSchema,
+  validateSearch: (search) =>
+    typeof search.q === "string" ? { q: search.q } : {},
   loader: async ({ context: { queryClient } }) => {
     await queryClient.prefetchInfiniteQuery({
       queryKey: ["articles", "by-language", "id", PAGE_SIZE] as const,

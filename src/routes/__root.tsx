@@ -28,7 +28,7 @@ import {
   websiteJsonLd,
 } from "@/lib/seo/json-ld"
 import { ThemeProvider } from "@/lib/theme/provider"
-import appCss from "@/styles.css?inline"
+import appCss from "@/styles.css?url"
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -69,6 +69,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       },
     ],
     links: [
+      { rel: "stylesheet", href: appCss },
       { rel: "preconnect", href: "https://api.nisomnia.com" },
       { rel: "dns-prefetch", href: "https://api.nisomnia.com" },
       {
@@ -77,9 +78,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         crossOrigin: "anonymous" as const,
       },
       { rel: "dns-prefetch", href: "https://assets.nisomnia.com" },
-      { rel: "preconnect", href: "https://www.googletagmanager.com" },
-      { rel: "preconnect", href: "https://analytics.yopem.com" },
-      { rel: "preconnect", href: "https://pagead2.googlesyndication.com" },
       { rel: "icon", type: "image/x-icon", href: "/icons/favicon.ico" },
       {
         rel: "icon",
@@ -152,36 +150,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         buildGraph([placeJsonLd(), organizationJsonLd(), websiteJsonLd()]),
       ),
       {
-        type: "speculationrules",
-        children: JSON.stringify({
-          prerender: [
-            {
-              where: {
-                href_matches: "/*",
-                not: {
-                  href_matches: ["/article/*?*", "/topic/*?*"],
-                },
-              },
-              eagerness: "moderate",
-            },
-          ],
-        }),
-      },
-      {
-        src: "https://www.googletagmanager.com/gtag/js?id=G-0JB3NXP0QW",
-        async: true,
-        defer: true,
-      },
-      {
-        children: `window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments)}
-gtag("js", new Date())
-gtag("config", "G-0JB3NXP0QW")`,
-      },
-      {
-        src: "https://analytics.yopem.com/script.js",
-        async: true,
-        "data-website-id": "dc9d1fa0-9691-48c7-83cd-1c79e16a80ca",
+        children: `(function(){var loaded=false,events=["pointerdown","keydown","touchstart"];function load(){if(loaded)return;loaded=true;events.forEach(function(event){window.removeEventListener(event,load)});window.dataLayer=window.dataLayer||[];window.gtag=function(){window.dataLayer.push(arguments)};window.gtag("js",new Date());window.gtag("config","G-0JB3NXP0QW");var google=document.createElement("script");google.async=true;google.src="https://www.googletagmanager.com/gtag/js?id=G-0JB3NXP0QW";document.head.appendChild(google);var yopem=document.createElement("script");yopem.async=true;yopem.src="https://analytics.yopem.com/script.js";yopem.dataset.websiteId="dc9d1fa0-9691-48c7-83cd-1c79e16a80ca";document.head.appendChild(yopem)}events.forEach(function(event){window.addEventListener(event,load,{once:true,passive:true})})})();`,
       },
     ],
   }),
@@ -197,7 +166,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
     <html lang="id" suppressHydrationWarning>
       <head>
         <HeadContent />
-        <style dangerouslySetInnerHTML={{ __html: appCss }} />
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){var k="theme",s=null,t="light";try{s=localStorage.getItem(k)}catch(e){}if(s==="light"||s==="dark"){t=s}else if(window.matchMedia("(prefers-color-scheme: dark)").matches){t="dark"}document.documentElement.classList.add(t)})();`,

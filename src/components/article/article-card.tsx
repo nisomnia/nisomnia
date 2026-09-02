@@ -5,6 +5,8 @@ import { Link } from "@tanstack/react-router"
 import { Image } from "@/components/image"
 import { cn } from "@/lib/utils/style"
 
+const SPOTLIGHT_BREAKPOINTS = [384, 512]
+
 const CARD_VARIANTS = {
   compact: {
     imageAspect: "aspect-4/3",
@@ -41,9 +43,9 @@ const CARD_VARIANTS = {
     imageWrapperClassName: "w-full",
     imageClassName:
       "h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]",
-    imageHeight: 576,
+    imageHeight: 288,
     imageSizes: "(max-width: 1024px) 100vw, 50vw",
-    imageWidth: 1024,
+    imageWidth: 512,
     linkClassName:
       "group flex flex-col overflow-hidden rounded-2xl border bg-card transition-shadow hover:shadow-lg",
     textClassName: "flex flex-1 flex-col gap-3 p-5 sm:p-6",
@@ -98,6 +100,9 @@ export function ArticleCard({
             height={styles.imageHeight}
             sizes={styles.imageSizes}
             background="auto"
+            breakpoints={
+              variant === "spotlight" ? SPOTLIGHT_BREAKPOINTS : undefined
+            }
             className={styles.imageClassName}
             unstyled
             priority={priority}

@@ -3,14 +3,7 @@ import { useEffect, useRef } from "react"
 
 const ADSENSE_CLIENT_ID = "ca-pub-4946821479056257"
 const ADSENSE_SCRIPT_SRC = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}`
-const FALLBACK_TIMEOUT_MS = 8000
-const TRIGGER_EVENTS = [
-  "scroll",
-  "click",
-  "keydown",
-  "touchstart",
-  "pointerdown",
-] as const
+const TRIGGER_EVENTS = ["keydown", "touchstart", "pointerdown"] as const
 
 function loadAdsenseScript(): HTMLScriptElement {
   const existing = document.querySelector<HTMLScriptElement>(
@@ -49,15 +42,12 @@ export function LazyAdsense() {
       return
     }
 
-    const timeoutRef = { current: undefined as number | undefined }
-
     const arm = () => {
       if (armedRef.current) return
       armedRef.current = true
       for (const evt of TRIGGER_EVENTS) {
         window.removeEventListener(evt, arm)
       }
-      window.clearTimeout(timeoutRef.current)
       try {
         if (window.adsbygoogle) {
           pushPendingAds()
@@ -79,13 +69,11 @@ export function LazyAdsense() {
     for (const evt of TRIGGER_EVENTS) {
       window.addEventListener(evt, arm, { passive: true })
     }
-    timeoutRef.current = window.setTimeout(arm, FALLBACK_TIMEOUT_MS)
 
     return () => {
       for (const evt of TRIGGER_EVENTS) {
         window.removeEventListener(evt, arm)
       }
-      window.clearTimeout(timeoutRef.current)
     }
   }, [])
 
