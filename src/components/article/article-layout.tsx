@@ -8,7 +8,6 @@ import { ArticleShareBar } from "@/components/article/article-share-bar"
 import { ArticleTableOfContents } from "@/components/article/article-table-of-contents"
 import { RelatedInfiniteScroll } from "@/components/article/related-infinite-scroll"
 import { Image } from "@/components/image"
-import { useIsMobile } from "@/hooks/use-media-query"
 import { extractHeadings } from "@/lib/article/headings"
 import { parseContent } from "@/lib/parse-content"
 import { siteConfig } from "@/lib/seo/config"
@@ -19,8 +18,6 @@ interface ArticleLayoutProps {
 }
 
 export function ArticleLayout({ article, slug }: ArticleLayoutProps) {
-  const isMobile = useIsMobile()
-
   const { parts, headings } = useMemo(() => {
     if (!article.content) return { parts: [], headings: [] }
     const withHeadings = extractHeadings(article.content)
@@ -32,75 +29,70 @@ export function ArticleLayout({ article, slug }: ArticleLayoutProps) {
 
   const articleUrl = `${siteConfig.siteUrl}/article/${slug}`
 
-  const toc = headings.length > 0 && (
-    <ArticleTableOfContents
-      headings={headings}
-      variant={isMobile ? "collapsible" : "desktop-collapsible"}
-    />
-  )
-
   return (
-    <div className="mx-auto max-w-7xl px-6 py-8 md:px-12 md:py-12 lg:px-16 lg:py-16">
-      <div className="grid grid-cols-1 gap-12 lg:grid-cols-[auto_1fr_280px]">
-        <aside className="hidden lg:sticky lg:top-24 lg:flex lg:flex-col lg:items-end lg:self-start">
-          <ArticleShareBar
-            url={articleUrl}
-            title={article.title}
-            className="rounded-2xl border border-white/20 bg-background/80 p-2 shadow-lg backdrop-blur-md backdrop-saturate-[180%] will-change-[backdrop-filter,transform]"
-          />
-        </aside>
-        <main className="min-w-0">
+    <div className="page-shell reader-shell">
+      <Link to="/article" className="eyebrow inline-flex min-h-11 items-center">
+        Semua artikel
+      </Link>
+      <div className="grid min-w-0 gap-12 xl:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="min-w-0">
           <article>
-            <h1 className="mb-2 text-3xl font-bold md:text-4xl">
-              {article.title}
-            </h1>
-            <div className="mb-8 flex flex-wrap items-center gap-4 text-sm text-muted-foreground" />
+            <div className="reader-heading">
+              <h1>{article.title}</h1>
+              {article.excerpt && <p>{article.excerpt}</p>}
+              <ArticleShareBar url={articleUrl} title={article.title} />
+            </div>
             {article.featuredImage && (
-              <div className="mb-6 aspect-video w-full overflow-hidden rounded-lg">
+              <div className="mb-10 aspect-video w-full overflow-hidden rounded-2xl sm:rounded-3xl">
                 <Image
                   src={article.featuredImage}
                   alt={article.metaTitle ?? article.title}
-                  layout="fixed"
+                  layout="constrained"
                   width={1024}
                   height={576}
-                  priority={true}
-                  sizes="(max-width: 768px) 100vw, 1024px"
+                  priority
+                  sizes="(max-width: 768px) 100vw, 760px"
                   background="auto"
-                  className="h-full w-full object-cover"
+                  className="size-full object-cover"
+                  unstyled
                 />
               </div>
             )}
-            {isMobile && toc}
+            <div className="xl:hidden">
+              <ArticleTableOfContents
+                headings={headings}
+                variant="collapsible"
+              />
+            </div>
             <ArticleContent parts={parts} />
             {article.topics.length > 0 && (
-              <div className="mt-8 flex flex-wrap gap-2">
+              <nav
+                aria-label="Topik artikel"
+                className="mt-10 flex flex-wrap gap-2 border-t pt-6"
+              >
                 {article.topics.map((topic) => (
                   <Link
                     key={topic.id}
                     to="/topic/$slug"
                     params={{ slug: topic.slug }}
-                    className="rounded-full bg-muted px-3 py-1 text-sm font-medium text-muted-foreground hover:bg-muted/80"
+                    className="inline-flex min-h-11 items-center rounded-full bg-muted px-4 py-2 text-sm font-medium transition-colors hover:bg-accent"
                   >
                     {topic.title}
                   </Link>
                 ))}
-              </div>
+              </nav>
             )}
           </article>
-          <div className="mt-12">
+          <div className="mt-16 border-t pt-10">
             <RelatedInfiniteScroll currentSlug={slug} />
           </div>
-        </main>
-        <aside className="hidden lg:sticky lg:top-24 lg:block lg:self-start">
-          {!isMobile && toc}
+        </div>
+        <aside className="hidden xl:sticky xl:top-28 xl:block xl:self-start">
+          <ArticleTableOfContents
+            headings={headings}
+            variant="desktop-collapsible"
+          />
         </aside>
-      </div>
-      <div className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 lg:hidden">
-        <ArticleShareBar
-          url={articleUrl}
-          title={article.title}
-          className="rounded-2xl border border-white/20 bg-background/80 p-2 shadow-lg backdrop-blur-md backdrop-saturate-[180%] will-change-[backdrop-filter,transform]"
-        />
       </div>
     </div>
   )

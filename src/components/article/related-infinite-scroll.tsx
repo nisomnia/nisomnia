@@ -1,9 +1,12 @@
 "use client"
 
-import { Link } from "@tanstack/react-router"
-import { useEffect, useRef } from "react"
+import { useCallback } from "react"
 
-import { Image } from "@/components/image"
+import {
+  ArticleCard,
+  ArticleRowSkeleton,
+} from "@/components/article/article-card"
+import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import {
   useArticleBySlug,
@@ -23,6 +26,7 @@ export function RelatedInfiniteScroll({
     data: currentArticle,
     isLoading: articleIsLoading,
     isError: articleIsError,
+    refetch: refetchArticle,
   } = useArticleBySlug(currentSlug)
 
   const currentArticleId = currentArticle?.id
@@ -32,28 +36,36 @@ export function RelatedInfiniteScroll({
     data: infiniteData,
     isLoading: infiniteIsLoading,
     isError: infiniteIsError,
+    refetch,
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
   } = useRelatedArticlesInfinite(currentArticleId, topicId, PAGE_SIZE)
 
-  const sentinelRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const element = sentinelRef.current
-    if (!element) return
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0]
-        if (entry?.isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage()
-        }
-      },
-      { rootMargin: "200px" },
-    )
-    observer.observe(element)
-    return () => observer.disconnect()
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage])
+  const observe = useCallback(
+    (element: HTMLDivElement | null) => {
+      if (
+        !element ||
+        infiniteIsError ||
+        !hasNextPage ||
+        isFetchingNextPage ||
+        typeof IntersectionObserver === "undefined"
+      )
+        return
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0]
+          if (entry?.isIntersecting && hasNextPage && !isFetchingNextPage) {
+            fetchNextPage()
+          }
+        },
+        { rootMargin: "200px" },
+      )
+      observer.observe(element)
+      return () => observer.disconnect()
+    },
+    [hasNextPage, isFetchingNextPage, fetchNextPage, infiniteIsError],
+  )
 
   const articles =
     infiniteData?.pages.flatMap((page) => page?.articles ?? []) ?? []
@@ -62,83 +74,69 @@ export function RelatedInfiniteScroll({
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <Spinner className="text-muted-foreground" />
+      <div role="status" className="article-list">
+        <span className="sr-only">Memuat artikel terkait...</span>
+        <ArticleRowSkeleton />
+        <ArticleRowSkeleton />
       </div>
     )
   }
 
-  if (isError) {
+  if (isError && articles.length === 0) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <p className="text-destructive" role="alert">
-          Failed to load related articles.
-        </p>
+      <div className="inline-status">
+        <p role="alert">Artikel terkait belum dapat dimuat.</p>
+        <Button
+          variant="outline"
+          onClick={() => (articleIsError ? refetchArticle() : refetch())}
+        >
+          Coba lagi
+        </Button>
       </div>
     )
   }
 
   if (articles.length === 0) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <p className="text-muted-foreground">No related articles found.</p>
-      </div>
-    )
+    return <p className="inline-status">Belum ada artikel terkait.</p>
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-4">
+    <section aria-label="Artikel terkait" className="flex flex-col gap-6">
+      <h2 className="section-title">Baca selanjutnya</h2>
+      <div className="article-list">
         {articles.map((article) => (
-          <Link
+          <ArticleCard
             key={article.id}
-            to="/article/$slug"
-            params={{ slug: article.slug }}
-            className="flex gap-4 rounded-lg p-2 transition-shadow"
-          >
-            {article.featuredImage && (
-              <div className="aspect-4/3 w-20 shrink-0 overflow-hidden rounded-lg sm:w-32">
-                <Image
-                  src={article.featuredImage}
-                  alt={article.metaTitle ?? article.title}
-                  layout="fixed"
-                  width={128}
-                  height={96}
-                  sizes="(max-width: 640px) 5rem, 8rem"
-                  background="auto"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            )}
-            <div className="min-w-0 flex-1">
-              <h3 className="text-sm font-semibold hover:underline sm:text-lg">
-                {article.title}
-              </h3>
-              <p className="mt-1 line-clamp-2 text-xs text-muted-foreground sm:text-sm">
-                {article.excerpt}
-              </p>
-              {article.createdAt && (
-                <time
-                  className="mt-2 block text-xs text-muted-foreground"
-                  dateTime={article.createdAt}
-                >
-                  {new Date(article.createdAt).toLocaleDateString("id-ID", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </time>
-              )}
-            </div>
-          </Link>
+            slug={article.slug}
+            title={article.title}
+            excerpt={article.excerpt}
+            featuredImage={article.featuredImage}
+            createdAt={article.createdAt ?? undefined}
+          />
         ))}
       </div>
-      <div ref={sentinelRef} className="h-4" />
-      {isFetchingNextPage && (
-        <div className="flex items-center justify-center py-4">
-          <Spinner className="text-muted-foreground" />
+      <div ref={observe} className="h-px" aria-hidden="true" />
+      {isError && (
+        <p role="alert" className="text-muted-foreground">
+          Artikel berikutnya belum dapat dimuat. Coba lagi.
+        </p>
+      )}
+      {hasNextPage && (
+        <div className="flex justify-center">
+          <Button
+            variant="outline"
+            disabled={isFetchingNextPage}
+            onClick={() => fetchNextPage()}
+          >
+            {isFetchingNextPage && <Spinner />}
+            {isFetchingNextPage
+              ? "Memuat artikel..."
+              : isError
+                ? "Coba lagi"
+                : "Muat lebih banyak"}
+          </Button>
         </div>
       )}
-    </div>
+    </section>
   )
 }

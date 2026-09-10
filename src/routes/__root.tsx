@@ -13,6 +13,7 @@ import React from "react"
 
 import { LazyAdsense } from "@/components/adsense/lazy-adsense"
 import { ErrorPage } from "@/components/layout/error-page"
+import { Footer } from "@/components/layout/footer"
 import { Header } from "@/components/layout/header"
 import { NotFound } from "@/components/layout/not-found"
 import { AppSidebar } from "@/components/layout/sidebar"
@@ -182,11 +183,12 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         </a>
         <TanstackQueryProvider queryClient={queryClient}>
           <ThemeProvider>
-            <SidebarProvider defaultOpen>
+            <SidebarProvider defaultOpen={false}>
               <AppSidebar />
               <SidebarInset id="main-content">
                 <Header />
                 {children}
+                <Footer />
               </SidebarInset>
             </SidebarProvider>
           </ThemeProvider>

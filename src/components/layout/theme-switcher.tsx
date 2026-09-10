@@ -13,6 +13,9 @@ export function ThemeSwitcher() {
       size="icon"
       variant="ghost"
       onClick={toggleTheme}
+      title={
+        theme === "dark" ? "Beralih ke tema terang" : "Beralih ke tema gelap"
+      }
       aria-label={
         theme === "dark" ? "Beralih ke tema terang" : "Beralih ke tema gelap"
       }

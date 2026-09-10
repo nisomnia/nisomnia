@@ -9,16 +9,15 @@ import { Image } from "@/components/image"
 function ContentPartView({ part }: { part: ContentPart }) {
   if (part.type === "image") {
     return (
-      <div className="aspect-video w-full overflow-hidden rounded-lg">
+      <div className="reader-media">
         <Image
           src={part.src}
           alt={part.alt}
           layout="constrained"
           width={800}
-          height={450}
           sizes="(max-width: 768px) 100vw, 800px"
           background="auto"
-          className="h-full w-full object-cover"
+          className="h-auto w-full object-contain"
           unstyled
         />
       </div>
@@ -26,7 +25,7 @@ function ContentPartView({ part }: { part: ContentPart }) {
   }
   if (part.type === "youtube") {
     return (
-      <figure className="my-4">
+      <figure className="reader-media">
         <YouTubeEmbed videoId={part.src} title={part.caption} />
         {part.caption && (
           <figcaption className="mt-2 text-center text-sm text-muted-foreground">
@@ -39,14 +38,14 @@ function ContentPartView({ part }: { part: ContentPart }) {
   if (part.type === "ad") {
     return (
       <div
-        className="my-2"
+        className="my-2 max-w-full overflow-hidden"
         dangerouslySetInnerHTML={{ __html: part.content }}
       />
     )
   }
   return (
     <div
-      className="max-w-none space-y-2"
+      className="max-w-full min-w-0"
       dangerouslySetInnerHTML={{
         __html: DOMPurify.sanitize(part.content),
       }}

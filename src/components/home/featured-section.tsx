@@ -4,9 +4,11 @@ import { Link } from "@tanstack/react-router"
 import { ArrowRightIcon } from "lucide-react"
 import { useCallback, useState } from "react"
 
-import { ArticleCard } from "@/components/article/article-card"
+import {
+  ArticleCard,
+  ArticleRowSkeleton,
+} from "@/components/article/article-card"
 import { Button } from "@/components/ui/button"
-import { Skeleton } from "@/components/ui/skeleton"
 import {
   useArticlesByTopicId,
   type ArticlesByTopicItem,
@@ -15,34 +17,6 @@ import { useTopicBySlug } from "@/hooks/api/topic"
 
 const ARTICLES_PER_TOPIC = 1
 
-function FeaturedCardSkeleton({
-  variant,
-}: {
-  variant: "compact" | "spotlight"
-}) {
-  if (variant === "compact") {
-    return (
-      <div className="flex h-full items-start gap-3 rounded-xl border bg-card p-3">
-        <Skeleton className="aspect-4/3 w-24 shrink-0 rounded-none" />
-        <div className="min-w-0 flex-1 space-y-2">
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-3 w-3/4" />
-        </div>
-      </div>
-    )
-  }
-
-  return (
-    <div className="flex h-full flex-col overflow-hidden rounded-2xl border bg-card">
-      <Skeleton className="aspect-video w-full rounded-none" />
-      <div className="space-y-2 p-5 sm:p-6">
-        <Skeleton className="h-5 w-4/5" />
-        <Skeleton className="h-4 w-3/5" />
-      </div>
-    </div>
-  )
-}
-
 function FeaturedCard({
   slug,
   variant,
@@ -50,18 +24,43 @@ function FeaturedCard({
   slug: string
   variant: "compact" | "spotlight"
 }) {
-  const topicQuery = useTopicBySlug(slug)
-  const articlesQuery = useArticlesByTopicId(
-    topicQuery.data?.id,
-    ARTICLES_PER_TOPIC,
-  )
+  const {
+    data: topic,
+    isLoading: topicIsLoading,
+    isError: topicIsError,
+    refetch: refetchTopic,
+  } = useTopicBySlug(slug)
+  const {
+    data,
+    isLoading: articlesIsLoading,
+    isError: articlesIsError,
+    refetch,
+  } = useArticlesByTopicId(topic?.id, ARTICLES_PER_TOPIC)
 
-  if (topicQuery.isLoading || articlesQuery.isLoading) {
-    return <FeaturedCardSkeleton variant={variant} />
+  if (topicIsLoading || articlesIsLoading) {
+    return (
+      <div role="status">
+        <span className="sr-only">Memuat sorotan...</span>
+        <ArticleRowSkeleton variant={variant} />
+      </div>
+    )
   }
 
-  const article: ArticlesByTopicItem | undefined =
-    articlesQuery.data?.[0]?.article
+  if (topicIsError || articlesIsError) {
+    return (
+      <div className="inline-status">
+        <p role="alert">Sorotan belum dapat dimuat.</p>
+        <Button
+          variant="outline"
+          onClick={() => (topicIsError ? refetchTopic() : refetch())}
+        >
+          Coba lagi
+        </Button>
+      </div>
+    )
+  }
+
+  const article: ArticlesByTopicItem | undefined = data?.[0]?.article
 
   if (!article) return null
 
@@ -73,7 +72,6 @@ function FeaturedCard({
       slug={article.slug}
       title={article.title}
       variant={variant}
-      className="h-full"
     />
   )
 }
@@ -101,12 +99,12 @@ function DeferredFeaturedCards({ slugs }: { slugs: string[] }) {
   )
 
   return (
-    <div ref={observe} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+    <div ref={observe} className="article-list">
       {slugs.map((slug) =>
         visible ? (
           <FeaturedCard key={slug} slug={slug} variant="compact" />
         ) : (
-          <FeaturedCardSkeleton key={slug} variant="compact" />
+          <ArticleRowSkeleton key={slug} />
         ),
       )}
     </div>
@@ -119,9 +117,9 @@ export function FeaturedSection({ slugs }: { slugs: string[] }) {
   const rest = slugs.slice(1)
 
   return (
-    <section aria-labelledby="featured-heading" className="space-y-4">
+    <section aria-labelledby="featured-heading" className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
-        <h2 id="featured-heading" className="text-2xl font-bold tracking-tight">
+        <h2 id="featured-heading" className="section-title">
           Sorotan
         </h2>
         <Button
@@ -135,7 +133,7 @@ export function FeaturedSection({ slugs }: { slugs: string[] }) {
         </Button>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="article-list">
         <FeaturedCard slug={lead} variant="spotlight" />
         <DeferredFeaturedCards slugs={rest} />
       </div>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useNavigate } from "@tanstack/react-router"
+import { Link, useNavigate } from "@tanstack/react-router"
 import { SearchIcon, XIcon } from "lucide-react"
 import * as React from "react"
 
@@ -12,7 +12,7 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group"
-import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar"
+import { SidebarTrigger } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils/style"
 
 function SearchForm({
@@ -42,57 +42,72 @@ function SearchForm({
   return (
     <form
       className={cn("flex w-full items-center", className)}
+      role="search"
       onSubmit={handleSubmit}
     >
       <InputGroup className="rounded-full">
-        <InputGroupAddon className="ps-3.5">
-          <SearchIcon className="size-4.5 text-muted-foreground" />
-        </InputGroupAddon>
         <InputGroupInput
           aria-label="Cari artikel"
           autoFocus={autoFocus}
           onChange={(event) => setQuery(event.currentTarget.value)}
-          placeholder="Search articles..."
+          placeholder="Cari artikel..."
           type="search"
           value={query}
         />
+        <InputGroupAddon className="p-0">
+          <Button
+            aria-label="Cari artikel"
+            type="submit"
+            size="icon"
+            variant="ghost"
+            disabled={!query.trim()}
+          >
+            <SearchIcon />
+          </Button>
+        </InputGroupAddon>
       </InputGroup>
-      <button className="sr-only" type="submit">
-        Search
-      </button>
     </form>
   )
 }
 
 function MobileSearchDialog() {
   const [open, setOpen] = React.useState(false)
+  const triggerRef = React.useRef<HTMLButtonElement>(null)
+
+  function closeSearch() {
+    setOpen(false)
+    triggerRef.current?.focus()
+  }
 
   return (
     <>
-      <Button size="icon" variant="ghost" onClick={() => setOpen(true)}>
+      <Button
+        ref={triggerRef}
+        size="icon"
+        variant="ghost"
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        onClick={() => setOpen(true)}
+      >
         <SearchIcon />
-        <span className="sr-only">Open search</span>
+        <span className="sr-only">Buka pencarian</span>
       </Button>
       {open && (
         <dialog
-          aria-label="Search articles"
-          className="fixed inset-x-0 top-0 m-0 h-auto max-h-none w-full max-w-none border-0 border-b bg-background p-0 text-foreground backdrop:bg-black/50"
-          onClose={() => setOpen(false)}
+          aria-label="Cari artikel"
+          className="search-dialog"
+          onClose={closeSearch}
           ref={(dialog) => {
             if (dialog && !dialog.open) dialog.showModal()
           }}
         >
           <div className="flex items-center gap-2 p-4">
-            <SearchForm
-              autoFocus
-              className="flex-1"
-              onSubmit={() => setOpen(false)}
-            />
+            <SearchForm autoFocus className="flex-1" onSubmit={closeSearch} />
             <Button
-              aria-label="Close search"
+              aria-label="Tutup pencarian"
               size="icon"
               variant="ghost"
-              onClick={() => setOpen(false)}
+              onClick={closeSearch}
             >
               <XIcon />
             </Button>
@@ -104,28 +119,33 @@ function MobileSearchDialog() {
 }
 
 export function Header() {
-  const { open } = useSidebar()
-
   return (
-    <header className="sticky top-0 z-40 border-b border-white/10 bg-background/60 shadow-sm shadow-black/5 backdrop-blur-[20px] backdrop-saturate-[180%] will-change-[backdrop-filter] supports-backdrop-filter:bg-background/60">
-      <div className="flex h-16 items-center gap-4 px-4">
-        <div className="flex items-center gap-2">
-          <SidebarTrigger />
-          <Logo showText={false} className="block lg:hidden" />
-          {!open && <Logo showText={false} className="hidden lg:block" />}
-        </div>
-
-        <div className="flex flex-1 justify-center">
-          <div className="hidden w-full max-w-md lg:flex">
-            <SearchForm className="flex-1" />
+    <header className="site-header sticky top-0 z-40">
+      <div className="mx-auto flex h-18 w-full max-w-7xl items-center gap-3 px-4 sm:gap-6 sm:px-8">
+        <SidebarTrigger />
+        <Logo />
+        <nav
+          aria-label="Navigasi utama"
+          className="hidden items-center gap-1 lg:flex"
+        >
+          <Link to="/" activeOptions={{ exact: true }} className="nav-link">
+            Beranda
+          </Link>
+          <Link to="/article" className="nav-link">
+            Artikel
+          </Link>
+          <Link to="/topic" className="nav-link">
+            Topik
+          </Link>
+        </nav>
+        <div className="ml-auto flex min-w-0 items-center gap-2">
+          <div className="hidden w-52 xl:block">
+            <SearchForm />
           </div>
-        </div>
-
-        <div className="flex w-fit items-center justify-end gap-2">
-          <ThemeSwitcher />
-          <div className="lg:hidden">
+          <div className="xl:hidden">
             <MobileSearchDialog />
           </div>
+          <ThemeSwitcher />
         </div>
       </div>
     </header>

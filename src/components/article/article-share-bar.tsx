@@ -7,6 +7,7 @@ import { FacebookIcon } from "@/components/icons/facebook"
 import { WhatsAppIcon } from "@/components/icons/whatsapp"
 import { XTwitterIcon } from "@/components/icons/x-twitter"
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils/style"
 
 export interface ArticleShareBarProps {
   url: string
@@ -22,18 +23,20 @@ export function ArticleShareBar({
   const encodedUrl = encodeURIComponent(url)
   const encodedTitle = encodeURIComponent(title)
   const [copied, setCopied] = useState(false)
+  const [copyError, setCopyError] = useState(false)
 
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(url).then(() => {
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(url)
       setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
+      setCopyError(false)
+    } catch {
+      setCopyError(true)
+    }
   }
 
   return (
-    <div
-      className={`flex flex-row items-center gap-3 lg:flex-col lg:items-center lg:justify-start ${className ?? ""}`}
-    >
+    <div className={cn("flex flex-wrap items-center gap-2", className)}>
       <Button
         variant="outline"
         size="icon"
@@ -95,15 +98,22 @@ export function ArticleShareBar({
       <Button
         variant="outline"
         size="icon"
-        aria-label="Copy link"
+        aria-label={copied ? "Link tersalin" : "Salin link"}
         onClick={handleCopyLink}
       >
         {copied ? (
-          <CheckIcon className="size-4 text-green-500" />
+          <CheckIcon className="size-4 text-success-foreground" />
         ) : (
           <LinkIcon className="size-4" />
         )}
       </Button>
+      <span role="status" className="text-xs text-muted-foreground">
+        {copyError
+          ? "Gagal menyalin. Salin alamat dari browser."
+          : copied
+            ? "Link tersalin"
+            : ""}
+      </span>
     </div>
   )
 }

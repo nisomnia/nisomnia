@@ -1,10 +1,7 @@
-import { Link, createFileRoute } from "@tanstack/react-router"
-import { ArrowRightIcon } from "lucide-react"
+import { createFileRoute } from "@tanstack/react-router"
 
-import { DeferredTopicSections } from "@/components/home/deferred-topic-sections"
-import { FeaturedSection } from "@/components/home/featured-section"
-import { HOME_TOPICS, TopicPills } from "@/components/home/topic-pills"
-import { Button } from "@/components/ui/button"
+import { Home } from "@/components/home/home-page"
+import { HOME_TOPICS } from "@/components/home/topic-pills"
 import { fetchClient } from "@/lib/api/client"
 import { siteConfig } from "@/lib/seo/config"
 import {
@@ -94,28 +91,3 @@ export const Route = createFileRoute("/")({
   },
   component: Home,
 })
-
-function Home() {
-  const slugs = HOME_TOPICS.map(({ slug }) => slug)
-
-  return (
-    <div className="mx-auto max-w-7xl space-y-16 px-4 py-10 sm:px-6 lg:px-8">
-      <TopicPills />
-
-      <FeaturedSection slugs={slugs} />
-
-      <DeferredTopicSections topics={HOME_TOPICS} />
-
-      <div className="flex justify-center pt-2">
-        <Button
-          render={<Link to="/article" />}
-          size="lg"
-          className="gap-1.5 rounded-full px-8"
-        >
-          Lihat semua artikel
-          <ArrowRightIcon />
-        </Button>
-      </div>
-    </div>
-  )
-}

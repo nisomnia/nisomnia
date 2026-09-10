@@ -1,7 +1,7 @@
 "use client"
 
 import { ChevronDownIcon } from "lucide-react"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 
 import { cn } from "@/lib/utils/style"
 
@@ -31,7 +31,7 @@ function CollapsibleCard({
 }: CollapsibleCardProps) {
   return (
     <details
-      className={cn("rounded-lg border", className)}
+      className={cn("rounded-2xl bg-muted/50", className)}
       open={open}
       onToggle={(e) => onToggle(e.currentTarget.open)}
     >
@@ -41,7 +41,7 @@ function CollapsibleCard({
           centeredTitle ? "justify-center" : "justify-between",
         )}
       >
-        <span className={cn(centeredTitle && "px-6")}>Table of Contents</span>
+        <span className={cn(centeredTitle && "px-6")}>Daftar isi</span>
         <ChevronDownIcon
           className={cn(
             "size-4 transition-transform",
@@ -50,7 +50,7 @@ function CollapsibleCard({
           )}
         />
       </summary>
-      <nav aria-label="Table of contents" className="border-t p-3 pt-2">
+      <nav aria-label="Table of contents" className="p-3 pt-0">
         {children}
       </nav>
     </details>
@@ -63,19 +63,6 @@ export function ArticleTableOfContents({
 }: ArticleTableOfContentsProps) {
   const [activeId, setActiveId] = useState<string | null>(null)
   const [open, setOpen] = useState(variant !== "collapsible")
-  const listRef = useRef<HTMLUListElement>(null)
-
-  useEffect(() => {
-    if (!activeId || !listRef.current) return
-
-    const activeLink = listRef.current.querySelector(
-      `a[href="#${CSS.escape(activeId)}"]`,
-    )
-    if (!(activeLink instanceof HTMLElement)) return
-
-    activeLink.scrollIntoView({ behavior: "smooth", block: "nearest" })
-  }, [activeId])
-
   useEffect(() => {
     const elements = headings.reduce<HTMLElement[]>((acc, heading) => {
       const el = document.getElementById(heading.id)
@@ -124,10 +111,7 @@ export function ArticleTableOfContents({
   if (headings.length === 0) return null
 
   const list = (
-    <ul
-      ref={listRef}
-      className="flex max-h-[calc(100dvh-8rem)] flex-col gap-1 overflow-y-auto pr-1"
-    >
+    <ul className="flex max-h-[60dvh] flex-col gap-1 overflow-y-auto pr-1">
       {headings.map((heading) => (
         <li
           key={heading.id}
@@ -137,7 +121,7 @@ export function ArticleTableOfContents({
             href={`#${heading.id}`}
             aria-current={activeId === heading.id ? "true" : undefined}
             className={cn(
-              "block rounded-md px-2 py-1 text-sm transition-colors",
+              "block rounded-lg px-3 py-2 text-sm leading-relaxed transition-colors",
               activeId === heading.id
                 ? "bg-accent font-medium text-foreground"
                 : "text-muted-foreground hover:text-foreground",

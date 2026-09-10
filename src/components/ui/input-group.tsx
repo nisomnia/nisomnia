@@ -8,7 +8,7 @@ export function InputGroup({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
       className={cn(
-        "relative inline-flex h-8.5 w-full min-w-0 items-center rounded-lg border border-input bg-background text-foreground shadow-xs/5 transition-shadow has-[input:focus-visible]:border-ring has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-ring/24 sm:h-7.5",
+        "relative inline-flex h-11 w-full min-w-0 items-center rounded-lg border border-input bg-background text-foreground shadow-xs/5 transition-shadow has-[input:focus-visible]:border-ring has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-ring/24",
         className,
       )}
       role="group"

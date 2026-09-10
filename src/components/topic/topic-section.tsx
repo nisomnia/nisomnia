@@ -3,9 +3,11 @@
 import { Link } from "@tanstack/react-router"
 import { ArrowRightIcon } from "lucide-react"
 
-import { ArticleCard } from "@/components/article/article-card"
+import {
+  ArticleCard,
+  ArticleRowSkeleton,
+} from "@/components/article/article-card"
 import { Button } from "@/components/ui/button"
-import { Skeleton } from "@/components/ui/skeleton"
 import {
   useArticlesByTopicId,
   type ArticlesByTopicItem,
@@ -23,17 +25,23 @@ export function TopicSection({
   slug: string
   startIndex?: number
 }) {
-  const topicQuery = useTopicBySlug(slug)
-  const topicId = topicQuery.data?.id
-  const articlesQuery = useArticlesByTopicId(topicId, ARTICLES_PER_TOPIC)
-
-  const isLoading = topicQuery.isLoading || articlesQuery.isLoading
-  const articles = articlesQuery.data?.flatMap((r) => [r.article]) ?? []
+  const {
+    data: topic,
+    isLoading: topicIsLoading,
+    isError: topicIsError,
+  } = useTopicBySlug(slug)
+  const {
+    data,
+    isLoading: articlesIsLoading,
+    isError: articlesIsError,
+  } = useArticlesByTopicId(topic?.id, ARTICLES_PER_TOPIC)
+  const isLoading = topicIsLoading || articlesIsLoading
+  const articles = data?.map((result) => result.article) ?? []
 
   return (
-    <section aria-labelledby={`topic-${slug}`} className="space-y-4">
+    <section aria-labelledby={`topic-${slug}`} className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
-        <h2 id={`topic-${slug}`} className="text-2xl font-bold tracking-tight">
+        <h2 id={`topic-${slug}`} className="section-title">
           {label}
         </h2>
         <Button
@@ -46,19 +54,15 @@ export function TopicSection({
           <ArrowRightIcon />
         </Button>
       </div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {(topicIsError || articlesIsError) && (
+        <p role="alert" className="text-sm text-muted-foreground">
+          Artikel belum dapat dimuat. Buka topik untuk mencoba lagi.
+        </p>
+      )}
+      <div className="article-list">
         {isLoading
           ? Array.from({ length: 3 }).map((_, index) => (
-              <div
-                key={index}
-                className="flex flex-col overflow-hidden rounded-xl border bg-card"
-              >
-                <Skeleton className="aspect-video w-full rounded-none" />
-                <div className="space-y-2 p-4">
-                  <Skeleton className="h-4 w-4/5" />
-                  <Skeleton className="h-3 w-3/5" />
-                </div>
-              </div>
+              <ArticleRowSkeleton key={index} />
             ))
           : articles
               .slice(startIndex, startIndex + ARTICLES_PER_TOPIC)

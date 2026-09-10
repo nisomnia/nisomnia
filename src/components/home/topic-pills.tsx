@@ -24,12 +24,12 @@ export function TopicPills({ activeSlug }: { activeSlug?: string }) {
   return (
     <nav
       aria-label="Topik"
-      className="flex flex-wrap items-center justify-center gap-2"
+      className="-mx-4 flex items-center gap-2 overflow-x-auto px-4 pb-2 sm:mx-0 sm:flex-wrap sm:px-0"
     >
       <Link
         to="/article"
         className={cn(
-          "inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-medium transition-colors",
+          "inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors",
           !activeSlug
             ? "border-primary bg-primary text-primary-foreground"
             : "border-input bg-popover text-foreground hover:bg-accent",
@@ -44,7 +44,7 @@ export function TopicPills({ activeSlug }: { activeSlug?: string }) {
           to="/topic/$slug"
           params={{ slug }}
           className={cn(
-            "inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-medium transition-colors",
+            "inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors",
             activeSlug === slug
               ? "border-primary bg-primary text-primary-foreground"
               : "border-input bg-popover text-foreground hover:bg-accent",

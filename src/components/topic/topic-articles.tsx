@@ -1,6 +1,9 @@
 import type { ArticlesByTopicItem } from "@/hooks/api/article"
 
-import { ArticleCard } from "@/components/article/article-card"
+import {
+  ArticleCard,
+  ArticleRowSkeleton,
+} from "@/components/article/article-card"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 
@@ -11,6 +14,7 @@ interface TopicArticlesProps {
   hasNextPage: boolean
   isFetchingNextPage: boolean
   fetchNextPage: () => void
+  retry: () => void
 }
 
 export function TopicArticles({
@@ -20,20 +24,32 @@ export function TopicArticles({
   hasNextPage,
   isFetchingNextPage,
   fetchNextPage,
+  retry,
 }: TopicArticlesProps) {
   return (
-    <div className="space-y-6">
+    <div>
+      {isLoading && (
+        <div role="status" className="article-list">
+          <span className="sr-only">Memuat artikel...</span>
+          <ArticleRowSkeleton />
+          <ArticleRowSkeleton />
+          <ArticleRowSkeleton />
+        </div>
+      )}
       {isError && (
-        <p className="text-destructive" role="alert">
-          Failed to load articles.
-        </p>
+        <div className="inline-status">
+          <p role="alert">Artikel belum dapat dimuat.</p>
+          <Button variant="outline" onClick={retry}>
+            Coba lagi
+          </Button>
+        </div>
       )}
 
       {!isLoading && !isError && articles.length === 0 && (
-        <p className="text-muted-foreground">No articles found.</p>
+        <p className="inline-status">Belum ada artikel untuk topik ini.</p>
       )}
 
-      <div className="space-y-6">
+      <div className="article-list">
         {articles.map((article, index) => (
           <ArticleCard
             key={article.id}
@@ -42,17 +58,15 @@ export function TopicArticles({
             priority={index === 0}
             slug={article.slug}
             title={article.title}
-            titleClassName="sm:text-xl md:text-2xl lg:text-4xl"
-            excerptClassName="sm:text-sm md:text-base lg:text-xl lg:line-clamp-none"
           />
         ))}
       </div>
 
       <div className="mt-8 text-center">
-        {hasNextPage && (
+        {hasNextPage && !isError && (
           <Button disabled={isFetchingNextPage} onClick={fetchNextPage}>
             {isFetchingNextPage && <Spinner />}
-            {isFetchingNextPage ? "Loading..." : "Load More"}
+            {isFetchingNextPage ? "Memuat artikel..." : "Muat lebih banyak"}
           </Button>
         )}
       </div>

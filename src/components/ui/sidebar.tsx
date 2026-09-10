@@ -47,7 +47,7 @@ export function SidebarProvider({
   children,
   ...props
 }: ComponentProps<"div"> & { defaultOpen?: boolean }) {
-  const isMobile = useMediaQuery("max-md")
+  const isMobile = useMediaQuery("(max-width: 767px)")
   const [open, setOpen] = useState(defaultOpen)
   const [openMobile, setOpenMobile] = useState(false)
   const toggleSidebar = useCallback(() => {
@@ -84,7 +84,7 @@ export function Sidebar({
   className?: string
   children: ReactNode
 }) {
-  const isMobile = useMediaQuery("max-md")
+  const isMobile = useMediaQuery("(max-width: 767px)")
   const { open, openMobile, setOpenMobile } = useSidebar()
 
   if (isMobile) {
@@ -94,7 +94,7 @@ export function Sidebar({
       <dialog
         aria-label="Sidebar"
         className={cn(
-          "fixed inset-y-0 left-0 m-0 h-dvh max-h-none w-(--sidebar-width) max-w-none border-0 bg-sidebar p-0 text-sidebar-foreground backdrop:bg-black/50",
+          "fixed inset-y-0 left-0 m-0 h-dvh max-h-none w-(--sidebar-width) max-w-[calc(100vw-2rem)] border-0 bg-sidebar p-0 text-sidebar-foreground backdrop:bg-black/50",
           className,
         )}
         onClose={() => setOpenMobile(false)}
@@ -127,6 +127,8 @@ export function Sidebar({
         data-slot="sidebar-gap"
       />
       <aside
+        inert={!open}
+        aria-label="Navigasi samping"
         className={cn(
           "fixed inset-y-0 left-0 z-10 hidden h-svh w-(--sidebar-width) border-r bg-sidebar transition-[left] duration-300 ease-out group-data-[state=collapsed]:-left-(--sidebar-width) md:flex",
           className,
@@ -142,11 +144,13 @@ export function SidebarTrigger({
   className,
   ...props
 }: ComponentProps<"button">) {
-  const { toggleSidebar } = useSidebar()
+  const { toggleSidebar, open, openMobile } = useSidebar()
+  const isMobile = useMediaQuery("(max-width: 767px)")
 
   return (
     <Button
-      className={cn("size-7", className)}
+      aria-expanded={isMobile ? openMobile : open}
+      className={cn("size-11", className)}
       size="icon"
       variant="ghost"
       onClick={toggleSidebar}
@@ -162,7 +166,7 @@ export function SidebarInset({ className, ...props }: ComponentProps<"main">) {
   return (
     <main
       className={cn(
-        "relative flex w-full flex-1 flex-col bg-background",
+        "relative flex w-full min-w-0 flex-1 flex-col bg-background",
         className,
       )}
       data-slot="sidebar-inset"

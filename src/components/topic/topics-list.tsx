@@ -1,26 +1,34 @@
 import { Link } from "@tanstack/react-router"
+import { ArrowUpRightIcon, HashIcon } from "lucide-react"
 
 import type { operations } from "@/lib/api/types"
-
-import { Button } from "@/components/ui/button"
 
 type Topic =
   operations["topicByArticleCount"]["responses"][200]["content"]["application/json"][number]
 
 export function TopicsList({ topics }: { topics: Topic[] }) {
   return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+    <ul className="grid gap-x-10 sm:grid-cols-2">
       {topics.map((topic) => (
-        <Button
-          key={topic.id}
-          render={<Link params={{ slug: topic.slug }} to="/topic/$slug" />}
-          variant="outline"
-          size="lg"
-          className="h-auto min-h-18 justify-start px-5 py-4 text-left text-base font-normal"
-        >
-          <span className="line-clamp-2">{topic.title}</span>
-        </Button>
+        <li key={topic.id} className="border-b">
+          <Link
+            params={{ slug: topic.slug }}
+            to="/topic/$slug"
+            className="topic-link"
+          >
+            <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-muted">
+              <HashIcon className="size-5" aria-hidden="true" />
+            </span>
+            <span className="min-w-0 flex-1 wrap-break-word">
+              {topic.title}
+            </span>
+            <ArrowUpRightIcon
+              className="size-4 shrink-0 text-muted-foreground"
+              aria-hidden="true"
+            />
+          </Link>
+        </li>
       ))}
-    </div>
+    </ul>
   )
 }

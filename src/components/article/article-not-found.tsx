@@ -4,13 +4,13 @@ import { Button } from "@/components/ui/button"
 
 export function ArticleNotFound({ slug }: { slug: string }) {
   return (
-    <div className="mx-auto max-w-3xl p-8 text-center">
-      <h1 className="text-2xl font-semibold">Article not found</h1>
+    <div className="status-page">
+      <h1 className="text-2xl font-semibold">Artikel tidak ditemukan.</h1>
       <p className="mt-2 text-muted-foreground">
-        Could not find article &ldquo;{slug}&rdquo;.
+        Tidak ada artikel untuk &ldquo;{slug}&rdquo;.
       </p>
       <Button className="mt-6" render={<Link to="/article" />}>
-        Browse articles
+        Jelajahi artikel
       </Button>
     </div>
   )

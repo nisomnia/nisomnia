@@ -12,12 +12,13 @@ import {
   SidebarHeader,
   SidebarMenu,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
 import { useTopicsByArticleCount } from "@/hooks/api/topic"
 import { cn } from "@/lib/utils/style"
 
 const MENU_LINK_CLASS_NAME =
-  "flex h-8 w-full items-center gap-2 overflow-hidden rounded-lg p-2 text-left text-sm outline-hidden hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2"
+  "flex min-h-11 w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm outline-hidden transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 [&_svg]:size-4 [&_svg]:shrink-0"
 
 function menuLinkClassName(isActive: boolean) {
   return cn(
@@ -35,13 +36,22 @@ function useActiveTopicSlug(): string | undefined {
 }
 
 function TopicMenu() {
-  const topicsQuery = useTopicsByArticleCount({ perPage: 8 })
-  const topics = topicsQuery.data ?? []
+  const { setOpenMobile } = useSidebar()
+  const { data, isLoading, isError } = useTopicsByArticleCount({ perPage: 8 })
+  const topics = data ?? []
   const activeSlug = useActiveTopicSlug()
 
   if (topics.length === 0) {
     return (
-      <p className="px-2 text-sm text-muted-foreground">No topics found.</p>
+      <SidebarMenuItem>
+        <p role="status" className="px-3 py-2 text-sm text-muted-foreground">
+          {isLoading
+            ? "Memuat topik..."
+            : isError
+              ? "Topik belum tersedia."
+              : "Belum ada topik."}
+        </p>
+      </SidebarMenuItem>
     )
   }
 
@@ -50,7 +60,9 @@ function TopicMenu() {
       {topics.map((topic: { slug: string; title: string }) => (
         <SidebarMenuItem key={topic.slug}>
           <Link
+            onClick={() => setOpenMobile(false)}
             className={menuLinkClassName(topic.slug === activeSlug)}
+            aria-current={topic.slug === activeSlug ? "page" : undefined}
             params={{ slug: topic.slug }}
             to="/topic/$slug"
           >
@@ -63,6 +75,7 @@ function TopicMenu() {
 }
 
 function MainNav() {
+  const { setOpenMobile } = useSidebar()
   const pathname = useRouterState({
     select: (state) => state.location.pathname,
   })
@@ -70,33 +83,45 @@ function MainNav() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <Link className={menuLinkClassName(pathname === "/")} to="/">
+        <Link
+          onClick={() => setOpenMobile(false)}
+          activeOptions={{ exact: true }}
+          className={menuLinkClassName(pathname === "/")}
+          to="/"
+        >
           <HomeIcon />
-          <span>Home</span>
+          <span>Beranda</span>
         </Link>
       </SidebarMenuItem>
       <SidebarMenuItem>
         <Link
+          onClick={() => setOpenMobile(false)}
           className={menuLinkClassName(pathname.startsWith("/article"))}
           to="/article"
         >
           <FileTextIcon />
-          <span>Articles</span>
-        </Link>
-      </SidebarMenuItem>
-      <SidebarMenuItem>
-        <Link className={MENU_LINK_CLASS_NAME} search={{ q: "" }} to="/article">
-          <SearchIcon />
-          <span>Search</span>
+          <span>Artikel</span>
         </Link>
       </SidebarMenuItem>
       <SidebarMenuItem>
         <Link
+          onClick={() => setOpenMobile(false)}
+          className={MENU_LINK_CLASS_NAME}
+          search={{ q: "" }}
+          to="/article"
+        >
+          <SearchIcon />
+          <span>Cari artikel</span>
+        </Link>
+      </SidebarMenuItem>
+      <SidebarMenuItem>
+        <Link
+          onClick={() => setOpenMobile(false)}
           className={menuLinkClassName(pathname.startsWith("/topic"))}
           to="/topic"
         >
           <HashIcon />
-          <span>Topics</span>
+          <span>Topik</span>
         </Link>
       </SidebarMenuItem>
     </SidebarMenu>
@@ -106,15 +131,15 @@ function MainNav() {
 export function AppSidebar() {
   return (
     <Sidebar>
-      <SidebarHeader>
-        <Logo showText className="px-2 text-primary" />
+      <SidebarHeader className="px-4 py-6">
+        <Logo showText className="pr-10 pl-2 text-primary" />
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="px-3 pb-6">
         <SidebarGroup>
           <MainNav />
         </SidebarGroup>
         <SidebarGroup className="flex-1">
-          <SidebarGroupLabel>Popular topics</SidebarGroupLabel>
+          <SidebarGroupLabel>Topik populer</SidebarGroupLabel>
           <SidebarMenu>
             <TopicMenu />
           </SidebarMenu>

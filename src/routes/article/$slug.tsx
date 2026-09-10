@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { ArticleLayout } from "@/components/article/article-layout"
-import { ArticleNotFound } from "@/components/article/article-not-found"
+import { ArticlePage } from "@/components/article/article-page"
 import { fetchClient } from "@/lib/api/client"
 import { extractYouTubeIds, fetchAllVideoMeta } from "@/lib/article/youtube"
 import { buildArticleSeo } from "@/lib/seo/article-head"
@@ -36,14 +35,3 @@ export const Route = createFileRoute("/article/$slug")({
   },
   component: ArticlePage,
 })
-
-function ArticlePage() {
-  const { slug } = Route.useParams()
-  const data = Route.useLoaderData()
-
-  if (!data?.article) {
-    return <ArticleNotFound slug={slug} />
-  }
-
-  return <ArticleLayout article={data.article} slug={slug} />
-}
