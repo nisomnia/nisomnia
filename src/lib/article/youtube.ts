@@ -1,5 +1,8 @@
+import { createServerFn } from "@tanstack/react-start"
+
 import type { VideoMeta } from "./types"
 
+const YOUTUBE_VIDEO_ID_RE = /^[A-Za-z0-9_-]{11}$/
 const YOUTUBE_ID_RE =
   /(?:youtube\.com\/embed\/|youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/
 
@@ -15,9 +18,7 @@ export function extractYouTubeIds(content: string): string[] {
   return Array.from(ids)
 }
 
-export async function fetchYouTubeMeta(
-  videoId: string,
-): Promise<VideoMeta | null> {
+async function fetchYouTubeMeta(videoId: string): Promise<VideoMeta | null> {
   try {
     const res = await fetch(`https://www.youtube.com/watch?v=${videoId}`, {
       headers: { "User-Agent": "Mozilla/5.0" },
@@ -63,9 +64,22 @@ export async function fetchYouTubeMeta(
   }
 }
 
-export async function fetchAllVideoMeta(
-  videoIds: string[],
-): Promise<VideoMeta[]> {
-  const results = await Promise.all(videoIds.map(fetchYouTubeMeta))
-  return results.filter((v): v is VideoMeta => v !== null)
+function validateVideoIds(value: unknown): string[] {
+  if (!Array.isArray(value)) throw new Error("Invalid YouTube video IDs")
+
+  const videoIds: string[] = []
+  for (const videoId of value) {
+    if (typeof videoId !== "string" || !YOUTUBE_VIDEO_ID_RE.test(videoId)) {
+      throw new Error("Invalid YouTube video IDs")
+    }
+    videoIds.push(videoId)
+  }
+  return Array.from(new Set(videoIds))
 }
+
+export const fetchAllVideoMeta = createServerFn({ method: "GET" })
+  .validator(validateVideoIds)
+  .handler(async ({ data }) => {
+    const results = await Promise.all(data.map(fetchYouTubeMeta))
+    return results.filter((video): video is VideoMeta => video !== null)
+  })

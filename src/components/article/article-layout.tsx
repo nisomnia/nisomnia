@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router"
 import { useMemo } from "react"
 
 import type { ArticleResponse } from "@/hooks/api/article"
+import type { VideoMeta } from "@/lib/article/types"
 
 import { ArticleContent } from "@/components/article/article-content"
 import { ArticleShareBar } from "@/components/article/article-share-bar"
@@ -15,9 +16,14 @@ import { siteConfig } from "@/lib/seo/config"
 interface ArticleLayoutProps {
   article: NonNullable<ArticleResponse>
   slug: string
+  videoMeta: VideoMeta[]
 }
 
-export function ArticleLayout({ article, slug }: ArticleLayoutProps) {
+export function ArticleLayout({
+  article,
+  slug,
+  videoMeta,
+}: ArticleLayoutProps) {
   const { parts, headings } = useMemo(() => {
     if (!article.content) return { parts: [], headings: [] }
     const withHeadings = extractHeadings(article.content)
@@ -64,7 +70,11 @@ export function ArticleLayout({ article, slug }: ArticleLayoutProps) {
                 variant="collapsible"
               />
             </div>
-            <ArticleContent parts={parts} />
+            <ArticleContent
+              parts={parts}
+              articleSlug={slug}
+              watchableVideoIds={videoMeta.map((video) => video.videoId)}
+            />
             {article.topics.length > 0 && (
               <nav
                 aria-label="Topik artikel"

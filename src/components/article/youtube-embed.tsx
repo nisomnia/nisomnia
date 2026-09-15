@@ -78,6 +78,26 @@ function YouTubePlayer({
   )
 }
 
+export function YouTubeWatchPlayer({
+  videoId,
+  title,
+}: {
+  videoId: string
+  title: string
+}) {
+  return (
+    <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-black sm:rounded-3xl">
+      <iframe
+        className="absolute inset-0 size-full border-0"
+        src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0`}
+        title={title}
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      />
+    </div>
+  )
+}
+
 export const YouTubeEmbed = memo(function YouTubeEmbed({
   videoId,
   title,

@@ -23,7 +23,7 @@ export const Route = createFileRoute("/article/$slug")({
     })
 
     const videoIds = extractYouTubeIds(article?.content ?? "")
-    const videoMeta = await fetchAllVideoMeta(videoIds)
+    const videoMeta = await fetchAllVideoMeta({ data: videoIds })
 
     return { article, videoMeta }
   },
@@ -31,7 +31,7 @@ export const Route = createFileRoute("/article/$slug")({
     if (!loaderData?.article) {
       return { meta: [{ title: "Article" }], links: [], scripts: [] }
     }
-    return buildArticleSeo(loaderData.article, loaderData.videoMeta)
+    return buildArticleSeo(loaderData.article)
   },
   component: ArticlePage,
 })

@@ -12,5 +12,11 @@ export function ArticlePage() {
     return <ArticleNotFound slug={slug} />
   }
 
-  return <ArticleLayout article={data.article} slug={slug} />
+  return (
+    <ArticleLayout
+      article={data.article}
+      slug={slug}
+      videoMeta={data.videoMeta}
+    />
+  )
 }

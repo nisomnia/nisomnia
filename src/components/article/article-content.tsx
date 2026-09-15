@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router"
 import DOMPurify from "isomorphic-dompurify"
 import { memo } from "react"
 
@@ -6,7 +7,15 @@ import type { ContentPart } from "@/lib/parse-content"
 import { YouTubeEmbed } from "@/components/article/youtube-embed"
 import { Image } from "@/components/image"
 
-function ContentPartView({ part }: { part: ContentPart }) {
+function ContentPartView({
+  part,
+  articleSlug,
+  watchableVideoIds,
+}: {
+  part: ContentPart
+  articleSlug: string
+  watchableVideoIds: string[]
+}) {
   if (part.type === "image") {
     return (
       <div className="reader-media">
@@ -24,12 +33,21 @@ function ContentPartView({ part }: { part: ContentPart }) {
     )
   }
   if (part.type === "youtube") {
+    const isWatchable = watchableVideoIds.includes(part.src)
     return (
       <figure className="reader-media">
         <YouTubeEmbed videoId={part.src} title={part.caption} />
-        {part.caption && (
-          <figcaption className="mt-2 text-center text-sm text-muted-foreground">
-            {part.caption}
+        {(part.caption ?? isWatchable) && (
+          <figcaption className="mt-2 flex flex-wrap items-center justify-between gap-2 text-sm text-muted-foreground">
+            {part.caption && <span>{part.caption}</span>}
+            {isWatchable && (
+              <Link
+                to="/article/$slug/video/$videoId"
+                params={{ slug: articleSlug, videoId: part.src }}
+              >
+                Tonton di halaman video
+              </Link>
+            )}
           </figcaption>
         )}
       </figure>
@@ -55,13 +73,22 @@ function ContentPartView({ part }: { part: ContentPart }) {
 
 export const ArticleContent = memo(function ArticleContent({
   parts,
+  articleSlug,
+  watchableVideoIds,
 }: {
   parts: ContentPart[]
+  articleSlug: string
+  watchableVideoIds: string[]
 }) {
   return (
     <div className="article-content">
       {parts.map((part, i) => (
-        <ContentPartView key={`${part.type}-${i}`} part={part} />
+        <ContentPartView
+          key={`${part.type}-${i}`}
+          part={part}
+          articleSlug={articleSlug}
+          watchableVideoIds={watchableVideoIds}
+        />
       ))}
     </div>
   )

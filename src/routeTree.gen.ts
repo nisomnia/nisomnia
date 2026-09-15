@@ -15,6 +15,7 @@ import { Route as ArticleIndexRouteImport } from './routes/article/index'
 import { Route as ArticleSlugRouteImport } from './routes/article/$slug'
 import { Route as TopicIndexRouteImport } from './routes/topic/index'
 import { Route as TopicSlugIndexRouteImport } from './routes/topic/$slug/index'
+import { Route as ArticleSlugVideoVideoIdRouteImport } from './routes/article/$slug_.video.$videoId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,6 +47,11 @@ const TopicSlugIndexRoute = TopicSlugIndexRouteImport.update({
   path: '/topic/$slug/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ArticleSlugVideoVideoIdRoute = ArticleSlugVideoVideoIdRouteImport.update({
+  id: '/article/$slug_/video/$videoId',
+  path: '/article/$slug/video/$videoId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/article/': typeof ArticleIndexRoute
   '/topic/': typeof TopicIndexRoute
   '/topic/$slug/': typeof TopicSlugIndexRoute
+  '/article/$slug/video/$videoId': typeof ArticleSlugVideoVideoIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/article': typeof ArticleIndexRoute
   '/topic': typeof TopicIndexRoute
   '/topic/$slug': typeof TopicSlugIndexRoute
+  '/article/$slug/video/$videoId': typeof ArticleSlugVideoVideoIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,6 +79,7 @@ export interface FileRoutesById {
   '/article/': typeof ArticleIndexRoute
   '/topic/': typeof TopicIndexRoute
   '/topic/$slug/': typeof TopicSlugIndexRoute
+  '/article/$slug_/video/$videoId': typeof ArticleSlugVideoVideoIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,6 +90,7 @@ export interface FileRouteTypes {
     | '/article/'
     | '/topic/'
     | '/topic/$slug/'
+    | '/article/$slug/video/$videoId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -89,6 +99,7 @@ export interface FileRouteTypes {
     | '/article'
     | '/topic'
     | '/topic/$slug'
+    | '/article/$slug/video/$videoId'
   id:
     | '__root__'
     | '/'
@@ -97,6 +108,7 @@ export interface FileRouteTypes {
     | '/article/'
     | '/topic/'
     | '/topic/$slug/'
+    | '/article/$slug_/video/$videoId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -106,6 +118,7 @@ export interface RootRouteChildren {
   ArticleIndexRoute: typeof ArticleIndexRoute
   TopicIndexRoute: typeof TopicIndexRoute
   TopicSlugIndexRoute: typeof TopicSlugIndexRoute
+  ArticleSlugVideoVideoIdRoute: typeof ArticleSlugVideoVideoIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -152,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TopicSlugIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/article/$slug_/video/$videoId': {
+      id: '/article/$slug_/video/$videoId'
+      path: '/article/$slug/video/$videoId'
+      fullPath: '/article/$slug/video/$videoId'
+      preLoaderRoute: typeof ArticleSlugVideoVideoIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -162,6 +182,7 @@ const rootRouteChildren: RootRouteChildren = {
   ArticleIndexRoute: ArticleIndexRoute,
   TopicIndexRoute: TopicIndexRoute,
   TopicSlugIndexRoute: TopicSlugIndexRoute,
+  ArticleSlugVideoVideoIdRoute: ArticleSlugVideoVideoIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

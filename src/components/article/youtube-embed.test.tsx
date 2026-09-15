@@ -1,9 +1,22 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, expect, it } from "vitest"
 
-import { YouTubeEmbed } from "@/components/article/youtube-embed"
+import {
+  YouTubeEmbed,
+  YouTubeWatchPlayer,
+} from "@/components/article/youtube-embed"
 
 afterEach(cleanup)
+
+it("renders the watch-page player immediately", () => {
+  const { container } = render(
+    <YouTubeWatchPlayer videoId="abc123" title="Cuplikan film" />,
+  )
+  expect(container.querySelector("iframe")?.getAttribute("src")).toBe(
+    "https://www.youtube-nocookie.com/embed/abc123?rel=0",
+  )
+  expect(screen.getByTitle("Cuplikan film")).toBeTruthy()
+})
 
 it("loads the private player only after activation and preserves its title", () => {
   const { container } = render(

@@ -275,8 +275,8 @@ export function videoObjectJsonLd(options: {
   description: string
   videoId: string
   pageUrl: string
-  uploadDate?: string | null
-  thumbnailUrl?: string
+  uploadDate: string
+  thumbnailUrl: string
   embedUrl?: string
   duration?: string
   width?: number
@@ -299,10 +299,9 @@ export function videoObjectJsonLd(options: {
     "@id": `${pageUrl}#schema-video-${videoId}`,
     name,
     description,
-    thumbnailUrl:
-      thumbnailUrl ?? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+    thumbnailUrl,
     embedUrl: embedUrl ?? `https://www.youtube.com/embed/${videoId}`,
-    uploadDate: uploadDate ?? undefined,
+    uploadDate,
     duration: duration ?? undefined,
     width: width ?? undefined,
     height: height ?? undefined,
