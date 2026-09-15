@@ -67,10 +67,10 @@
     "tsx": "^4.23.13",
     "typescript": "^7.0.2",
     "vite": "^8.0.0",
-    "vitest": "4.1.9"
+    "vitest": "4.1.11"
   },
   "overrides": {
-    "vitest": "4.1.9"
+    "vitest": "4.1.11"
   },
   "devEngines": {
     "packageManager": {
