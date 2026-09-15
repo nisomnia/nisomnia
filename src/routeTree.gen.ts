@@ -10,16 +10,23 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ArticleIndexRouteImport } from './routes/article/index'
 import { Route as ArticleSlugRouteImport } from './routes/article/$slug'
 import { Route as TopicIndexRouteImport } from './routes/topic/index'
+import { Route as ArticleSlugIndexDotmdRouteImport } from './routes/article/$slug/index[.]md'
 import { Route as TopicSlugIndexRouteImport } from './routes/topic/$slug/index'
 import { Route as ArticleSlugVideoVideoIdRouteImport } from './routes/article/$slug_.video.$videoId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LlmsDottxtRoute = LlmsDottxtRouteImport.update({
+  id: '/llms.txt',
+  path: '/llms.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -42,6 +49,11 @@ const TopicIndexRoute = TopicIndexRouteImport.update({
   path: '/topic/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ArticleSlugIndexDotmdRoute = ArticleSlugIndexDotmdRouteImport.update({
+  id: '/index.md',
+  path: '/index.md',
+  getParentRoute: () => ArticleSlugRoute,
+} as any)
 const TopicSlugIndexRoute = TopicSlugIndexRouteImport.update({
   id: '/topic/$slug/',
   path: '/topic/$slug/',
@@ -55,29 +67,35 @@ const ArticleSlugVideoVideoIdRoute = ArticleSlugVideoVideoIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/article/$slug': typeof ArticleSlugRoute
+  '/article/$slug': typeof ArticleSlugRouteWithChildren
   '/article/': typeof ArticleIndexRoute
   '/topic/': typeof TopicIndexRoute
+  '/article/$slug/index.md': typeof ArticleSlugIndexDotmdRoute
   '/topic/$slug/': typeof TopicSlugIndexRoute
   '/article/$slug/video/$videoId': typeof ArticleSlugVideoVideoIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/article/$slug': typeof ArticleSlugRoute
+  '/article/$slug': typeof ArticleSlugRouteWithChildren
   '/article': typeof ArticleIndexRoute
   '/topic': typeof TopicIndexRoute
+  '/article/$slug/index.md': typeof ArticleSlugIndexDotmdRoute
   '/topic/$slug': typeof TopicSlugIndexRoute
   '/article/$slug/video/$videoId': typeof ArticleSlugVideoVideoIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/article/$slug': typeof ArticleSlugRoute
+  '/article/$slug': typeof ArticleSlugRouteWithChildren
   '/article/': typeof ArticleIndexRoute
   '/topic/': typeof TopicIndexRoute
+  '/article/$slug/index.md': typeof ArticleSlugIndexDotmdRoute
   '/topic/$slug/': typeof TopicSlugIndexRoute
   '/article/$slug_/video/$videoId': typeof ArticleSlugVideoVideoIdRoute
 }
@@ -85,36 +103,43 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/llms.txt'
     | '/sitemap.xml'
     | '/article/$slug'
     | '/article/'
     | '/topic/'
+    | '/article/$slug/index.md'
     | '/topic/$slug/'
     | '/article/$slug/video/$videoId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/llms.txt'
     | '/sitemap.xml'
     | '/article/$slug'
     | '/article'
     | '/topic'
+    | '/article/$slug/index.md'
     | '/topic/$slug'
     | '/article/$slug/video/$videoId'
   id:
     | '__root__'
     | '/'
+    | '/llms.txt'
     | '/sitemap.xml'
     | '/article/$slug'
     | '/article/'
     | '/topic/'
+    | '/article/$slug/index.md'
     | '/topic/$slug/'
     | '/article/$slug_/video/$videoId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  LlmsDottxtRoute: typeof LlmsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  ArticleSlugRoute: typeof ArticleSlugRoute
+  ArticleSlugRoute: typeof ArticleSlugRouteWithChildren
   ArticleIndexRoute: typeof ArticleIndexRoute
   TopicIndexRoute: typeof TopicIndexRoute
   TopicSlugIndexRoute: typeof TopicSlugIndexRoute
@@ -128,6 +153,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/llms.txt': {
+      id: '/llms.txt'
+      path: '/llms.txt'
+      fullPath: '/llms.txt'
+      preLoaderRoute: typeof LlmsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -158,6 +190,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TopicIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/article/$slug/index.md': {
+      id: '/article/$slug/index.md'
+      path: '/index.md'
+      fullPath: '/article/$slug/index.md'
+      preLoaderRoute: typeof ArticleSlugIndexDotmdRouteImport
+      parentRoute: typeof ArticleSlugRoute
+    }
     '/topic/$slug/': {
       id: '/topic/$slug/'
       path: '/topic/$slug'
@@ -175,10 +214,23 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface ArticleSlugRouteChildren {
+  ArticleSlugIndexDotmdRoute: typeof ArticleSlugIndexDotmdRoute
+}
+
+const ArticleSlugRouteChildren: ArticleSlugRouteChildren = {
+  ArticleSlugIndexDotmdRoute: ArticleSlugIndexDotmdRoute,
+}
+
+const ArticleSlugRouteWithChildren = ArticleSlugRoute._addFileChildren(
+  ArticleSlugRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  LlmsDottxtRoute: LlmsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  ArticleSlugRoute: ArticleSlugRoute,
+  ArticleSlugRoute: ArticleSlugRouteWithChildren,
   ArticleIndexRoute: ArticleIndexRoute,
   TopicIndexRoute: TopicIndexRoute,
   TopicSlugIndexRoute: TopicSlugIndexRoute,

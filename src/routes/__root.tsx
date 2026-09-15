@@ -71,6 +71,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "describedby", href: "/llms.txt" },
       { rel: "preconnect", href: "https://api.nisomnia.com" },
       { rel: "dns-prefetch", href: "https://api.nisomnia.com" },
       {

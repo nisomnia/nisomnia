@@ -65,7 +65,10 @@ export function buildArticleSeo(article: NonNullable<ArticleResponse>) {
     imageUrl,
     breadcrumb,
   })
-  const links: typeof seo.links = [...seo.links]
+  const links: typeof seo.links = [
+    ...seo.links,
+    { rel: "alternate", type: "text/markdown", href: `${url}/index.md` },
+  ]
   if (article.featuredImage) {
     links.push({
       rel: "preload",
