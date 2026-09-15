@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 
 import { buildArticleMarkdown } from "@/lib/seo/article-markdown"
 import { buildLlmsText } from "@/lib/seo/content-index"
+import { newsArticleJsonLd } from "@/lib/seo/json-ld"
 
 describe("buildLlmsText", () => {
   it("builds a deduplicated LLM content index", () => {
@@ -55,5 +56,21 @@ describe("buildLlmsText", () => {
     expect(text).toContain(
       "[Baca versi web](https://nisomnia.com/article/judul-artikel)",
     )
+  })
+})
+
+describe("newsArticleJsonLd", () => {
+  it("marks concise article sections as speakable", () => {
+    const article = newsArticleJsonLd({
+      headline: "Headline",
+      description: "Summary",
+      url: "https://nisomnia.com/article/headline",
+      speakable: true,
+    })
+
+    expect(article.speakable).toEqual({
+      "@type": "SpeakableSpecification",
+      cssSelector: [".reader-heading h1", ".reader-heading > p"],
+    })
   })
 })

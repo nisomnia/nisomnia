@@ -107,6 +107,7 @@ export function buildArticleSeo(article: NonNullable<ArticleResponse>) {
             section: primaryTopic?.title,
             keywords: article.topics.map((t) => t.title),
             breadcrumb,
+            speakable: article.language === "en",
           }),
         ]),
       ),

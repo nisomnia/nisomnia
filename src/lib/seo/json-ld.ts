@@ -176,6 +176,7 @@ export function newsArticleJsonLd(options: {
   section?: string
   keywords?: string[]
   breadcrumb?: JsonLd
+  speakable?: boolean
 }): JsonLd {
   const {
     headline,
@@ -192,6 +193,7 @@ export function newsArticleJsonLd(options: {
     section,
     keywords,
     breadcrumb,
+    speakable,
   } = options
 
   const author = authorName
@@ -216,6 +218,12 @@ export function newsArticleJsonLd(options: {
     datePublished: datePublished ?? undefined,
     dateModified: dateModified ?? undefined,
     articleSection: section ?? undefined,
+    speakable: speakable
+      ? {
+          "@type": "SpeakableSpecification",
+          cssSelector: [".reader-heading h1", ".reader-heading > p"],
+        }
+      : undefined,
     author: author ? { "@id": author["@id"] } : undefined,
     publisher: { "@id": `${siteConfig.siteUrl}/#organization` },
     copyrightYear: datePublished
