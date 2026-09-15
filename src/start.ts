@@ -1,4 +1,8 @@
-import { createMiddleware, createStart } from "@tanstack/react-start"
+import {
+  createCsrfMiddleware,
+  createMiddleware,
+  createStart,
+} from "@tanstack/react-start"
 
 const ALLOWED_ORIGINS = ["https://nisomnia.com", "https://www.nisomnia.com"]
 
@@ -6,6 +10,10 @@ function isAllowedOrigin(origin: string | null): boolean {
   if (!origin) return false
   return ALLOWED_ORIGINS.includes(origin)
 }
+
+const csrfMiddleware = createCsrfMiddleware({
+  filter: (context) => context.handlerType === "serverFn",
+})
 
 const corsMiddleware = createMiddleware().server(async ({ next, request }) => {
   const origin = request.headers.get("Origin")
@@ -56,6 +64,6 @@ const corsMiddleware = createMiddleware().server(async ({ next, request }) => {
 
 export const startInstance = createStart(() => {
   return {
-    requestMiddleware: [corsMiddleware],
+    requestMiddleware: [csrfMiddleware, corsMiddleware],
   }
 })
