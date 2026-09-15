@@ -77,7 +77,7 @@ function validateVideoIds(value: unknown): string[] {
   return Array.from(new Set(videoIds))
 }
 
-export const fetchAllVideoMeta = createServerFn({ method: "GET" })
+export const fetchAllVideoMeta = createServerFn({ method: "POST" })
   .validator(validateVideoIds)
   .handler(async ({ data }) => {
     const results = await Promise.all(data.map(fetchYouTubeMeta))
